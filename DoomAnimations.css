@@ -1,0 +1,147 @@
+@keyframes hit{
+    0% {transform: translate(10px, 10px)}
+    25% {transform: translate(-10px, -10px)}
+    50% {transform: translate(10px, 10px)}
+    75% {transform: translate(-10px, -10px)}
+    100%{transform: translate(10px, 10px)}
+}
+@keyframes shieldhit{
+    50% {transform: translate(-10px, -10px)}
+    100%{transform: translate(10px, 10px)}
+}
+
+@keyframes raiseShield{
+    0% {
+        transform: scale(2);
+        left: -10%;
+        top: 110%;
+    }
+
+    100% {
+        transform: scale(3);
+        left: 25%;
+        top: 20%;
+    }
+}
+
+@keyframes lowerShield{
+    0% {
+        transform: scale(3);
+        left: 25%;
+        top: 20%;
+    }
+
+    100% {
+        transform: scale(2);
+        left: -10%;
+        top: 110%;
+    }
+}
+
+/* For the targets */
+@keyframes approach{
+    0% {
+        transform: scale(0.3);
+    }
+
+    100% {
+        transform: scale(0.8);
+    }
+}
+@keyframes flee {
+    0% {
+        top: 40%;
+        left: 100%;
+    }
+
+    100% {
+        top: 40%;
+        left: -20%;
+    }
+}
+@keyframes move {
+    0% {
+        transform: scale(0.6);
+        top: 30%;
+        left: 0%;
+    }
+
+    50% {
+        transform: scale(1);
+        top: 60%;
+        left: 10%;
+    }
+
+    100% {
+        transform: scale(0.6);
+        top: 30%;
+        left: 0%;
+    }
+}
+
+@keyframes move8 {
+    50% {
+        left: 45%;
+    }
+}
+
+@keyframes move9 {
+    0% {
+        top: 65%;
+        left: 53%;
+    }
+
+    50% {
+        transform: scale(3);
+        top: 60%;
+        left: 70%;
+    }
+
+    100% {
+        top: 65%;
+        left: 53%;
+    }
+}
+
+@keyframes move12 {
+
+    50% {
+        transform: scale(1.6);
+        top: 60%;
+        left: 0%;
+    }
+}
+
+/* For the game backgrounds */
+@keyframes floatRight {
+    100%{
+        margin-left: -60%
+    }
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+@keyframes fadeIn {
+    0% {
+        opacity:0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes upScroll{
+    0% {
+        color: teal;
+        margin-top: 50%;
+    }
+    100% {
+        color: crimson;
+        margin-top: -60%;
+    }
+}
