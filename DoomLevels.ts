@@ -25,12 +25,12 @@ function lev1() {
     backImg.setAttribute("style", "width: 160%")
     backImg.setAttribute("src", "Pics/WideBack.jpg")
 
-    tgt1 = new Troop(1, "Troop", 100);
+    tgt1 = new Troop(1, "Troop", 90);
     tgt2 = new Troop(2, "Troop", 20);
     tgt3 = new Troop(3, "Troop", 20);
     tgt4 = new ShotGGuy(4, "ShotGGuy", 30);
     tgt5 = new ShotGGuy(5, "ShotGGuy", 30);
-    tgt99 = new ExtraTarget(99, "TroopLeft"/*+ "_Tomer" */, 10);
+    tgt99 = new ExtraTarget(99, "TroopLeft"+ "_Tomer" , 10);
     regEnemy.regEnemyArray.push(tgt1, tgt2, tgt3, tgt4, tgt5);
 }
 
