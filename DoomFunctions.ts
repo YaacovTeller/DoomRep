@@ -1,4 +1,4 @@
-﻿let music: boolean = false;
+﻿let music: boolean = true;
 let riotShieldDeployed: boolean = false;
 
 let blood = document.getElementById("blood");
@@ -80,7 +80,7 @@ function restart() {
     target.deadCount = 0;
     document.getElementById("DCount").innerHTML = `Kills:${target.deadCount + extra}`;
     startingAmmo()
-    ammoCount.innerHTML = `Ammo: ${PlayerWeapon.ammo}`;
+    ammoCount.innerHTML = `${PlayerWeapon.ammo}`;
     lev1()
 }
 function creditsMenu() {

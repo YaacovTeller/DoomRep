@@ -110,6 +110,7 @@ abstract class regEnemy extends target {
         this.body.setAttribute("src", `pics/${this.enemy}_Dead.gif` + "?a=" + Math.random());
         this.body.style.pointerEvents = "none";
         clearInterval(this.attackRoller);
+        clearInterval(hurting);
         target.deadCount++
         document.getElementById("DCount").innerHTML = `Kills:${target.deadCount + extra}`;
         levelCheck()

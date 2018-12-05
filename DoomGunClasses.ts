@@ -112,7 +112,7 @@ class ChainSaw extends weaponry {
     public switchTo() {
         weaponry.w = 1;
         weaponry.scrnMargin = 305;
-        ammoCount.innerHTML = `Ammo: N/A`
+        ammoCount.innerHTML = `N/A`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/ChainSaw.gif");
         SawUp.play()
@@ -131,7 +131,7 @@ class Pistol extends regGun {
         if (this.ammo <= 0) { click2.play(); }
         else {
             this.ammo--
-            ammoCount.innerHTML = `Ammo: ${this.ammo}`
+            ammoCount.innerHTML = `${this.ammo}`
             if (targeting == false) { this.randomRicochet() }
             else {
                 hitTarget.loseHealth(); /* Bullet4.play() */;
@@ -147,7 +147,7 @@ class Pistol extends regGun {
     }
     public switchTo() {
         weaponry.w = 2;
-        ammoCount.innerHTML = `Ammo: ${this.ammo}`
+        ammoCount.innerHTML = `${this.ammo}`
         weaponry.scrnMargin = 280;
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/pistol_right.png");
@@ -166,7 +166,7 @@ class Shotgun extends regGun {
         if (this.ammo <= 0) { click2.play(); }
         else {
             this.ammo--
-            ammoCount.innerHTML = `Ammo: ${this.ammo}`
+            ammoCount.innerHTML = `${this.ammo}`
             if (targeting == false) { this.randomRicochet() }
             else { /*Bullet4.play()*/; hitTarget.loseHealth() }
 
@@ -182,7 +182,7 @@ class Shotgun extends regGun {
     public switchTo() {
         weaponry.w = 3;
         weaponry.scrnMargin = 230;
-        ammoCount.innerHTML = `Ammo: ${this.ammo}`
+        ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/Ggun2.png");
         document.body.removeAttribute("onmouseup");
@@ -196,7 +196,7 @@ class Minigun extends MachineGun {
     public mgfiring;
     public mgspinning;
     public ammoDisplay() {
-        ammoCount.innerHTML += "ChainAmmo: 200"
+        ammoCount.innerHTML += "200"
     }
     public gunMove(e) {
         if (weaponry.w == 4) { weaponry.scrnMargin = 370; weaponry.gunHeight = 480 }
@@ -221,7 +221,7 @@ class Minigun extends MachineGun {
                 Avpminigun.play()
                 document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)")
                 MachineGun.spendingBullets = setInterval(function () {
-                    thisGun.ammo--; ammoCount.innerHTML = `ChainAmmo: ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
+                    thisGun.ammo--; ammoCount.innerHTML = ` ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
                 }, 200);
                 if (targeting == true) {
                     MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
@@ -252,7 +252,7 @@ class Minigun extends MachineGun {
     public switchTo() {
         weaponry.w = 4;
         weaponry.scrnMargin = 370;
-        ammoCount.innerHTML = `Ammo: ${this.ammo}`
+        ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/ChainGun150.png");
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
@@ -272,12 +272,14 @@ class DukeMgun extends MachineGun {
         if (this.ammo <= 0) { click2.play(); }
         else {
             var thisGun = this;
+            thisGun.ammo--;
+            ammoCount.innerHTML = ` ${thisGun.ammo}`
             weaponry.w = 6.1;
             weaponPic.setAttribute("src", "Pics/DukeMgunFire.gif");
             MGun.play()
             document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)")
             MachineGun.spendingBullets = setInterval(function () {
-                thisGun.ammo--; ammoCount.innerHTML = `ChainAmmo: ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
+                thisGun.ammo--; ammoCount.innerHTML = ` ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
             }, 200);
             if (targeting == true) {
                 hitTarget.loseHealth()
@@ -296,7 +298,7 @@ class DukeMgun extends MachineGun {
     public switchTo() {
         weaponry.w = 6;
         weaponry.scrnMargin = 250;
-        ammoCount.innerHTML = `Ammo: ${this.ammo}`
+        ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/DukeMgun.png");
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
@@ -315,12 +317,14 @@ class DuelNeutron extends MachineGun {
         if (this.ammo <= 0) { click2.play(); }
         else {
             var thisGun = this;
+            thisGun.ammo--;
+            ammoCount.innerHTML = ` ${thisGun.ammo}`
             weaponry.w = 7.1;
             weaponPic.setAttribute("src", "Pics/DN110.gif");
             SSamMinigun.play()
             document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)")
             MachineGun.spendingBullets = setInterval(function () {
-                thisGun.ammo--; ammoCount.innerHTML = `ChainAmmo: ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
+                thisGun.ammo--; ammoCount.innerHTML = ` ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
             }, 200);
             if (targeting == true) {
                 hitTarget.loseHealth()
@@ -340,7 +344,7 @@ class DuelNeutron extends MachineGun {
     public switchTo() {
         weaponry.w = 7;
         weaponry.scrnMargin = 250;
-        ammoCount.innerHTML = `Ammo: ${this.ammo}`
+        ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/DN.png");
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");

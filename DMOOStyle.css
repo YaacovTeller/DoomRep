@@ -89,14 +89,28 @@
     font-family: Aldrich;
     pointer-events: none;
     }
-#ammo {
+#ammoBox{
+    width: 210px;
+    height: 110px;
+    border-radius: 25px;
+    background-color: darkgray;
     top: 5px;
     right: 5px;
     position: fixed;
+    }
+#ammo {
+    margin-right: 10px;
     font-size: 60px;
+    text-align: right;
     color: red;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     pointer-events: none;
+}
+#ammoType{
+    margin-left: 10px;
+    display: block;
+    width: 90px;
+    position: fixed;
 }
 #health {
     bottom: 5px;

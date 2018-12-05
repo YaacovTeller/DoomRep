@@ -1,5 +1,5 @@
 "use strict";
-var music = false;
+var music = true;
 var riotShieldDeployed = false;
 var blood = document.getElementById("blood");
 var oneshot = document.getElementById("shot");
@@ -79,7 +79,7 @@ function restart() {
     target.deadCount = 0;
     document.getElementById("DCount").innerHTML = "Kills:" + (target.deadCount + extra);
     startingAmmo();
-    ammoCount.innerHTML = "Ammo: " + PlayerWeapon.ammo;
+    ammoCount.innerHTML = "" + PlayerWeapon.ammo;
     lev1();
 }
 function creditsMenu() {

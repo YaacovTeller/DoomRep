@@ -17,7 +17,7 @@
 
 </head>
 
-<body  style="cursor: url('pics/Crosshairs/crosshair.cur'), crosshair;">
+<body style="cursor: url('pics/Crosshairs/crosshair.cur'), crosshair;">
     <div>
         <div class="container" style="width: 50%; margin-left:20%; margin-top:25px; position:fixed; ">
             <div id="progressSlot" class="progress" style="height:40px; background-color: transparent">
@@ -32,45 +32,52 @@
         <div id="targetBackdrop">
             <!-- EVERYTHING happens within this area -->
             <!-- כל דבר קורה באזור זה -->
-<!-- <div style="overflow: hidden; width: 400px; height: 300px; position: absolute; left: 20%; top: 20%; border: 4px solid rgb(250, 212, 212);">
+            <!-- <div style="overflow: hidden; width: 400px; height: 300px; position: absolute; left: 20%; top: 20%; border: 4px solid rgb(250, 212, 212);">
 <img src="pics/index.jpg" style="animation-name: floatRight; animation-duration: 5s"/></div>
         </div> -->
-    </div>
-    <div id="DCount"></div>
-    <div id="ammo">Ammo:</div>
-    <div id="health">Health:100</div>
-    <img id="shot" src="pics/Crosshairs/shot.png" style="display:none; position:absolute" draggable="false">
-    <img id="blood" src="pics/Blood_10.gif" style="display:none; position:absolute" draggable="false">
-    <img id="riotShield" src="pics/RiotShield.png" style="display:none; position:absolute" draggable="false">
+        </div>
+        <div id="DCount"></div>
+        <div id="ammoBox">
+                <img id="ammoType" src="pics/Bullets.png" />
+            <div id="ammo"></div>
+           
+        </div>
+        <div id="health">Health:100</div>
+        <img id="shot" src="pics/Crosshairs/shot.png" style="display:none; position:absolute" draggable="false">
+        <img id="blood" src="pics/Blood_10.gif" style="display:none; position:absolute" draggable="false">
+        <img id="riotShield" src="pics/RiotShield.png" style="display:none; position:absolute" draggable="false">
 
-    <div id="timer"></div>
-    <div id="exit1" class="exit" onclick="lev2()" style="cursor: pointer ">MOVE! -></div>
-    <div id="exit2" class="exit" onclick="lev3()" style="cursor: pointer ">EXIT</div>
-    <div id="exit3" class="exit" onclick="lev4()" style="cursor: pointer ">EXIT</div>
-    <div id="exit4" class="exit" onclick="lev5()" style="cursor: pointer ">EXIT</div>
-    <div id="exit5" class="victory" onclick="" style="cursor: pointer ">VICTORY!</div>
-    <div id="fin" style="cursor: pointer "></div>
+        <div id="timer"></div>
+        <div id="exit1" class="exit" onclick="lev2()" style="cursor: pointer ">MOVE! -></div>
+        <div id="exit2" class="exit" onclick="lev3()" style="cursor: pointer ">EXIT</div>
+        <div id="exit3" class="exit" onclick="lev4()" style="cursor: pointer ">EXIT</div>
+        <div id="exit4" class="exit" onclick="lev5()" style="cursor: pointer ">EXIT</div>
+        <div id="exit5" class="victory" onclick="" style="cursor: pointer ">VICTORY!</div>
+        <div id="fin" style="cursor: pointer "></div>
 
-    <div id="menu" class="modal">
-        <div class="modal-content">
-            <span id="close" class="close" onclick="closeMenu()"> &times; </span>
-            <img src="pics/DOOMTITLE.png" style="position: fixed; height: 120px; margin-left: 100px; "/>
-            <h1>Micro</h1>
-            <div class="btn-group">
-                <span style="height: 50px"></span>
-                <button class="button" onclick="closeMenu(),restart()">New Game</button>
-                <a href="C:\Users\Rivka and Yaacov\source\repos\Runner\Runner\TargetAlley.html"><button class="button" >BlakeStone Mini-game</button></a>
-                <button class="button" onclick="muteMusic()">Mute music</button>
-                <button class="button" onclick="creditsMenu()">Credits</button>
+        <div id="menu" class="modal">
+            <div class="modal-content">
+                <span id="close" class="close" onclick="closeMenu()"> &times; </span>
+                <img src="pics/DOOMTITLE.png" style="position: fixed; height: 120px; margin-left: 100px; " />
+                <h1>Micro</h1>
+                <div class="btn-group">
+                    <span style="height: 50px"></span>
+                    <button class="button" onclick="closeMenu(),restart()">New Game</button>
+                    <a href="C:\Users\Rivka and Yaacov\source\repos\Runner\Runner\TargetAlley.html"><button class="button">BlakeStone
+                            Mini-game</button></a>
+                    <button class="button" onclick="muteMusic()">Mute music</button>
+                    <button class="button" onclick="creditsMenu()">Credits</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="CreditScreen">
-        <div id="CreditContainer">
-            <span id="Credits">Y. Teller - Everything<br><br>Except all the art<br>That belongs to ID software<br>Copyright: Doom<br><br>With
-                special thanks to:<br>Tomer Kaiser - All my Typescript and CSS<br>Rivka Teller - Bug fixes<br>YY Kosbie - Class advice</span>
+        <div id="CreditScreen">
+            <div id="CreditContainer">
+                <span id="Credits">Y. Teller - Everything<br><br>Except all the art<br>That belongs to ID software<br>Copyright:
+                    Doom<br><br>With
+                    special thanks to:<br>Tomer Kaiser - All my Typescript and CSS<br>Rivka Teller - Bug fixes<br>YY
+                    Kosbie - Class advice</span>
+            </div>
         </div>
-    </div>
     </div>
 
     <script src="DoomSound.js"></script>
