@@ -123,6 +123,7 @@ abstract class regEnemy extends target {
                 hitWarning()
                 if (riotShieldDeployed == false) {
                     hurting = setTimeout(function () {
+                        // if (riotShieldDeployed == false) {
                         playerHealth -= 10;
                         if (playerHealth>0) {
                         health.innerHTML = `Health: ${playerHealth}`; document.body.style.animationName = "hit";
@@ -130,11 +131,14 @@ abstract class regEnemy extends target {
                         setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
                         }
                         else {playerDeath()}
+                    // }
+                    // else Turicochet.play();
                     }, 1000);
                 }
                 else {
-                    pistol.randomRicochet(); /* riotShield.style.animation = "shieldhit 0.5s"; */
-                    setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
+                    setTimeout(function () {
+                    Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                    }, 1000);
                 }
             }
         }

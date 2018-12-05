@@ -21,9 +21,9 @@ function shieldMove(e) {
 }
 function shieldToggle() {
     if (riotShieldDeployed == false) {
+        riotShieldDeployed = true;
         riotShield.style.animationName = "raiseShield";
         clearInterval(hurting);
-        riotShieldDeployed = true;
         // document.body.setAttribute("onmousemove", "shieldMove(event); PlayerWeapon.gunMove(event)")
     }
     else {

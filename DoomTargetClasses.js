@@ -132,6 +132,7 @@ var regEnemy = /** @class */ (function (_super) {
                 hitWarning();
                 if (riotShieldDeployed == false) {
                     hurting = setTimeout(function () {
+                        // if (riotShieldDeployed == false) {
                         playerHealth -= 10;
                         if (playerHealth > 0) {
                             health.innerHTML = "Health: " + playerHealth;
@@ -142,11 +143,14 @@ var regEnemy = /** @class */ (function (_super) {
                         else {
                             playerDeath();
                         }
+                        // }
+                        // else Turicochet.play();
                     }, 1000);
                 }
                 else {
-                    pistol.randomRicochet(); /* riotShield.style.animation = "shieldhit 0.5s"; */
-                    setTimeout(function () { document.body.style.removeProperty("animation-name"); }, 1100);
+                    setTimeout(function () {
+                        Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                    }, 1000);
                 }
             }
         }

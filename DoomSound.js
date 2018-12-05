@@ -49,6 +49,7 @@ var Bullet5 = new sound("sound/Bullets/bullet_by_09.mp3");
 var Bullet6 = new sound("sound/Bullets/bullet_by_10.mp3");
 var Bullet7 = new sound("sound/Bullets/bullet_by_11.mp3");
 var Bullet8 = new sound("sound/Bullets/bullet_by_12.mp3");
+var Turicochet = new sound("sound/Turok/riccht1p_louder.mp3");
 Avpminigun.sound.setAttribute("loop", "infinite");
 SSamMinigun.sound.setAttribute("loop", "infinite");
 SSamRotate.sound.setAttribute("loop", "infinite");
