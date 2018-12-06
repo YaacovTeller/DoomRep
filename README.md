@@ -13,8 +13,9 @@ Do not be alarmed by the running Tomer in the first screen. He can be removed in
 At the mo, the second menu button only links to files on my computer.
 Music is on, by default.
 
-Current bugs: Machine guns can get stuck on strafe mode.
-              Ammo sometimes reaches -1.
-              Creatures can get stuck on hurt frame.
-              Chainsaw can still kill things far away, needs real size-checker.
+Current bugs:
+Machine guns can get stuck on strafe mode.
+Ammo sometimes reaches -1.
+Creatures can get stuck on hurt frame.
+Chainsaw can still kill things far away, needs real size-checker.
               
