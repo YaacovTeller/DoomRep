@@ -115,6 +115,7 @@ class ChainSaw extends weaponry {
         ammoCount.innerHTML = `N/A`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/ChainSaw.gif");
+        ammoType.removeAttribute("src");
         SawUp.play()
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()")
         document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()")
@@ -151,6 +152,7 @@ class Pistol extends regGun {
         weaponry.scrnMargin = 280;
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/pistol_right.png");
+        ammoType.setAttribute("src", "Pics/Slug.png");
         document.body.setAttribute("onmouseup", "");
         document.body.setAttribute("onmousedown", "PlayerWeapon.shot(event)")
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
@@ -185,6 +187,7 @@ class Shotgun extends regGun {
         ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/Ggun2.png");
+        ammoType.setAttribute("src", "Pics/Shell.png");
         document.body.removeAttribute("onmouseup");
         document.body.setAttribute("onmousedown", "PlayerWeapon.shot(event)")
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
@@ -255,6 +258,7 @@ class Minigun extends MachineGun {
         ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/ChainGun150.png");
+        ammoType.setAttribute("src", "Pics/Bullets.png");
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
         document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
@@ -301,6 +305,7 @@ class DukeMgun extends MachineGun {
         ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/DukeMgun.png");
+        ammoType.setAttribute("src", "Pics/Bullets.png");
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
         document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
@@ -347,6 +352,7 @@ class DuelNeutron extends MachineGun {
         ammoCount.innerHTML = `${this.ammo}`
         document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
         weaponPic.setAttribute("src", "Pics/DN.png");
+        ammoType.setAttribute("src", "Pics/Bullet.png");
         document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
         document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");

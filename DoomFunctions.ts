@@ -7,6 +7,7 @@ let weaponPic = document.getElementById("weppic");
 let Bar = document.getElementById("BossBar1");
 let backImg = document.getElementById("BackImg1");
 var ammoCount = document.getElementById("ammo");
+var ammoType = document.getElementById("ammoType");
 var health = document.getElementById("health");
 var menu = document.getElementById("menu");
 var riotShield = document.getElementById("riotShield");
