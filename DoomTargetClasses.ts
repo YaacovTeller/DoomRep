@@ -7,6 +7,7 @@ var hitImage;
 var targeting: boolean = false;
 var playerHealth: number = 100;
 var hurting;
+var playerDead: boolean = false;
 
 // My abstract super-class for all targets: Handles drawing and damaging.
 //   "abstract super"המחלקה  
@@ -95,7 +96,8 @@ abstract class target {
 
 abstract class regEnemy extends target {
     public static regEnemyArray: Array<regEnemy> = new Array();
-    public hitSpeed: number;
+    public damageNumber: number;
+    public attackFrequency: number;
     public attackRoller;
     public draw() {
         target.objectCount++;
@@ -116,59 +118,69 @@ abstract class regEnemy extends target {
         levelCheck()
         this.deadSound()
     }
-    public inflictDamage() {
-        function hitRoll() {
+    public hitRoll(damageNumber) {
+        if (playerDead == false) {
             var die = (Math.floor(Math.random() * 7))
             if (die == 6) {
                 hitWarning()
                 if (riotShieldDeployed == false) {
                     hurting = setTimeout(function () {
                         // if (riotShieldDeployed == false) {
-                        playerHealth -= 10;
-                        if (playerHealth>0) {
-                        health.innerHTML = `Health: ${playerHealth}`; document.body.style.animationName = "hit";
-                        Hlifescream1.play()
-                        setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
+                        playerHealth -= damageNumber;
+                        if (playerHealth > 0) {
+                            health.innerHTML = `Health: ${playerHealth}`;
+                            document.body.style.animationName = "hit";
+                            Hlifescream1.play()
+                            setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
                         }
-                        else {playerDeath()}
-                    // }
-                    // else Turicochet.play();
+                        else { playerDeath() }
+                        // }
+                        // else Turicochet.play();
                     }, 1000);
                 }
                 else {
                     setTimeout(function () {
-                    Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                        Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
                     }, 1000);
                 }
             }
         }
-        this.attackRoller = setInterval(hitRoll, 2000);
+    }
+    public inflictDamage(damageNumber, attackFrequency) {
+        var firingEnemy = this;
+        this.attackRoller = setInterval(function(){firingEnemy.hitRoll(damageNumber)}, attackFrequency);
     }
 }
 // Normal enemy class
 // מחלקת אויב רגיל
 class Troop extends regEnemy {
+    damageNumber = 10;
+    attackFrequency = 2000;
     constructor(num, enemy, health) {
         super(num, enemy, health)
-        this.inflictDamage()
+        this.inflictDamage(this.damageNumber, this.attackFrequency)
     }
     public deadSound() {
         ded2.play()
     }
 }
 class ShotGGuy extends regEnemy {
+    damageNumber = 20;
+    attackFrequency =2000;
     constructor(num, enemy, health) {
         super(num, enemy, health)
-        this.inflictDamage()
+        this.inflictDamage(this.damageNumber, this.attackFrequency)
     }
     public deadSound() {
         ded.play()
     }
 }
 class Imp extends regEnemy {
+    damageNumber = 15;
+    attackFrequency = 2000;
     constructor(num, enemy, health) {
         super(num, enemy, health)
-        this.inflictDamage()
+        this.inflictDamage(this.damageNumber, this.attackFrequency)
     }
     public deadSound() {
         ded2.play()
@@ -203,8 +215,11 @@ class ExtraTarget extends target {
 // Boss class
 //  מחלקת אויב בוס
 class Boss extends regEnemy {
+    damageNumber = 30;
+    attackFrequency = 300;
     constructor(num, enemy, health) {
         super(num, enemy, health)
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public fillBar() {
         Bar.style.width = `100%`;

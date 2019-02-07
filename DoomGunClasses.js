@@ -122,7 +122,7 @@ var ChainSaw = /** @class */ (function (_super) {
     };
     ChainSaw.prototype.strafe = function () {
         hitImage = document.getElementById("tgt" + hitTarget.num);
-        if (targeting == true && hitImage.height > 200) { //NEEDS FIXING, ALL ARE 300px
+        if (targeting == true && hitImage.offsetheight > 200) { //NEEDS FIXING, ALL ARE 300px
             hitTarget.loseHealth();
             MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
         }
@@ -141,6 +141,7 @@ var ChainSaw = /** @class */ (function (_super) {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
     };
     ChainSaw.prototype.switchTo = function () {
+        PlayerWeapon = chainsaw;
         weaponry.w = 1;
         weaponry.scrnMargin = 305;
         ammoCount.innerHTML = "N/A";
@@ -188,6 +189,7 @@ var Pistol = /** @class */ (function (_super) {
         }
     };
     Pistol.prototype.switchTo = function () {
+        PlayerWeapon = pistol;
         weaponry.w = 2;
         ammoCount.innerHTML = "" + this.ammo;
         weaponry.scrnMargin = 280;
@@ -234,6 +236,7 @@ var Shotgun = /** @class */ (function (_super) {
         }
     };
     Shotgun.prototype.switchTo = function () {
+        PlayerWeapon = shotgun;
         weaponry.w = 3;
         weaponry.scrnMargin = 230;
         ammoCount.innerHTML = "" + this.ammo;
@@ -318,6 +321,7 @@ var Minigun = /** @class */ (function (_super) {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
     };
     Minigun.prototype.switchTo = function () {
+        PlayerWeapon = minigun;
         weaponry.w = 4;
         weaponry.scrnMargin = 370;
         ammoCount.innerHTML = "" + this.ammo;
@@ -381,6 +385,7 @@ var DukeMgun = /** @class */ (function (_super) {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
     };
     DukeMgun.prototype.switchTo = function () {
+        PlayerWeapon = dukemgun;
         weaponry.w = 6;
         weaponry.scrnMargin = 250;
         ammoCount.innerHTML = "" + this.ammo;
@@ -444,6 +449,7 @@ var DuelNeutron = /** @class */ (function (_super) {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
     };
     DuelNeutron.prototype.switchTo = function () {
+        PlayerWeapon = duelneutron;
         weaponry.w = 7;
         weaponry.scrnMargin = 250;
         ammoCount.innerHTML = "" + this.ammo;
@@ -469,4 +475,5 @@ dukemgun.ammo = 0;
 duelneutron.ammo = 0;
 // startingAmmo()
 var PlayerWeapon = pistol;
+var slungWeapon;
 PlayerWeapon.switchTo();

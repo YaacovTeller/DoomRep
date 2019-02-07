@@ -19,18 +19,21 @@ function shieldMove(e) {
     var x = e.pageX;
     var y = e.pageY;
     riotShield.style.left = `${x - 600}px`;
-    riotShield.style.top = `${y/3 - 100}px`;
+    riotShield.style.top = `${y / 3 - 100}px`;
 }
 function shieldToggle() {
     if (riotShieldDeployed == false) {
         riotShieldDeployed = true;
         riotShield.style.animationName = "raiseShield"
+        slungWeapon = PlayerWeapon;
+        pistol.switchTo();
         clearInterval(hurting);
         // document.body.setAttribute("onmousemove", "shieldMove(event); PlayerWeapon.gunMove(event)")
     }
     else {
         riotShield.style.animationName = "lowerShield"
         riotShieldDeployed = false;
+        slungWeapon.switchTo();
     }
 }
 
@@ -39,19 +42,10 @@ function noShot() { oneshot.style.display = "none" }
 // Checks if the targets were killed, advances to next stage
 // בודק אם המטרות נהרגו, ההתקדמות לשלב הבא
 function levelCheck() {
-    if (target.deadCount == 5) { document.getElementById("exit1").style.display = "block"; }
-    else if (target.deadCount == 10) {
-        document.getElementById("exit2").style.display = "block";
-        document.getElementById("exit1").style.display = "none"
-    }
-    else if (target.deadCount == 15) {
-        document.getElementById("exit3").style.display = "block";
-        document.getElementById("exit2").style.display = "none"
-    }
-    else if (target.deadCount == 24) {
-        document.getElementById("exit4").style.display = "block";
-        document.getElementById("exit3").style.display = "none"
-    }
+    if (target.deadCount == 5) { lev2() }
+    else if (target.deadCount == 10) { lev3() }
+    else if (target.deadCount == 15) { lev4() }
+    else if (target.deadCount == 24) { lev5() }
 }
 var gameBegin: boolean = false;
 function openMenu() {
@@ -65,22 +59,29 @@ function closeMenu() {
         startTimer()
     }
 }
-function startingAmmo(){
+function startingAmmo() {
     pistol.ammo = 15;
     shotgun.ammo = 6;
     minigun.ammo = 100;
     dukemgun.ammo = 80;
     duelneutron.ammo = 20;
 }
-function restart() {
-    clearTimer();
-    document.getElementById("targetBackdrop").innerHTML = "";
-    riotShield.style.display = "block";
+function startingValues(){
+    playerDead = false;
     extra = 0;
     target.objectCount = 0;
     target.deadCount = 0;
-    document.getElementById("DCount").innerHTML = `Kills:${target.deadCount + extra}`;
+    playerHealth = 100;
+}
+function restart() {
+    clearTimer();
+    document.getElementById("targetBackdrop").innerHTML = "";
+    document.getElementById("fin").innerHTML = "";
+    riotShield.style.display = "block";
+    startingValues()
     startingAmmo()
+    health.innerHTML = `Health: ${playerHealth}`;
+    document.getElementById("DCount").innerHTML = `Kills:${target.deadCount + extra}`;
     ammoCount.innerHTML = `${PlayerWeapon.ammo}`;
     lev1()
 }
@@ -105,25 +106,28 @@ function muteMusic() {
 //Instead, ADD CSS FADING, it's that simple.
 //Actually, can use jquery fading now.
 function fadeOut() {
-    backImg.setAttribute("style", "animation-name: fadeOut; animation-duration: 2s; width: 100%")
+    backImg.setAttribute("style", "animation-name: fadeOut; animation-duration: 2s; width: 100% ")
 }
 function fadeIn() {
-    backImg.style.animationName = "fadeIn"; 
+    backImg.style.animationName = "fadeIn";
 }
 
 function playerDeath() {
+    playerDead = true;
+    Turokscream.play();
     fadeOut();
+    openMenu();
+    stopTimer();
+    Deuscredits.stop();
+    health.innerHTML = "Health: 0"
     backImg.style.animationFillMode = "forwards";
-    for (n = 1; n <= (target.objectCount-extra); n++) {
+    for (n = 1; n <= (target.objectCount - extra); n++) {
         document.getElementById(`tgt${n}`).style.display = "none";
     }
-    for (n = 0; n <= (regEnemy.regEnemyArray.length-1); n++) {
+    for (n = 0; n <= (regEnemy.regEnemyArray.length - 1); n++) {
         clearInterval(regEnemy.regEnemyArray[n].attackRoller)
     }
-    Turokscream.play();
-    health.innerHTML = "Health: 0"
-    stopTimer();
-    openMenu();
+    clearInterval(tgt22.attackRoller)
 }
 // $(document).ready(function () {
 //     $("#Track").fadeOut();

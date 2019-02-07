@@ -27,7 +27,6 @@ function lev1() {
 }
 function lev2() {
     backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%");
-    document.getElementById("exit1").style.display = "none";
     for (n = 1; n <= (target.objectCount - extra); n++) {
         document.getElementById("tgt" + n).style.display = "none";
     }
@@ -53,45 +52,55 @@ function lev2() {
     regEnemy.regEnemyArray.push(tgt6, tgt7);
 }
 function lev3() {
-    backImg.setAttribute("style", "margin-left: 0%; width: 100%");
-    backImg.setAttribute("src", "Pics/Doom4.png");
-    for (n = 1; n <= 2; n++) {
-        document.getElementById("exit" + n).style.display = "none";
+    setTimeout(function () {
+        fadeOut();
+    }, 500);
+    setTimeout(function () {
+        drawNewEnemies3();
+    }, 2400);
+    setTimeout(function () {
+        backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+        backImg.setAttribute("src", "Pics/Doom4.png");
+        for (n = 1; n <= (target.objectCount - extra); n++) {
+            document.getElementById("tgt" + n).style.display = "none";
+        }
+        fadeIn();
+    }, 1700);
+    function drawNewEnemies3() {
+        tgt8 = new Imp(8, "Imp", 30);
+        tgt9 = new Imp(9, "Imp", 30);
+        tgt10 = new Imp(10, "Imp", 30);
+        tgt11 = new Imp(11, "Imp", 30);
+        tgt12 = new Imp(12, "Imp", 30);
+        regEnemy.regEnemyArray.push(tgt8, tgt9, tgt10, tgt11, tgt12);
     }
-    for (n = 1; n <= (target.objectCount - extra); n++) {
-        document.getElementById("tgt" + n).style.display = "none";
-    }
-    tgt8 = new Imp(8, "Imp", 30);
-    tgt9 = new Imp(9, "Imp", 30);
-    tgt10 = new Imp(10, "Imp", 30);
-    tgt11 = new Imp(11, "Imp", 30);
-    tgt12 = new Imp(12, "Imp", 30);
-    regEnemy.regEnemyArray.push(tgt8, tgt9, tgt10, tgt11, tgt12);
 }
 function lev4() {
-    for (n = 1; n <= 3; n++) {
-        document.getElementById("exit" + n).style.display = "none";
-    }
-    backImg.setAttribute("src", "Pics/Doom6.png");
-    backImg.setAttribute("style", "margin-left: 0%; width: 100%");
-    for (n = 1; n <= (target.objectCount - extra); n++) {
-        document.getElementById("tgt" + n).style.display = "none";
-    }
-    tgt13 = new Troop(13, "Troop", 10);
-    tgt14 = new Troop(14, "Troop", 10);
-    tgt15 = new ShotGGuy(15, "ShotGGuy", 30);
-    tgt16 = new Troop(16, "Troop", 10);
-    tgt17 = new ShotGGuy(17, "ShotGGuy", 30);
-    tgt18 = new Troop(18, "Troop", 10);
-    tgt19 = new Troop(19, "Troop", 10);
-    tgt20 = new ShotGGuy(20, "ShotGGuy", 30);
-    tgt21 = new Troop(21, "Troop", 10);
-    regEnemy.regEnemyArray.push(tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21);
+    setTimeout(function () {
+        fadeOut();
+    }, 500);
+    setTimeout(function () {
+        backImg.setAttribute("src", "Pics/Doom6.png");
+        backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+        fadeIn();
+        for (n = 1; n <= (target.objectCount - extra); n++) {
+            document.getElementById("tgt" + n).style.display = "none";
+        }
+    }, 1700);
+    setTimeout(function () {
+        tgt13 = new Troop(13, "Troop", 10);
+        tgt14 = new Troop(14, "Troop", 10);
+        tgt15 = new ShotGGuy(15, "ShotGGuy", 30);
+        tgt16 = new Troop(16, "Troop", 10);
+        tgt17 = new ShotGGuy(17, "ShotGGuy", 30);
+        tgt18 = new Troop(18, "Troop", 10);
+        tgt19 = new Troop(19, "Troop", 10);
+        tgt20 = new ShotGGuy(20, "ShotGGuy", 30);
+        tgt21 = new Troop(21, "Troop", 10);
+        regEnemy.regEnemyArray.push(tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21);
+    }, 2400);
 }
 function lev5() {
-    for (n = 1; n <= 4; n++) {
-        document.getElementById("exit" + n).style.display = "none";
-    }
     for (n = 1; n <= (target.objectCount - extra); n++) {
         document.getElementById("tgt" + n).style.display = "none";
     }

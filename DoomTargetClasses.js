@@ -20,6 +20,7 @@ var hitImage;
 var targeting = false;
 var playerHealth = 100;
 var hurting;
+var playerDead = false;
 // My abstract super-class for all targets: Handles drawing and damaging.
 //   "abstract super"המחלקה  
 var target = /** @class */ (function () {
@@ -125,15 +126,15 @@ var regEnemy = /** @class */ (function (_super) {
         levelCheck();
         this.deadSound();
     };
-    regEnemy.prototype.inflictDamage = function () {
-        function hitRoll() {
+    regEnemy.prototype.hitRoll = function (damageNumber) {
+        if (playerDead == false) {
             var die = (Math.floor(Math.random() * 7));
             if (die == 6) {
                 hitWarning();
                 if (riotShieldDeployed == false) {
                     hurting = setTimeout(function () {
                         // if (riotShieldDeployed == false) {
-                        playerHealth -= 10;
+                        playerHealth -= damageNumber;
                         if (playerHealth > 0) {
                             health.innerHTML = "Health: " + playerHealth;
                             document.body.style.animationName = "hit";
@@ -154,7 +155,10 @@ var regEnemy = /** @class */ (function (_super) {
                 }
             }
         }
-        this.attackRoller = setInterval(hitRoll, 2000);
+    };
+    regEnemy.prototype.inflictDamage = function (damageNumber, attackFrequency) {
+        var firingEnemy = this;
+        this.attackRoller = setInterval(function () { firingEnemy.hitRoll(damageNumber); }, attackFrequency);
     };
     regEnemy.regEnemyArray = new Array();
     return regEnemy;
@@ -165,7 +169,9 @@ var Troop = /** @class */ (function (_super) {
     __extends(Troop, _super);
     function Troop(num, enemy, health) {
         var _this = _super.call(this, num, enemy, health) || this;
-        _this.inflictDamage();
+        _this.damageNumber = 10;
+        _this.attackFrequency = 2000;
+        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
         return _this;
     }
     Troop.prototype.deadSound = function () {
@@ -177,7 +183,9 @@ var ShotGGuy = /** @class */ (function (_super) {
     __extends(ShotGGuy, _super);
     function ShotGGuy(num, enemy, health) {
         var _this = _super.call(this, num, enemy, health) || this;
-        _this.inflictDamage();
+        _this.damageNumber = 20;
+        _this.attackFrequency = 2000;
+        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
         return _this;
     }
     ShotGGuy.prototype.deadSound = function () {
@@ -189,7 +197,9 @@ var Imp = /** @class */ (function (_super) {
     __extends(Imp, _super);
     function Imp(num, enemy, health) {
         var _this = _super.call(this, num, enemy, health) || this;
-        _this.inflictDamage();
+        _this.damageNumber = 15;
+        _this.attackFrequency = 2000;
+        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
         return _this;
     }
     Imp.prototype.deadSound = function () {
@@ -236,7 +246,11 @@ var ExtraTarget = /** @class */ (function (_super) {
 var Boss = /** @class */ (function (_super) {
     __extends(Boss, _super);
     function Boss(num, enemy, health) {
-        return _super.call(this, num, enemy, health) || this;
+        var _this = _super.call(this, num, enemy, health) || this;
+        _this.damageNumber = 30;
+        _this.attackFrequency = 300;
+        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
+        return _this;
     }
     Boss.prototype.fillBar = function () {
         Bar.style.width = "100%";

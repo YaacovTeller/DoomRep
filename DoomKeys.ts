@@ -5,29 +5,23 @@
 document.addEventListener('keydown', function (ev) {
 
     if (ev.key === "2") {
-        PlayerWeapon = pistol
-        PlayerWeapon.switchTo()
+        pistol.switchTo()
     }
     // מסור חשמלי
     else if (ev.key === "1") {
-        PlayerWeapon = chainsaw
-        PlayerWeapon.switchTo()
+        if (riotShieldDeployed == false){chainsaw.switchTo()}
     }
     else if (ev.key === "3") {
-        PlayerWeapon = shotgun
-        PlayerWeapon.switchTo()
+        if (riotShieldDeployed == false){shotgun.switchTo()}
     }
     else if (ev.key === "4") {
-        PlayerWeapon = minigun
-        PlayerWeapon.switchTo()
+        if (riotShieldDeployed == false){minigun.switchTo()}
     }
     else if (ev.key === "6") {
-        PlayerWeapon = dukemgun
-        PlayerWeapon.switchTo()
+        if (riotShieldDeployed == false){dukemgun.switchTo()}
     }
     else if (ev.key === "7") {
-        PlayerWeapon = duelneutron
-        PlayerWeapon.switchTo()
+        if (riotShieldDeployed == false){duelneutron.switchTo()}
     }
     else if (ev.key === " ") {
         shieldToggle()

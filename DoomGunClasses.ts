@@ -91,7 +91,7 @@ class ChainSaw extends weaponry {
     }
     public strafe() {
         hitImage = document.getElementById(`tgt${hitTarget.num}`);
-        if (targeting == true && hitImage.height > 200) { //NEEDS FIXING, ALL ARE 300px
+        if (targeting == true && hitImage.offsetheight > 200) { //NEEDS FIXING, ALL ARE 300px
             hitTarget.loseHealth()
             MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
         }
@@ -110,6 +110,7 @@ class ChainSaw extends weaponry {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
     }
     public switchTo() {
+        PlayerWeapon = chainsaw;
         weaponry.w = 1;
         weaponry.scrnMargin = 305;
         ammoCount.innerHTML = `N/A`
@@ -147,6 +148,7 @@ class Pistol extends regGun {
         }
     }
     public switchTo() {
+        PlayerWeapon = pistol;
         weaponry.w = 2;
         ammoCount.innerHTML = `${this.ammo}`
         weaponry.scrnMargin = 280;
@@ -182,6 +184,7 @@ class Shotgun extends regGun {
         }
     }
     public switchTo() {
+        PlayerWeapon = shotgun;
         weaponry.w = 3;
         weaponry.scrnMargin = 230;
         ammoCount.innerHTML = `${this.ammo}`
@@ -253,6 +256,7 @@ class Minigun extends MachineGun {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
     }
     public switchTo() {
+        PlayerWeapon = minigun;
         weaponry.w = 4;
         weaponry.scrnMargin = 370;
         ammoCount.innerHTML = `${this.ammo}`
@@ -300,6 +304,7 @@ class DukeMgun extends MachineGun {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
     }
     public switchTo() {
+        PlayerWeapon = dukemgun;
         weaponry.w = 6;
         weaponry.scrnMargin = 250;
         ammoCount.innerHTML = `${this.ammo}`
@@ -347,6 +352,7 @@ class DuelNeutron extends MachineGun {
         document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
     }
     public switchTo() {
+        PlayerWeapon = duelneutron;
         weaponry.w = 7;
         weaponry.scrnMargin = 250;
         ammoCount.innerHTML = `${this.ammo}`
@@ -375,4 +381,5 @@ duelneutron.ammo = 0;
 // startingAmmo()
 
 let PlayerWeapon: weaponry = pistol;
+let slungWeapon: weaponry;
 PlayerWeapon.switchTo()

@@ -41,7 +41,7 @@
     top: 110%;
 }
 
-.exit {
+/* .exit {
     position: absolute;
     color: red;
     display: none;
@@ -49,7 +49,7 @@
     top: 43%;
     font-size: 80px;
     font-family: Aldrich;
-}
+} */
 
 .victory {
     position: absolute;
@@ -76,7 +76,7 @@
     bottom: 0px;
     font-size: 100px;
     color: red;
-    font-family: Aldrich;
+    font-family: Aldrich, Impact;
     pointer-events: none;
     z-index: 1;
 }
@@ -97,6 +97,7 @@
     top: 5px;
     right: 5px;
     position: fixed;
+    z-index: 2;
     }
 #ammo {
     margin-right: 10px;
