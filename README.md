@@ -8,12 +8,17 @@ Controls: 1 - Chainsaw;
           Space - Shields from oncoming damage;
           
 At the moment you can still fire through the shield;
+
+Upon deploying the shield, your weapon defaults to pistol. It's the only weapon you can fire with your free hand!
+You can only switch weapons when your shield is lowered, you've only got two hands, right?
+
 Oncoming damage is indicated by a klaxon;
 Do not be alarmed by the running Tomer in the first screen. He can be removed in the level.ts file.
 At the mo, the second menu button only links to files on my computer.
 Music is on, by default.
 
 Current bugs:
+Scene shifts are bit glitchy.
 Machine guns can get stuck on strafe mode.
 Ammo sometimes reaches -1.
 Creatures can get stuck on hurt frame.
