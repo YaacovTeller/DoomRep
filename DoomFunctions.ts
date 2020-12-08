@@ -26,6 +26,7 @@ function shieldMove(e) {
     var y = e.pageY;
     elementObj.riotShield.style.left = `${x - 600}px`;
     elementObj.riotShield.style.top = `${y / 3 - 100}px`;
+
 }
 function shieldToggle() {
     if (riotShieldDeployed == false) {

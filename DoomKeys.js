@@ -20,12 +20,20 @@ document.addEventListener('keydown', function (ev) {
     }
     else if (ev.key === "4") {
         if (riotShieldDeployed == false) {
+<<<<<<< HEAD
             dukemgun.switchTo();
+=======
+            minigun.switchTo();
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
         }
     }
     else if (ev.key === "6") {
         if (riotShieldDeployed == false) {
+<<<<<<< HEAD
             minigun.switchTo();
+=======
+            dukemgun.switchTo();
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
         }
     }
     else if (ev.key === "7") {
@@ -37,7 +45,11 @@ document.addEventListener('keydown', function (ev) {
         shieldToggle();
     }
     else if (ev.key === "Escape") {
+<<<<<<< HEAD
         if (elementObj.menu.style.display == "none") {
+=======
+        if (menu.style.display == "none") {
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
             openMenu();
             if (document.getElementById("CreditScreen").style.display == "block") {
                 document.getElementById("CreditScreen").style.display = "none";

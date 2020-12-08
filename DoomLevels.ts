@@ -2,7 +2,11 @@
 //LEVELS
 //שלבים
 openMenu()
+<<<<<<< HEAD
 elementObj.weaponDiv.style.top = `${screen.height - 280}px`;
+=======
+document.getElementById("wep").style.top = `${screen.height - 280}px`;
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
 
 let n: number;
 var tgt99: ExtraTarget;
@@ -19,6 +23,7 @@ function lev1() {
     if (music == true) { Deuscredits.play() }
     gameBegin = true;
 
+<<<<<<< HEAD
     elementObj.weaponDiv.style.top = `${screen.height - weaponry.scrnMargin}px`;
 
     startTimer()
@@ -26,6 +31,15 @@ function lev1() {
     elementObj.backImg.setAttribute("src", "Pics/WideBack.jpg")
 
     tgt1 = new Troop(1, "Troop", 30);
+=======
+    document.getElementById("wep").style.top = `${screen.height - weaponry.scrnMargin}px`;
+
+    startTimer()
+    backImg.setAttribute("style", "width: 160%")
+    backImg.setAttribute("src", "Pics/WideBack.jpg")
+
+    tgt1 = new Troop(1, "Troop", 90);
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
     tgt2 = new Troop(2, "Troop", 20);
     tgt3 = new Troop(3, "Troop", 20);
     tgt4 = new ShotGGuy(4, "ShotGGuy", 30);
@@ -35,7 +49,11 @@ function lev1() {
 }
 
 function lev2() {
+<<<<<<< HEAD
     elementObj.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%")
+=======
+    backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%")
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
 
     for (n = 1; n <= (target.objectCount - extra); n++) {
         document.getElementById(`tgt${n}`).style.display = "none";
@@ -67,8 +85,13 @@ function lev3() {
         drawNewEnemies3()
     }, 2400);
     setTimeout(function () {
+<<<<<<< HEAD
         elementObj.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
         elementObj.backImg.setAttribute("src", "Pics/Doom4.png");
+=======
+        backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+        backImg.setAttribute("src", "Pics/Doom4.png");
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
         for (n = 1; n <= (target.objectCount - extra); n++) {
             document.getElementById(`tgt${n}`).style.display = "none";
         }
@@ -93,8 +116,13 @@ function lev4() {
         fadeOut()
     }, 500);
     setTimeout(function () {
+<<<<<<< HEAD
         elementObj.backImg.setAttribute("src", "Pics/Doom6.png");
         elementObj.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+=======
+        backImg.setAttribute("src", "Pics/Doom6.png");
+        backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
         fadeIn()
         for (n = 1; n <= (target.objectCount - extra); n++) {
             document.getElementById(`tgt${n}`).style.display = "none";
@@ -122,13 +150,21 @@ function lev5() {
     fadeOut()
 
     setTimeout(function () {
+<<<<<<< HEAD
         elementObj.backImg.setAttribute("src", "Pics/BossBack.jpg");
+=======
+        backImg.setAttribute("src", "Pics/BossBack.jpg");
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
         fadeIn()
     }, 1200);
 
     setTimeout(function () {
         tgt22 = new Boss(22, "ChainGuy", 200);
         tgt22.fillBar()
+<<<<<<< HEAD
         elementObj.Bar.style.width = `${tgt22.health / 2}%`;
+=======
+        Bar.style.width = `${tgt22.health / 2}%`;
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
     }, 2000);
 }

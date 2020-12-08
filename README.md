@@ -21,7 +21,11 @@ the spin-up on the chaingun, it was hard to do.
 the animation frames on the duke machinegun(6). It's better than the original, trust me.
 the changing ammo icons.
 the ricochets off raised shield.
+<<<<<<< HEAD
 the credits. I like the credits.
+=======
+the credits.
+>>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
 
 Current bugs:
 Scene shifts are bit glitchy.

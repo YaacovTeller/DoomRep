@@ -147,7 +147,6 @@ abstract class regEnemy extends target {
         this.attackRoller = setInterval(function(){firingEnemy.hitRoll(damageNumber)}, attackFrequency);
     }
 }
-
 class Troop extends regEnemy {
     damageNumber = 10;
     attackFrequency = 2000;
@@ -207,7 +206,6 @@ class ExtraTarget extends target {
         ded2.play()
     }
 }
-
 class Boss extends regEnemy {
     damageNumber = 30;
     attackFrequency = 300;
