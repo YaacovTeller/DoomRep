@@ -31,14 +31,14 @@ function shieldMove(e) {
 function shieldToggle() {
     if (riotShieldDeployed == false) {
         riotShieldDeployed = true;
-        elementObj.riotShield.style.animationName = "raiseShield"
+        elementObj.riotShield.style.animationName = "raiseShield";
         slungWeapon = PlayerWeapon;
         pistol.switchTo();
         clearInterval(hurting);
         // document.body.setAttribute("onmousemove", "shieldMove(event); PlayerWeapon.gunMove(event)")
     }
     else {
-        elementObj.riotShield.style.animationName = "lowerShield"
+        elementObj.riotShield.style.animationName = "lowerShield";
         riotShieldDeployed = false;
         slungWeapon.switchTo();
     }

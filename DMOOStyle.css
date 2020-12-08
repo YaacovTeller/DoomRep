@@ -14,7 +14,6 @@
     text-decoration: none;
     color: red;
 } */
-<<<<<<< HEAD
 .centerMessage{
     position: absolute;
     top: 20%;
@@ -39,8 +38,6 @@
     display: none;
 }
 
-=======
->>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
 .target {
     user-select: none;
     position: absolute;
@@ -88,18 +85,6 @@
     font-family: Aldrich;
 }
 
-<<<<<<< HEAD
-=======
-#fin {
-    text-align: center;
-    position: absolute;
-    color: darkred;
-    left: 5%;
-    top: 10%;
-    font-size: 60px;
-}
-
->>>>>>> 0ff67a70f8095cc69484045aecc207d216762370
 #timer {
     position: fixed;
     float: left;
