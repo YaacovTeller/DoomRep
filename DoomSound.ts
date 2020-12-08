@@ -1,6 +1,4 @@
 //SOUNDS - Guns and creatures
-//קולות - אקדחים ויצורים
-
 // sound-loader
 function sound(src: string) {
     this.sound = document.createElement("audio");
