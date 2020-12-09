@@ -20,23 +20,25 @@
 }
 
 .centerMessage{
-    position: absolute;
-    top: 20%;
     font-size: 60px;
     text-align: center;   
     width: 80%;
+    margin: auto;
 }
 
 .flexJustifyCentre{
-    display: flex;
-    justify-items: center; /*not working?*/
+    position: absolute;
+    top: 20%;
+    /* display: flex;
+    justify-items: center; not working? */
 }
 
 .finishText{
     cursor: pointer ;
     font-family: 'Aldrich';
     color: red;
-    margin: auto;
+    background-color: rgba(100, 100, 100, 0.7);
+    border-radius: 20px;
 }
 
 #BossBar1{
@@ -48,12 +50,15 @@
     position: absolute;
     height: 300px;
 }
-
-#wep{
-    user-select: none;
+.weapon{
+    width: fit-content;
     position: absolute;
-    pointer-events: none;
     z-index: 1;
+}
+.weaponImg{
+    user-select: none;
+    /* position: absolute; */
+    pointer-events: none;
     transform: scale(3.5);
     
 }
@@ -163,6 +168,7 @@
 #Credits{
     text-align: center;
     font-size: 50px;
+    font-family: sans-serif;
     animation-name: upScroll;
     animation-duration: 10s;
     animation-iteration-count: infinite;

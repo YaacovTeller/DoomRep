@@ -7,30 +7,25 @@ var tgt99;
 var tgt1, tgt2, tgt3, tgt4, tgt5, tgt6, tgt7, tgt8, tgt9, tgt10, tgt11, tgt12, tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21;
 var tgt22;
 //var tgt23: regEnemy, tgt24: regEnemy, tgt25: regEnemy;
-function lev1() {
+function beginGame() {
+    gameBegun = true;
     if (music == true) {
         Deuscredits.play();
     }
-    gameBegin = true;
-    elementObj.weaponDiv.style.top = screen.height - weaponry.scrnMargin + "px";
     startTimer();
+    elementObj.weaponDiv.style.top = screen.height - weaponry.scrnMargin + "px";
+    lev1();
+}
+function lev1() {
     elementObj.backImg.setAttribute("style", "width: 160%");
     elementObj.backImg.setAttribute("src", "Pics/WideBack.jpg");
-    tgt1 = new Troop(1, "Troop", 30);
-    tgt2 = new Troop(2, "Troop", 20);
-    tgt3 = new Troop(3, "Troop", 20);
-    tgt4 = new ShotGGuy(4, "ShotGGuy", 30);
-    tgt5 = new ShotGGuy(5, "ShotGGuy", 30);
-    tgt99 = new ExtraTarget(99, "TroopLeft" + "_Tomer", 10);
-    regEnemy.regEnemyArray.push(tgt1, tgt2, tgt3, tgt4, tgt5);
+    drawNewEnemies1();
 }
 function lev2() {
     elementObj.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%");
-    for (n = 1; n <= (target.objectCount - extra); n++) {
-        document.getElementById("tgt" + n).style.display = "none";
-    }
+    clearTargets();
     setTimeout(function () {
-        for (n = 3; n <= (target.objectCount - extra); n++) {
+        for (n = 3; n <= (target.objectCount - target.extraCount); n++) {
             document.getElementById("tgt" + n).style.display = "block";
         }
         document.getElementById("tgt3").setAttribute("src", "pics/Troop.gif");
@@ -51,59 +46,27 @@ function lev2() {
     regEnemy.regEnemyArray.push(tgt6, tgt7);
 }
 function lev3() {
-    setTimeout(function () {
-        fadeOut();
-    }, 500);
-    setTimeout(function () {
-        drawNewEnemies3();
-    }, 2400);
-    setTimeout(function () {
-        elementObj.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
-        elementObj.backImg.setAttribute("src", "Pics/Doom4.png");
-        for (n = 1; n <= (target.objectCount - extra); n++) {
-            document.getElementById("tgt" + n).style.display = "none";
-        }
-        fadeIn();
-    }, 1700);
-    function drawNewEnemies3() {
-        tgt8 = new Imp(8, "Imp", 30);
-        tgt9 = new Imp(9, "Imp", 30);
-        tgt10 = new Imp(10, "Imp", 30);
-        tgt11 = new Imp(11, "Imp", 30);
-        tgt12 = new Imp(12, "Imp", 30);
-        regEnemy.regEnemyArray.push(tgt8, tgt9, tgt10, tgt11, tgt12);
-    }
+    genericLevel("Pics/Doom4.png", function () { return drawNewEnemies3(); });
 }
 function lev4() {
+    genericLevel("Pics/Doom6.png", function () { return drawNewEnemies4(); });
+}
+function genericLevel(background, enemyFunc) {
     setTimeout(function () {
         fadeOut();
     }, 500);
     setTimeout(function () {
-        elementObj.backImg.setAttribute("src", "Pics/Doom6.png");
         elementObj.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+        elementObj.backImg.setAttribute("src", background);
+        clearTargets();
         fadeIn();
-        for (n = 1; n <= (target.objectCount - extra); n++) {
-            document.getElementById("tgt" + n).style.display = "none";
-        }
     }, 1700);
     setTimeout(function () {
-        tgt13 = new Troop(13, "Troop", 10);
-        tgt14 = new Troop(14, "Troop", 10);
-        tgt15 = new ShotGGuy(15, "ShotGGuy", 30);
-        tgt16 = new Troop(16, "Troop", 10);
-        tgt17 = new ShotGGuy(17, "ShotGGuy", 30);
-        tgt18 = new Troop(18, "Troop", 10);
-        tgt19 = new Troop(19, "Troop", 10);
-        tgt20 = new ShotGGuy(20, "ShotGGuy", 30);
-        tgt21 = new Troop(21, "Troop", 10);
-        regEnemy.regEnemyArray.push(tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21);
+        enemyFunc();
     }, 2400);
 }
-;
 function lev5() {
-    for (n = 1; n <= (target.objectCount - extra); n++) {
-        document.getElementById("tgt" + n).style.display = "none";
-    }
+    clearTargets();
     fadeOut();
     setTimeout(function () {
         elementObj.backImg.setAttribute("src", "Pics/BossBack.jpg");
@@ -114,4 +77,38 @@ function lev5() {
         tgt22.fillBar();
         elementObj.Bar.style.width = tgt22.health / 2 + "%";
     }, 2000);
+}
+function drawNewEnemies1() {
+    tgt1 = new Troop(1, "Troop", 30);
+    tgt2 = new Troop(2, "Troop", 20);
+    tgt3 = new Troop(3, "Troop", 20);
+    tgt4 = new ShotGGuy(4, "ShotGGuy", 30);
+    tgt5 = new ShotGGuy(5, "ShotGGuy", 30);
+    tgt99 = new ExtraTarget(99, "TroopLeft" + "_Tomer", 10);
+    regEnemy.regEnemyArray.push(tgt1, tgt2, tgt3, tgt4, tgt5);
+}
+function drawNewEnemies3() {
+    tgt8 = new Imp(8, "Imp", 30);
+    tgt9 = new Imp(9, "Imp", 30);
+    tgt10 = new Imp(10, "Imp", 30);
+    tgt11 = new Imp(11, "Imp", 30);
+    tgt12 = new Imp(12, "Imp", 30);
+    regEnemy.regEnemyArray.push(tgt8, tgt9, tgt10, tgt11, tgt12);
+}
+function drawNewEnemies4() {
+    tgt13 = new Troop(13, "Troop", 10);
+    tgt14 = new Troop(14, "Troop", 10);
+    tgt15 = new ShotGGuy(15, "ShotGGuy", 30);
+    tgt16 = new Troop(16, "Troop", 10);
+    tgt17 = new ShotGGuy(17, "ShotGGuy", 30);
+    tgt18 = new Troop(18, "Troop", 10);
+    tgt19 = new Troop(19, "Troop", 10);
+    tgt20 = new ShotGGuy(20, "ShotGGuy", 30);
+    tgt21 = new Troop(21, "Troop", 10);
+    regEnemy.regEnemyArray.push(tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21);
+}
+function clearTargets() {
+    for (n = 1; n <= (target.objectCount - target.extraCount); n++) {
+        document.getElementById("tgt" + n).style.display = "none";
+    }
 }

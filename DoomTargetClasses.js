@@ -13,7 +13,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 //TheQuickAndTheDead
-var extra = 0;
 var redrawing;
 var hitTarget;
 var hitImage;
@@ -102,8 +101,14 @@ var regEnemy = /** @class */ (function (_super) {
     }
     regEnemy.prototype.draw = function () {
         target.objectCount++;
-        elementObj.targetBackdrop.innerHTML +=
-            "<img id = \"tgt" + this.num + "\" class=\"target\" onmouseenter = \"tgt" + this.num + ".MGhit()\" onmouseleave = \"tgt" + this.num + ".MGhitEnd()\"  src=\"pics/" + this.enemy + ".gif\" draggable = \"false\" >";
+        var img = document.createElement("img");
+        img.setAttribute('class', "target");
+        img.setAttribute('id', "tgt" + this.num);
+        img.setAttribute('onmouseenter', "tgt" + this.num + ".MGhit()");
+        img.setAttribute('onmouseleave', "tgt" + this.num + ".MGhitEnd()");
+        img.setAttribute('src', "pics/" + this.enemy + ".gif");
+        img.setAttribute('draggable', "false");
+        elementObj.targetBackdrop.appendChild(img);
     };
     regEnemy.prototype.die = function () {
         this.deadFlag = true;
@@ -115,7 +120,7 @@ var regEnemy = /** @class */ (function (_super) {
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         target.deadCount++;
-        elementObj.killCounter.innerHTML = "Kills:" + (target.deadCount + extra);
+        elementObj.killCounter.innerHTML = "Kills:" + (target.deadCount + target.extraCount);
         levelCheck();
         this.deadSound();
     };
@@ -224,7 +229,7 @@ var ExtraTarget = /** @class */ (function (_super) {
         else if (this.enemy == "Imp") {
             ded.play();
         }
-        elementObj.killCounter.innerHTML = "Kills:" + (target.deadCount + extra);
+        updateKillCounter(target.deadCount + target.extraCount);
         this.deadSound();
     };
     ExtraTarget.prototype.deadSound = function () {
@@ -256,12 +261,12 @@ var Boss = /** @class */ (function (_super) {
         Boss.removeAttribute("onmouseenter");
         Boss.removeAttribute("onmousedown");
         Boss.setAttribute("src", "pics/ChainGuy_DeadEd.gif");
-        elementObj.killCounter.innerHTML = "Kills:" + (target.deadCount + extra);
+        updateKillCounter(target.deadCount + target.extraCount);
+        //   elementObj.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
         this.deadSound();
         stopTimer();
         //Deuscredits.stop();
-        elementObj.finishMsg.innerHTML =
-            "Completed in " + timerObj.m + " minutes, " + timerObj.s + " seconds and " + timerObj.ss + " split seconds!";
+        finishMessage();
     };
     Boss.prototype.deadSound = function () {
         if (this.enemy == "ChainGuy") {

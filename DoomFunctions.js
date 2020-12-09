@@ -17,6 +17,9 @@ var elementObj = {
     finishMsg: document.getElementById("fin"),
     targetBackdrop: document.getElementById("targetBackdrop")
 };
+function updateKillCounter(totalCount) {
+    elementObj.killCounter.innerHTML = "Kills:" + totalCount;
+}
 function hitWarning() {
     bizwarn.play();
 }
@@ -58,7 +61,7 @@ function levelCheck() {
         lev5();
     }
 }
-var gameBegin = false;
+var gameBegun = false;
 function openMenu() {
     elementObj.menu.style.display = "block";
     clearInterval(time);
@@ -66,7 +69,7 @@ function openMenu() {
 }
 function closeMenu() {
     elementObj.menu.style.display = "none";
-    if (gameBegin == true) {
+    if (gameBegun == true) {
         startTimer();
     }
 }
@@ -79,23 +82,23 @@ function startingAmmo() {
 }
 function startingValues() {
     playerDead = false;
-    extra = 0;
+    target.extraCount = 0;
     target.objectCount = 0;
     target.deadCount = 0;
     playerHealth = 100;
 }
 function restart() {
-    clearTimer();
     elementObj.Bar.style.display = "none";
     elementObj.targetBackdrop.innerHTML = "";
-    document.getElementById("fin").innerHTML = "";
     elementObj.riotShield.style.display = "block";
+    elementObj.health.innerHTML = "Health: " + playerHealth;
+    elementObj.ammoCount.innerHTML = "" + PlayerWeapon.ammo;
+    document.getElementById("fin").innerHTML = "";
+    clearTimer();
     startingValues();
     startingAmmo();
-    elementObj.health.innerHTML = "Health: " + playerHealth;
-    document.getElementById("DCount").innerHTML = "Kills:" + (target.deadCount + extra);
-    elementObj.ammoCount.innerHTML = "" + PlayerWeapon.ammo;
-    lev1();
+    updateKillCounter(0);
+    beginGame();
 }
 function creditsMenu() {
     Deuscredits.stop();
@@ -103,12 +106,14 @@ function creditsMenu() {
     UTcredits.play();
     document.getElementById("CreditScreen").style.display = "block";
 }
-function muteMusic() {
+function muteMusic(button) {
     if (music == true) {
+        button.innerText = "Unmute music";
         music = false;
         Deuscredits.stop();
     }
     else if (music == false) {
+        button.innerText = "Mute music";
         music = true;
         Deuscredits.play();
     }
@@ -131,13 +136,17 @@ function playerDeath() {
     Deuscredits.stop();
     elementObj.health.innerHTML = "Health: 0";
     elementObj.backImg.style.animationFillMode = "forwards";
-    for (n = 1; n <= (target.objectCount - extra); n++) {
+    for (n = 1; n <= (target.objectCount - target.extraCount); n++) {
         document.getElementById("tgt" + n).style.display = "none";
     }
     for (n = 0; n <= (regEnemy.regEnemyArray.length - 1); n++) {
         clearInterval(regEnemy.regEnemyArray[n].attackRoller);
     }
     clearInterval(tgt22.attackRoller);
+}
+function finishMessage() {
+    elementObj.finishMsg.innerHTML =
+        "Completed in " + timerObj.m + " minutes, " + timerObj.s + " seconds and " + timerObj.ss + " split seconds!";
 }
 // $(document).ready(function () {
 //     $("#Track").fadeOut();

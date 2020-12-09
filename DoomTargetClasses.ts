@@ -1,6 +1,5 @@
 
 //TheQuickAndTheDead
-let extra: number = 0;
 var redrawing;
 var hitTarget: target;
 var hitImage;
@@ -97,8 +96,14 @@ abstract class regEnemy extends target {
     public attackRoller;
     public draw() {
         target.objectCount++;
-        elementObj.targetBackdrop.innerHTML +=
-            `<img id = "tgt${this.num}" class="target" onmouseenter = "tgt${this.num}.MGhit()" onmouseleave = "tgt${this.num}.MGhitEnd()"  src="pics/${this.enemy}.gif" draggable = "false" >`
+        var img:HTMLElement = document.createElement("img");
+        img.setAttribute('class', "target");
+        img.setAttribute('id', `tgt${this.num}`);
+        img.setAttribute('onmouseenter', `tgt${this.num}.MGhit()`);
+        img.setAttribute('onmouseleave', `tgt${this.num}.MGhitEnd()`);
+        img.setAttribute('src', `pics/${this.enemy}.gif`);
+        img.setAttribute('draggable', `false`);
+        elementObj.targetBackdrop.appendChild(img);
     }
     public die() {
         this.deadFlag = true;
@@ -110,7 +115,7 @@ abstract class regEnemy extends target {
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         target.deadCount++
-        elementObj.killCounter.innerHTML = `Kills:${target.deadCount + extra}`;
+        elementObj.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
         levelCheck()
         this.deadSound()
     }
@@ -199,7 +204,7 @@ class ExtraTarget extends target {
         if (this.enemy == "Troop") { ded2.play() }
         else if (this.enemy == "SGunG") { ded.play() }
         else if (this.enemy == "Imp") { ded.play() }
-        elementObj.killCounter.innerHTML = `Kills:${target.deadCount + extra}`;
+        updateKillCounter(target.deadCount + target.extraCount);
         this.deadSound();
     }
     public deadSound() {
@@ -217,6 +222,7 @@ class Boss extends regEnemy {
         elementObj.Bar.style.display = `block`;
         elementObj.Bar.style.width = `100%`;
     }
+
     public die() {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
@@ -228,12 +234,12 @@ class Boss extends regEnemy {
         Boss.removeAttribute("onmouseenter");
         Boss.removeAttribute("onmousedown");
         Boss.setAttribute("src", "pics/ChainGuy_DeadEd.gif");
-        elementObj.killCounter.innerHTML = `Kills:${target.deadCount + extra}`;
+        updateKillCounter(target.deadCount + target.extraCount);
+     //   elementObj.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
         this.deadSound();
         stopTimer();
         //Deuscredits.stop();
-        elementObj.finishMsg.innerHTML = 
-        `Completed in ${timerObj.m} minutes, ${timerObj.s} seconds and ${timerObj.ss} split seconds!`
+        finishMessage();
     }
     public deadSound() {
         if (this.enemy == "ChainGuy") {

@@ -5,7 +5,7 @@
     75% {transform: translate(-10px, -10px)}
     100%{transform: translate(10px, 10px)}
 }
-@keyframes shieldhit{
+@keyframes shieldhit{ /* not working? */
     50% {transform: translate(-10px, -10px)}
     100%{transform: translate(10px, 10px)}
 }
@@ -59,58 +59,6 @@
         left: -20%;
     }
 }
-@keyframes move {
-    0% {
-        transform: scale(0.6);
-        top: 30%;
-        left: 0%;
-    }
-
-    50% {
-        transform: scale(1);
-        top: 60%;
-        left: 10%;
-    }
-
-    100% {
-        transform: scale(0.6);
-        top: 30%;
-        left: 0%;
-    }
-}
-
-@keyframes move8 {
-    50% {
-        left: 45%;
-    }
-}
-
-@keyframes move9 {
-    0% {
-        top: 65%;
-        left: 53%;
-    }
-
-    50% {
-        transform: scale(3);
-        top: 60%;
-        left: 70%;
-    }
-
-    100% {
-        top: 65%;
-        left: 53%;
-    }
-}
-
-@keyframes move12 {
-
-    50% {
-        transform: scale(1.6);
-        top: 60%;
-        left: 0%;
-    }
-}
 
 /* For the game backgrounds */
 @keyframes floatRight {
@@ -130,7 +78,7 @@
     0% {
         opacity:0;
     }
-
+    
     100% {
         opacity: 1;
     }
@@ -143,5 +91,55 @@
     100% {
         color: crimson;
         margin-top: -60%;
+    }
+}
+
+@keyframes move {
+    0% {
+        transform: scale(0.6);
+        top: 30%;
+        left: 0%;
+    }
+
+    50% {
+        transform: scale(1);
+        top: 60%;
+        left: 10%;
+    }
+
+    100% {
+        transform: scale(0.6);
+        top: 30%;
+        left: 0%;
+    }
+}
+@keyframes move12 {
+
+    50% {
+        transform: scale(1.6);
+        top: 60%;
+        left: 0%;
+    }
+}
+@keyframes move9 {
+    0% {
+        top: 65%;
+        left: 53%;
+    }
+
+    50% {
+        transform: scale(3);
+        top: 60%;
+        left: 70%;
+    }
+
+    100% {
+        top: 65%;
+        left: 53%;
+    }
+}
+@keyframes move8 {
+    50% {
+        left: 45%;
     }
 }

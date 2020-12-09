@@ -13,7 +13,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 //WEAPON
-//כלי נשק
 var weaponry = /** @class */ (function () {
     function weaponry() {
     }
@@ -35,7 +34,6 @@ var weaponry = /** @class */ (function () {
         var y = e.pageY;
         weaponry.cX = x - 44 + "px";
         // Lowers the weapon when the mouse passes the gun height!
-        // מוריד את הנשק כאשר העכבר עובר את גובה האקדח!
         /*cY*/ if (y > (Screen - weaponry.gunHeight)) {
             weaponry.cY = y + 110 + "px";
         }
@@ -111,7 +109,6 @@ var regGun = /** @class */ (function (_super) {
     };
     return regGun;
 }(weaponry));
-// מסור חשמלי
 var ChainSaw = /** @class */ (function (_super) {
     __extends(ChainSaw, _super);
     function ChainSaw() {

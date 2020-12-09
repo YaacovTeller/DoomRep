@@ -1,5 +1,4 @@
 //WEAPON
-//כלי נשק
 abstract class weaponry {
     public static w: number = 2 //Sets weapon to pistol at the start
     public static randNum;
@@ -11,7 +10,6 @@ abstract class weaponry {
     public ammo: number
 
     // Moves the chosen weapon to the mouse location, and keeps it at the base of the screen
-    //מזיז את הנשק הנבחר למיקום העכבר ושומר אותו בבסיס המסך 
     public abstract gunMove(e);
     public abstract switchTo();
     public static noBlood() { elementObj.blood.style.display = "none" }
@@ -31,18 +29,15 @@ abstract class weaponry {
         var y = e.pageY;
         weaponry.cX = `${x - 44}px`;
 // Lowers the weapon when the mouse passes the gun height!
-// מוריד את הנשק כאשר העכבר עובר את גובה האקדח!
   /*cY*/if (y > (Screen - weaponry.gunHeight)) { weaponry.cY = `${y + 110}px` } else weaponry.cY = `${Screen - weaponry.scrnMargin}px`;
         elementObj.weaponDiv.style.left = weaponry.cX;
         elementObj.weaponDiv.style.top = weaponry.cY;
     }
     // Creates bullet "flashes" at the mouse pointer, shot, hit and ricochet sounds
-    //יצירת "הבזקים" כדוריים במצביע העכבר 
 
     // Creates bullet "flashes" for machine guns, shot, hit and ricochet sounds
 
     // Changes guns to firing image
-    // משנה כלי נשק למצב ירי  
 }
 
 // elementObj.weaponDiv.style.left = weaponry.cX;
@@ -88,7 +83,6 @@ abstract class regGun extends weaponry {
         else if (weaponry.randNum == 3) { Bullet3.play() }
     }
 }
-// מסור חשמלי
 class ChainSaw extends weaponry {
     public gunMove(e) {
         if (weaponry.w == 1) { weaponry.scrnMargin = 305; weaponry.gunHeight = 415 }
@@ -127,6 +121,7 @@ class ChainSaw extends weaponry {
         setMouseAttributes_MachineGun();
     }
 }
+
 class Pistol extends regGun {
     public gunMove(e) {
         weaponry.scrnMargin = 280;
@@ -162,6 +157,7 @@ class Pistol extends regGun {
         setMouseAttributes_Normal();
     }
 }
+
 class Shotgun extends regGun {
     public gunMove(e) {
         weaponry.scrnMargin = 230;

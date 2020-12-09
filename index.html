@@ -2,7 +2,6 @@
 <html>
 
 <head>
-
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="..\..\Bootstrap_4.1.3\css\bootstrap.min.css">
@@ -10,8 +9,7 @@
     <link href="DMOOStyle.css" rel="stylesheet" />
     <link href="DoomAnimations.css" rel="stylesheet" />
 
-    <title>MicroDoom_ObjectOrientated</title>
-
+    <title>MicroDoom_redesigned</title>
 </head>
 
 <body style="cursor: url('pics/Crosshairs/crosshair.cur'), crosshair;">
@@ -24,7 +22,9 @@
         </div>
         <img id="BackImg1" src="pics/index.jpg" style="width: 150%; margin-left: -40%;" draggable="false" />
 
-        <div id="weapon"><img id="weaponImg" src="pics/gun2.png" /></div>
+        <div id="weapon" class="weapon">
+            <img id="weaponImg" class="weaponImg" src="pics/gun2.png" />
+        </div>
 
         <div id="targetBackdrop">
             <!-- EVERYTHING happens within this area -->
@@ -44,8 +44,8 @@
         <img id="riotShield" src="pics/RiotShield.png" style="display:none; position:absolute" draggable="false">
 
         <div id="timer"></div>
-        <div class="flexJustifyCentre centerMessage">
-            <div id="fin" class="finishText"></div>
+        <div class="flexJustifyCentre">
+            <div id="fin" class="finishText centerMessage"></div>
         </div>
 
         <div id="menu" class="modal">
@@ -59,17 +59,18 @@
                     <a href="C:\Users\Rivka and Yaacov\source\repos\Runner\Runner\TargetAlley.html">
                         <button disabled class="button buttonDisabled">BlakeStone Mini-game</button>
                     </a>
-                    <button class="button" onclick="muteMusic()">Mute music</button>
+                    <button class="button" onclick="muteMusic(this)">Mute music</button>
                     <button class="button" onclick="creditsMenu()">Credits</button>
                 </div>
             </div>
         </div>
         <div id="CreditScreen">
             <div id="CreditContainer">
-                <span id="Credits">Y. Teller - Everything<br><br>Except all the art<br>That belongs to ID software<br>Copyright:
-                    Doom<br><br>With
-                    special thanks to:<br>Tomer Kaiser - All my Typescript and CSS<br>Rivka Teller - Bug fixes<br>YY
-                    Kosbie - Class advice</span>
+                <span id="Credits">
+                    Y. Teller - Everything<br><br>Except all the art<br>That belongs to ID software<br>Copyright: Doom<br><br>
+                    With special thanks to:<br>Tomer Kaiser - All my Typescript and CSS<br>Rivka Teller - Bug fixes<br>
+                    YY Kosbie - Class advice<br>Doomguy - Moral support
+                </span>
             </div>
         </div>
     </div>
