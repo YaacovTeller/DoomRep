@@ -1,6 +1,7 @@
 "use strict";
 var music = true;
 var riotShieldDeployed = false;
+var gameBegun = false;
 var elements = {
     blood: document.getElementById("blood"),
     oneshot: document.getElementById("shot"),
@@ -76,7 +77,6 @@ function levelCheck() {
         lev5();
     }
 }
-var gameBegun = false;
 function openMenu() {
     showElement(elements.menu);
     clearInterval(time);
@@ -96,15 +96,15 @@ function startingAmmo() {
     duelneutron.ammo = 0;
 }
 function startingValues() {
-    playerDead = false;
+    Player.dead = false;
     target.extraCount = 0;
-    target.objectCount = 0;
+    target.targetCount = 0;
     target.deadCount = 0;
-    playerHealth = 100;
+    Player.health = 100;
 }
 function restart() {
     elements.targetBackdrop.innerHTML = "";
-    elements.health.innerHTML = "Health: " + playerHealth;
+    elements.health.innerHTML = "Health: " + Player.health;
     elements.ammoCount.innerHTML = "" + PlayerWeapon.ammo;
     document.getElementById("fin").innerHTML = "";
     hideElement(elements.Bar);
@@ -141,18 +141,6 @@ function fadeOut() {
 }
 function fadeIn() {
     elements.backImg.style.animationName = "fadeIn";
-}
-function playerDeath() {
-    playerDead = true;
-    Turokscream.play();
-    fadeOut();
-    openMenu();
-    stopTimer();
-    Deuscredits.stop();
-    elements.health.innerHTML = "Health: 0";
-    elements.backImg.style.animationFillMode = "forwards";
-    clearAllEnemies();
-    clearInterval(tgt22.attackRoller);
 }
 function finishMessage() {
     elements.finishMsg.innerHTML =

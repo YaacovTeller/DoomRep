@@ -26,9 +26,7 @@ var redrawing;
 var hitTarget: target;
 var hitImage;
 var targeting: boolean = false;
-var playerHealth: number = 100;
 var hurting;
-var playerDead: boolean = false;
 
 // parent class, handles drawing and damaging.
 abstract class target {
@@ -37,9 +35,10 @@ abstract class target {
     public health: number;
     public healthUnit: number;
     public DOMImage: HTMLElement;
+    public static targetCount: number = 0;
     public static deadCount: number = 0;
-    public static objectCount: number = 0;
     public static extraCount: number = 0;
+    public static deadExtraCount: number = 0;
     public deadFlag: boolean = false;
     public body;
     constructor(num, enemy, health) {
@@ -49,7 +48,16 @@ abstract class target {
         this.draw();
     }
     // The abstract "die" function. Implemented differently by the two child classes
-    abstract die()
+    protected die(){
+        this.deadFlag = true;
+        clearInterval(MachineGun.mghit);
+        this.body = document.getElementById(`tgt${this.num}`);
+        this.body.style.animationPlayState = "paused";
+        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
+        this.body.style.pointerEvents = "none";
+        this.deadSound();
+    }
+
     abstract deadSound()
 
     protected draw(){
@@ -68,6 +76,9 @@ abstract class target {
             hitImage = hitTarget.DOMImage;
             hitImage.setAttribute("src", enemyPics[hitTarget.enemy]);
         }
+    }
+    public undraw(){
+        hideElement(this.DOMImage);
     }
     // All target damaging: calls `redraw` and `die`
     public loseHealth() {
@@ -122,46 +133,33 @@ abstract class target {
 
 abstract class regEnemy extends target {
     public static regEnemyArray: Array<regEnemy> = new Array();
-    public damageNumber: number;
-    public attackFrequency: number;
+    protected damageNumber: number = 16;
+    public attackFrequency: number = 1000;
     public attackRoller;
+
+    constructor(num, enemy, health) {
+        super(num, enemy, health)
+    }
+
     public draw() {
         super.draw();
-        target.objectCount++;
+        target.targetCount++;
     }
     public die() {
-        this.deadFlag = true;
-        clearInterval(MachineGun.mghit);
-        this.body = document.getElementById(`tgt${this.num}`);
-        this.body.style.animationPlayState = "paused";
-        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
-        this.body.style.pointerEvents = "none";
+        super.die();
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         target.deadCount++
-        elements.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
-        levelCheck()
-        this.deadSound()
+        updateKillCounter(target.deadCount + target.deadExtraCount);
+        levelCheck();
     }
-    public hitRoll(damageNumber) {
-        if (playerDead == false) {
+    private hitRoll(damage) {
+        if (Player.dead == false) {
             var die = (Math.floor(Math.random() * 7))
             if (die == 6) {
-                hitWarning()
+                hitWarning();
                 if (riotShieldDeployed == false) {
-                    hurting = setTimeout(function () {
-                        // if (riotShieldDeployed == false) {
-                        playerHealth -= damageNumber;
-                        if (playerHealth > 0) {
-                            elements.health.innerHTML = `Health: ${playerHealth}`;
-                            document.body.style.animationName = "hit";
-                            Hlifescream1.play()
-                            setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
-                        }
-                        else { playerDeath() }
-                        // }
-                        // else Turicochet.play();
-                    }, 1000);
+                    Player.damageCheck(damage);
                 }
                 else {
                     setTimeout(function () {
@@ -171,39 +169,42 @@ abstract class regEnemy extends target {
             }
         }
     }
-    public inflictDamage(damageNumber, attackFrequency) {
+    protected inflictDamage(damage, attackFrequency) {
+        if (!damage) return;
         var firingEnemy = this;
-        this.attackRoller = setInterval(function(){firingEnemy.hitRoll(damageNumber)}, attackFrequency);
+        this.attackRoller = setInterval(function(){firingEnemy.hitRoll(damage)}, attackFrequency);
     }
 }
+
 class Troop extends regEnemy {
-    damageNumber = 10;
-    attackFrequency = 2000;
-    constructor(num, enemy, health) {
-        super(num, enemy, health)
-        this.inflictDamage(this.damageNumber, this.attackFrequency)
+    public damageNumber = 10;
+    public attackFrequency = 2000;
+
+    constructor(num, health) {
+        super(num, "Troop", health)
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded2.play()
     }
 }
 class ShotGGuy extends regEnemy {
-    damageNumber = 20;
-    attackFrequency =2000;
-    constructor(num, enemy, health) {
-        super(num, enemy, health)
-        this.inflictDamage(this.damageNumber, this.attackFrequency)
+    public damageNumber = 20;
+    public attackFrequency = 2000;
+    constructor(num, health) {
+        super(num, "ShotGGuy", health)
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded.play()
     }
 }
 class Imp extends regEnemy {
-    damageNumber = 15;
-    attackFrequency = 2000;
-    constructor(num, enemy, health) {
-        super(num, enemy, health)
-        this.inflictDamage(this.damageNumber, this.attackFrequency)
+    public damageNumber = 15;
+    public attackFrequency = 2000;
+    constructor(num, health) {
+        super(num, "Imp", health)
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded2.play()
@@ -218,20 +219,13 @@ class ExtraTarget extends target {
         target.extraCount++;
    }
     public die() {
-        this.deadFlag = true;
-        clearInterval(MachineGun.mghit);
-        this.body = document.getElementById(`tgt${this.num}`);
-        this.body.style.animationPlayState = "paused";
-        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
-        this.body.style.pointerEvents = "none";
-        if (this.enemy == "Troop") { ded2.play() }
-        else if (this.enemy == "SGunG") { ded.play() }
-        else if (this.enemy == "Imp") { ded.play() }
-        updateKillCounter(target.deadCount + target.extraCount);
-        this.deadSound();
+        super.die();
+        target.deadExtraCount++
     }
     public deadSound() {
-        ded2.play()
+         if (this.enemy == "Troop") { ded2.play() }
+         else if (this.enemy == "SGunG") { ded.play() }
+         else if (this.enemy == "Imp") { ded.play() }
     }
 }
 class Boss extends regEnemy {
@@ -239,7 +233,6 @@ class Boss extends regEnemy {
     attackFrequency = 300;
     constructor(num, enemy, health) {
         super(num, enemy, health)
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public fillBar() {
         showElement(elements.Bar);
@@ -257,8 +250,7 @@ class Boss extends regEnemy {
         Boss.removeAttribute("onmouseenter");
         Boss.removeAttribute("onmousedown");
         Boss.setAttribute("src", enemyPics.dead.ChainGuy);
-        updateKillCounter(target.deadCount + target.extraCount);
-     //   elements.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
+        updateKillCounter(target.deadCount + target.deadExtraCount);
         this.deadSound();
         stopTimer();
         //Deuscredits.stop();
@@ -268,5 +260,37 @@ class Boss extends regEnemy {
         if (this.enemy == "ChainGuy") {
             bossDed.play();
         }
+    }
+}
+
+class Player {
+    static health: number = 100;
+    static dead: boolean = false;
+    static damageCheck(damage){
+        hurting = setTimeout(function () {
+            // if (riotShieldDeployed == false) {
+                Player.health -= damage;
+            if (Player.health > 0) {
+                elements.health.innerHTML = `Health: ${Player.health}`;
+                document.body.style.animationName = "hit";
+                Hlifescream1.play()
+                setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
+            }
+            else { Player.playerDeath() }
+            // else Turicochet.play();
+        }, 1000);
+    }
+
+    static playerDeath() {
+        Player.dead = true;
+        Turokscream.play();
+        fadeOut();
+        openMenu();
+        stopTimer();
+        Deuscredits.stop();
+        elements.health.innerHTML = "Health: 0"
+        elements.backImg.style.animationFillMode = "forwards";
+        clearAllEnemies();
+        clearInterval(tgt22.attackRoller)
     }
 }
