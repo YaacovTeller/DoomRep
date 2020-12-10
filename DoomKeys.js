@@ -36,33 +36,23 @@ document.addEventListener('keydown', function (ev) {
     else if (ev.key === "Escape") {
         if (elements.menu.style.display == "none") {
             openMenu();
-            if (document.getElementById("CreditScreen").style.display == "block") {
-                hideElement(document.getElementById("CreditScreen"));
+            if (elements.credits.style.display == "block") {
+                hideElement(elements.credits);
                 UTcredits.stop();
             }
         }
         else
             closeMenu();
     }
+    else if (ev.key === "e") {
+        PlayerWeapon.ammo += 50;
+        DOMUpdater.updateAmmoCounter(PlayerWeapon.ammo);
+        click2.play();
+    }
     // CHEATS - For checking the game stages // DEPRECATED
     // else if (ev.key === "e") //&& "..." > 1) 
     // {
     //     document.getElementById("exit2").style.display = "block";
-    // }
-    // else if (ev.key === "w") {
-    //     document.getElementById("exit3").style.display = "block";
-    // }
-    // else if (ev.key === "q") {
-    //     document.getElementById("exit4").style.display = "block";
-    // }
-    // else if (ev.key === "k") {
-    //     target.deadCount++; document.getElementById("DCount").innerHTML = `Kills:${target.deadCount}`;
-    //     if (target.deadCount == 5 && target.deadCount < 10) {
-    //         document.getElementById("exit1").style.display = "block";
-    //     }
-    //     else if (target.deadCount == 10) { document.getElementById("exit2").style.display = "block"; }
-    //     else if (target.deadCount == 15) { document.getElementById("exit3").style.display = "block"; }
-    //     else if (target.deadCount == 24) { document.getElementById("exit4").style.display = "block"; }
     // }
     // Clears all enemies
     else if (ev.key === "c") {
