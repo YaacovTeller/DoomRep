@@ -21,7 +21,7 @@ function beginGame() {
 
 function lev1() {
     elements.backImg.setAttribute("style", "width: 160%")
-    elements.backImg.setAttribute("src", "Pics/WideBack.jpg")
+    elements.backImg.setAttribute("src", pics.background.wide)
     drawNewEnemies1();
 }
 
@@ -30,29 +30,29 @@ function lev2() {
     clearTargets();
 
     setTimeout(function () {
-        for (n = 3; n <= (target.objectCount - target.extraCount); n++) {
+        for (n = 3; n <= (target.targetCount - target.extraCount); n++) {
             showElement(document.getElementById(`tgt${n}`));
         }
-        document.getElementById("tgt3").setAttribute("src", "pics/Troop.gif");
+        document.getElementById("tgt3").setAttribute("src", enemyPics.Troop);
         document.getElementById("tgt3").style.pointerEvents = "auto";
         tgt4.health = 20; tgt4.deadFlag = false;
-        document.getElementById("tgt4").setAttribute("src", "pics/ShotGGuy.gif");
+        document.getElementById("tgt4").setAttribute("src", enemyPics.ShotGGuy);
         document.getElementById("tgt4").style.pointerEvents = "auto";
         tgt4.health = 30; tgt4.deadFlag = false;
-        document.getElementById("tgt5").setAttribute("src", "pics/ShotGGuy.gif");
+        document.getElementById("tgt5").setAttribute("src", enemyPics.ShotGGuy);
         document.getElementById("tgt5").style.pointerEvents = "auto";
         tgt5.health = 30; tgt5.deadFlag = false;
-        tgt6 = new Troop(6, "Troop", 20);
-        tgt7 = new Troop(7, "Troop", 20);
+        tgt6 = new Troop(6, 20);
+        tgt7 = new Troop(7, 20);
     }, 700);
     regEnemy.regEnemyArray.push(tgt6, tgt7)
 }
 
 function lev3(){
-    genericLevel("Pics/Doom4.png", ()=>drawNewEnemies3())
+    genericLevel(pics.background.doom4, ()=>drawNewEnemies3())
 }
 function lev4(){
-    genericLevel("Pics/Doom6.png", ()=>drawNewEnemies4())
+    genericLevel(pics.background.doom6, ()=>drawNewEnemies4())
 }
 
 function genericLevel(background, enemyFunc){
@@ -75,7 +75,7 @@ function lev5() {
     fadeOut();
 
     setTimeout(function () {
-        elements.backImg.setAttribute("src", "Pics/BossBack.jpg");
+        elements.backImg.setAttribute("src", pics.background.boss);
         fadeIn()
     }, 1200);
 
@@ -87,39 +87,39 @@ function lev5() {
 }
 
 function drawNewEnemies1(){
-    tgt1 = new Troop(1, "Troop", 30);
-    tgt2 = new Troop(2, "Troop", 20);
-    tgt3 = new Troop(3, "Troop", 20);
-    tgt4 = new ShotGGuy(4, "ShotGGuy", 30);
-    tgt5 = new ShotGGuy(5, "ShotGGuy", 30);
+    tgt1 = new Troop(1, 30);
+    tgt2 = new Troop(2, 20);
+    tgt3 = new Troop(3, 20);
+    tgt4 = new ShotGGuy(4, 30);
+    tgt5 = new ShotGGuy(5, 30);
     tgt99 = new ExtraTarget(99, "TroopLeft" + "_Tomer", 10);
     regEnemy.regEnemyArray.push(tgt1, tgt2, tgt3, tgt4, tgt5);
 }
 
 function drawNewEnemies3() {
-    tgt8 = new Imp(8, "Imp", 30);
-    tgt9 = new Imp(9, "Imp", 30);
-    tgt10 = new Imp(10, "Imp", 30);
-    tgt11 = new Imp(11, "Imp", 30);
-    tgt12 = new Imp(12, "Imp", 30);
+    tgt8 = new Imp(8, 30);
+    tgt9 = new Imp(9, 30);
+    tgt10 = new Imp(10, 30);
+    tgt11 = new Imp(11, 30);
+    tgt12 = new Imp(12, 30);
     regEnemy.regEnemyArray.push(tgt8, tgt9, tgt10, tgt11, tgt12)
 }
 
 function drawNewEnemies4(){
-    tgt13 = new Troop(13, "Troop", 10);
-    tgt14 = new Troop(14, "Troop", 10);
-    tgt15 = new ShotGGuy(15, "ShotGGuy", 30);
-    tgt16 = new Troop(16, "Troop", 10);
-    tgt17 = new ShotGGuy(17, "ShotGGuy", 30);
-    tgt18 = new Troop(18, "Troop", 10);
-    tgt19 = new Troop(19, "Troop", 10);
-    tgt20 = new ShotGGuy(20, "ShotGGuy", 30);
-    tgt21 = new Troop(21, "Troop", 10);
+    tgt13 = new Troop(13, 10);
+    tgt14 = new Troop(14, 10);
+    tgt15 = new ShotGGuy(15, 30);
+    tgt16 = new Troop(16, 10);
+    tgt17 = new ShotGGuy(17, 30);
+    tgt18 = new Troop(18, 10);
+    tgt19 = new Troop(19, 10);
+    tgt20 = new ShotGGuy(20, 30);
+    tgt21 = new Troop(21, 10);
     regEnemy.regEnemyArray.push(tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21);
 }
 
 function clearTargets() {
-    for (n = 1; n <= (target.objectCount - target.extraCount); n++) {
-        hideElement(document.getElementById(`tgt${n}`));
+    for (let enemy of regEnemy.regEnemyArray){
+        enemy.undraw();
     }
 }

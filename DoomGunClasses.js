@@ -21,6 +21,7 @@ var pics = {
         dukeMgun: "Pics/DukeMgun.png",
         dukeMgun_firing: "Pics/DukeMgunFire.gif",
         chaingun: "Pics/ChainGun150.png",
+        chaingun_firing: "Pics/ChainGunFiring150_8.gif",
         chainsaw_spinup: "Pics/ChainGunSpin_Up_150_8.gif",
         chainsaw_frame2: "Pics/ChainGun150_Alt.png",
         dualNuetron: "Pics/DN.png",
@@ -31,8 +32,16 @@ var pics = {
         bullets: "Pics/Bullets.png",
         shell: "Pics/Shell.png",
     },
+    background: {
+        doom4: "Pics/Doom4.png",
+        doom6: "Pics/Doom4.png",
+        wide: "Pics/WideBack.jpg",
+        boss: "Pics/BossBack.jpg"
+    },
     blood: "Pics/Blood_10.gif",
 };
+var gunMoveEvent = "PlayerWeapon.gunMove(event);";
+var MgunShotEvent = "PlayerWeapon.MGunShotDisplay(event);";
 //WEAPON
 var weaponry = /** @class */ (function () {
     function weaponry() {
@@ -66,10 +75,6 @@ var weaponry = /** @class */ (function () {
         var length = sounds.length;
         var randNum = Math.floor(Math.random() * (length) + 1);
         sounds[randNum - 1].play();
-        // if (randNum == 1) { Bullet5.play() }
-        // else if (randNum == 2) { Bullet6.play() }
-        // else if (randNum == 3) { Bullet7.play() }
-        // else if (randNum == 4) { Bullet8.play() }
     };
     weaponry.w = 2; //Sets weapon to pistol at the start
     return weaponry;
@@ -135,7 +140,7 @@ var ChainSaw = /** @class */ (function (_super) {
         weaponry.gunLower(e);
     };
     ChainSaw.chainsawDistanceCheck = function (hitImage) {
-        if (hitImage.src.includes("Chain")) { // change (can't chainsaw the boss)
+        if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss)
             return true;
         }
         else if (hitImage.getBoundingClientRect().height > this.chainsawReach) {
@@ -162,7 +167,7 @@ var ChainSaw = /** @class */ (function (_super) {
         weaponry.w = 1;
         elements.weaponImg.setAttribute("src", pics.guns.chainsaw_firing);
         Saw.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+        document.body.setAttribute("onmousemove", gunMoveEvent);
     };
     ChainSaw.prototype.switchTo = function () {
         PlayerWeapon = chainsaw;
@@ -299,9 +304,9 @@ var Minigun = /** @class */ (function (_super) {
             this.mgfiring = setTimeout(function () {
                 thisGun.spinUpCheck = true;
                 weaponry.w = 4.1;
-                elements.weaponImg.setAttribute("src", "Pics/ChainGunFiring150_8.gif");
+                elements.weaponImg.setAttribute("src", pics.guns.chaingun_firing);
                 Avpminigun.play();
-                document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)");
+                document.body.setAttribute("onmousemove", gunMoveEvent + MgunShotEvent);
                 MachineGun.spendingBullets = setInterval(function () {
                     thisGun.ammo--;
                     elements.ammoCount.innerHTML = " " + thisGun.ammo;
@@ -334,7 +339,7 @@ var Minigun = /** @class */ (function (_super) {
         // SSamMinigun2.stop();
         Avpminigun.stop();
         SSamRotate.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+        document.body.setAttribute("onmousemove", gunMoveEvent);
     };
     Minigun.prototype.switchTo = function () {
         PlayerWeapon = minigun;
@@ -376,7 +381,7 @@ var DukeMgun = /** @class */ (function (_super) {
             weaponry.w = 6.1;
             elements.weaponImg.setAttribute("src", pics.guns.dukeMgun_firing);
             MGun.play();
-            document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)");
+            document.body.setAttribute("onmousemove", gunMoveEvent + MgunShotEvent);
             MachineGun.spendingBullets = setInterval(function () {
                 thisGun.ammo--;
                 elements.ammoCount.innerHTML = " " + thisGun.ammo;
@@ -395,9 +400,9 @@ var DukeMgun = /** @class */ (function (_super) {
         clearInterval(MachineGun.mghit);
         clearInterval(MachineGun.spendingBullets);
         weaponry.w = 6;
-        elements.weaponImg.setAttribute("src", "Pics/DukeMgun.png");
+        elements.weaponImg.setAttribute("src", pics.guns.dukeMgun);
         MGun.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+        document.body.setAttribute("onmousemove", gunMoveEvent);
     };
     DukeMgun.prototype.switchTo = function () {
         PlayerWeapon = dukemgun;
@@ -439,7 +444,7 @@ var DuelNeutron = /** @class */ (function (_super) {
             weaponry.w = 7.1;
             elements.weaponImg.setAttribute("src", pics.guns.dualNuetron_firing);
             SSamMinigun.play();
-            document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)");
+            document.body.setAttribute("onmousemove", gunMoveEvent);
             MachineGun.spendingBullets = setInterval(function () {
                 thisGun.ammo--;
                 elements.ammoCount.innerHTML = " " + thisGun.ammo;
@@ -460,7 +465,7 @@ var DuelNeutron = /** @class */ (function (_super) {
         weaponry.w = 7;
         elements.weaponImg.setAttribute("src", pics.guns.dualNuetron);
         SSamMinigun.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+        document.body.setAttribute("onmousemove", gunMoveEvent);
     };
     DuelNeutron.prototype.switchTo = function () {
         PlayerWeapon = duelneutron;
@@ -469,7 +474,7 @@ var DuelNeutron = /** @class */ (function (_super) {
         elements.ammoCount.innerHTML = "" + this.ammo;
         elements.weaponDiv.style.top = screen.height - weaponry.scrnMargin + "px";
         elements.weaponImg.setAttribute("src", pics.guns.dualNuetron);
-        elements.ammoType.setAttribute("src", "Pics/Bullet.png");
+        elements.ammoType.setAttribute("src", pics.ammo.bullet);
         setMouseAttributes_MachineGun();
     };
     return DuelNeutron;
@@ -477,12 +482,12 @@ var DuelNeutron = /** @class */ (function (_super) {
 function setMouseAttributes_Normal() {
     document.body.setAttribute("onmousedown", "PlayerWeapon.shot(event)");
     document.body.removeAttribute("onmouseup");
-    document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+    document.body.setAttribute("onmousemove", gunMoveEvent);
 }
 function setMouseAttributes_MachineGun() {
     document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
     document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
-    document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+    document.body.setAttribute("onmousemove", gunMoveEvent);
 }
 var chainsaw = new ChainSaw;
 var pistol = new Pistol;

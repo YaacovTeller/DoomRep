@@ -7,6 +7,7 @@ const pics = {
         dukeMgun: "Pics/DukeMgun.png",
         dukeMgun_firing: "Pics/DukeMgunFire.gif",
         chaingun: "Pics/ChainGun150.png",
+        chaingun_firing: "Pics/ChainGunFiring150_8.gif",
         chainsaw_spinup: "Pics/ChainGunSpin_Up_150_8.gif",
         chainsaw_frame2: "Pics/ChainGun150_Alt.png",
         dualNuetron: "Pics/DN.png",
@@ -17,9 +18,17 @@ const pics = {
         bullets: "Pics/Bullets.png",
         shell: "Pics/Shell.png",
     },
+    background: {
+        doom4: "Pics/Doom4.png",
+        doom6: "Pics/Doom4.png",
+        wide: "Pics/WideBack.jpg",
+        boss: "Pics/BossBack.jpg"
+    },
     blood: "Pics/Blood_10.gif",
-
 }
+
+const gunMoveEvent: string = "PlayerWeapon.gunMove(event);";
+const MgunShotEvent: string = "PlayerWeapon.MGunShotDisplay(event);"
 
 //WEAPON
 abstract class weaponry {
@@ -107,7 +116,7 @@ class ChainSaw extends weaponry {
         weaponry.gunLower(e)
     }
     public static chainsawDistanceCheck(hitImage){
-        if (hitImage.src.includes("Chain")){ // change (can't chainsaw the boss)
+        if (hitImage.src.includes("ChainGuy")){ // change (can't chainsaw the boss)
             return true;
         }
         else if (hitImage.getBoundingClientRect().height>this.chainsawReach) {
@@ -134,7 +143,7 @@ class ChainSaw extends weaponry {
         weaponry.w = 1;
         elements.weaponImg.setAttribute("src", pics.guns.chainsaw_firing);
         Saw.stop()
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
+        document.body.setAttribute("onmousemove", gunMoveEvent)
     }
     public switchTo() {
         PlayerWeapon = chainsaw;
@@ -243,9 +252,9 @@ class Minigun extends MachineGun {
             this.mgfiring = setTimeout(function () {
                 thisGun.spinUpCheck = true;
                 weaponry.w = 4.1;
-                elements.weaponImg.setAttribute("src", "Pics/ChainGunFiring150_8.gif");
+                elements.weaponImg.setAttribute("src", pics.guns.chaingun_firing);
                 Avpminigun.play()
-                document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)")
+                document.body.setAttribute("onmousemove", gunMoveEvent + MgunShotEvent)
                 MachineGun.spendingBullets = setInterval(function () {
                     thisGun.ammo--; elements.ammoCount.innerHTML = ` ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
                 }, 200);
@@ -273,7 +282,7 @@ class Minigun extends MachineGun {
         // SSamMinigun2.stop();
         Avpminigun.stop();
         SSamRotate.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
+        document.body.setAttribute("onmousemove", gunMoveEvent)
     }
     public switchTo() {
         PlayerWeapon = minigun;
@@ -303,7 +312,7 @@ class DukeMgun extends MachineGun {
             weaponry.w = 6.1;
             elements.weaponImg.setAttribute("src", pics.guns.dukeMgun_firing);
             MGun.play()
-            document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)")
+            document.body.setAttribute("onmousemove", gunMoveEvent + MgunShotEvent)
             MachineGun.spendingBullets = setInterval(function () {
                 thisGun.ammo--; elements.ammoCount.innerHTML = ` ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
             }, 200);
@@ -317,9 +326,9 @@ class DukeMgun extends MachineGun {
         clearInterval(MachineGun.mghit);
         clearInterval(MachineGun.spendingBullets);
         weaponry.w = 6;
-        elements.weaponImg.setAttribute("src", "Pics/DukeMgun.png");
+        elements.weaponImg.setAttribute("src", pics.guns.dukeMgun);
         MGun.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
+        document.body.setAttribute("onmousemove", gunMoveEvent)
     }
     public switchTo() {
         PlayerWeapon = dukemgun;
@@ -348,7 +357,7 @@ class DuelNeutron extends MachineGun {
             weaponry.w = 7.1;
             elements.weaponImg.setAttribute("src", pics.guns.dualNuetron_firing);
             SSamMinigun.play()
-            document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event); PlayerWeapon.MGunShotDisplay(event)")
+            document.body.setAttribute("onmousemove", gunMoveEvent)
             MachineGun.spendingBullets = setInterval(function () {
                 thisGun.ammo--; elements.ammoCount.innerHTML = ` ${thisGun.ammo}`; if (thisGun.ammo <= 0) { thisGun.stopstrafe(); click2.play() }
             }, 200);
@@ -365,7 +374,7 @@ class DuelNeutron extends MachineGun {
         weaponry.w = 7;
         elements.weaponImg.setAttribute("src", pics.guns.dualNuetron);
         SSamMinigun.stop();
-        document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
+        document.body.setAttribute("onmousemove", gunMoveEvent)
     }
     public switchTo() {
         PlayerWeapon = duelneutron;
@@ -374,7 +383,7 @@ class DuelNeutron extends MachineGun {
         elements.ammoCount.innerHTML = `${this.ammo}`
         elements.weaponDiv.style.top = `${screen.height - weaponry.scrnMargin}px`;
         elements.weaponImg.setAttribute("src", pics.guns.dualNuetron);
-        elements.ammoType.setAttribute("src", "Pics/Bullet.png");
+        elements.ammoType.setAttribute("src", pics.ammo.bullet);
         setMouseAttributes_MachineGun()
     }
 }
@@ -382,12 +391,12 @@ class DuelNeutron extends MachineGun {
 function setMouseAttributes_Normal(){
     document.body.setAttribute("onmousedown", "PlayerWeapon.shot(event)")
     document.body.removeAttribute("onmouseup");
-    document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)")
+    document.body.setAttribute("onmousemove", gunMoveEvent)
 }
 function setMouseAttributes_MachineGun(){
     document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
     document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
-    document.body.setAttribute("onmousemove", "PlayerWeapon.gunMove(event)");
+    document.body.setAttribute("onmousemove", gunMoveEvent);
 }
 
 let chainsaw = new ChainSaw;
