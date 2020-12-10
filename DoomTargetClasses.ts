@@ -40,7 +40,6 @@ abstract class target {
     public static extraCount: number = 0;
     public static deadExtraCount: number = 0;
     public deadFlag: boolean = false;
-    public body;
     constructor(num, enemy, health) {
         this.health = health;
         this.num = num;
@@ -51,10 +50,9 @@ abstract class target {
     protected die(){
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
-        this.body = document.getElementById(`tgt${this.num}`);
-        this.body.style.animationPlayState = "paused";
-        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
-        this.body.style.pointerEvents = "none";
+        this.DOMImage.style.animationPlayState = "paused";
+        this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
+        this.DOMImage.style.pointerEvents = "none";
         this.deadSound();
     }
 
@@ -64,8 +62,8 @@ abstract class target {
         var img:HTMLElement = document.createElement("img");
         img.setAttribute('class', "target");
         img.setAttribute('id', `tgt${this.num}`);
-        img.setAttribute('onmouseenter', `tgt${this.num}.MGhit()`);
-        img.setAttribute('onmouseleave', `tgt${this.num}.MGhitEnd()`);
+        img.onmouseover = () => this.MGhit();
+        img.onmouseleave = () => this.MGhitEnd();
         img.setAttribute('src', enemyPics[this.enemy]);
         img.setAttribute('draggable', `false`);
         elements.targetBackdrop.appendChild(img);
@@ -78,8 +76,9 @@ abstract class target {
         }
     }
     public undraw(){
-        hideElement(this.DOMImage);
+        $(this.DOMImage).fadeOut(300, function() { $(this).remove(); })
     }
+
     // All target damaging: calls `redraw` and `die`
     public loseHealth() {
         if (weaponry.w == 2) {
@@ -115,7 +114,7 @@ abstract class target {
         if (weaponry.w == 7.1 || weaponry.w == 6.1) {
             MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
         }
-        else if (weaponry.w == 1.1) {   //NEEDS FIXING, ALL ARE 300px
+        else if (weaponry.w == 1.1) {
             if (ChainSaw.chainsawDistanceCheck(hitImage)) { MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100)); }
         }
         else if (weaponry.w == 4.1) {
@@ -133,8 +132,8 @@ abstract class target {
 
 abstract class regEnemy extends target {
     public static regEnemyArray: Array<regEnemy> = new Array();
-    protected damageNumber: number = 16;
-    public attackFrequency: number = 1000;
+    protected damageNumber: number;
+    public attackFrequency: number;
     public attackRoller;
 
     constructor(num, enemy, health) {
@@ -150,7 +149,7 @@ abstract class regEnemy extends target {
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         target.deadCount++
-        updateKillCounter(target.deadCount + target.deadExtraCount);
+        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
         levelCheck();
     }
     private hitRoll(damage) {
@@ -211,6 +210,7 @@ class Imp extends regEnemy {
     }
 }
 class ExtraTarget extends target {
+    public static extraTargetArray: Array<ExtraTarget> = new Array();
     constructor(num, enemy, health) {
         super(num, enemy, health)
     }
@@ -250,7 +250,8 @@ class Boss extends regEnemy {
         Boss.removeAttribute("onmouseenter");
         Boss.removeAttribute("onmousedown");
         Boss.setAttribute("src", enemyPics.dead.ChainGuy);
-        updateKillCounter(target.deadCount + target.deadExtraCount);
+        Boss.style.pointerEvents = "none";
+        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
         this.deadSound();
         stopTimer();
         //Deuscredits.stop();
@@ -271,7 +272,7 @@ class Player {
             // if (riotShieldDeployed == false) {
                 Player.health -= damage;
             if (Player.health > 0) {
-                elements.health.innerHTML = `Health: ${Player.health}`;
+                DOMUpdater.updateHealthCounter(Player.health);
                 document.body.style.animationName = "hit";
                 Hlifescream1.play()
                 setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
@@ -288,7 +289,7 @@ class Player {
         openMenu();
         stopTimer();
         Deuscredits.stop();
-        elements.health.innerHTML = "Health: 0"
+        DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
         clearInterval(tgt22.attackRoller)

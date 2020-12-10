@@ -53,18 +53,18 @@ var target = /** @class */ (function () {
     target.prototype.die = function () {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
-        this.body = document.getElementById("tgt" + this.num);
-        this.body.style.animationPlayState = "paused";
-        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
-        this.body.style.pointerEvents = "none";
+        this.DOMImage.style.animationPlayState = "paused";
+        this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
+        this.DOMImage.style.pointerEvents = "none";
         this.deadSound();
     };
     target.prototype.draw = function () {
+        var _this = this;
         var img = document.createElement("img");
         img.setAttribute('class', "target");
         img.setAttribute('id', "tgt" + this.num);
-        img.setAttribute('onmouseenter', "tgt" + this.num + ".MGhit()");
-        img.setAttribute('onmouseleave', "tgt" + this.num + ".MGhitEnd()");
+        img.onmouseover = function () { return _this.MGhit(); };
+        img.onmouseleave = function () { return _this.MGhitEnd(); };
         img.setAttribute('src', enemyPics[this.enemy]);
         img.setAttribute('draggable', "false");
         elements.targetBackdrop.appendChild(img);
@@ -77,7 +77,7 @@ var target = /** @class */ (function () {
         }
     };
     target.prototype.undraw = function () {
-        hideElement(this.DOMImage);
+        $(this.DOMImage).fadeOut(300, function () { $(this).remove(); });
     };
     // All target damaging: calls `redraw` and `die`
     target.prototype.loseHealth = function () {
@@ -115,7 +115,7 @@ var target = /** @class */ (function () {
         if (weaponry.w == 7.1 || weaponry.w == 6.1) {
             MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
         }
-        else if (weaponry.w == 1.1) { //NEEDS FIXING, ALL ARE 300px
+        else if (weaponry.w == 1.1) {
             if (ChainSaw.chainsawDistanceCheck(hitImage)) {
                 MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
             }
@@ -140,10 +140,7 @@ var target = /** @class */ (function () {
 var regEnemy = /** @class */ (function (_super) {
     __extends(regEnemy, _super);
     function regEnemy(num, enemy, health) {
-        var _this = _super.call(this, num, enemy, health) || this;
-        _this.damageNumber = 16;
-        _this.attackFrequency = 1000;
-        return _this;
+        return _super.call(this, num, enemy, health) || this;
     }
     regEnemy.prototype.draw = function () {
         _super.prototype.draw.call(this);
@@ -154,7 +151,7 @@ var regEnemy = /** @class */ (function (_super) {
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         target.deadCount++;
-        updateKillCounter(target.deadCount + target.deadExtraCount);
+        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
         levelCheck();
     };
     regEnemy.prototype.hitRoll = function (damage) {
@@ -248,6 +245,7 @@ var ExtraTarget = /** @class */ (function (_super) {
             ded.play();
         }
     };
+    ExtraTarget.extraTargetArray = new Array();
     return ExtraTarget;
 }(target));
 var Boss = /** @class */ (function (_super) {
@@ -273,7 +271,8 @@ var Boss = /** @class */ (function (_super) {
         Boss.removeAttribute("onmouseenter");
         Boss.removeAttribute("onmousedown");
         Boss.setAttribute("src", enemyPics.dead.ChainGuy);
-        updateKillCounter(target.deadCount + target.deadExtraCount);
+        Boss.style.pointerEvents = "none";
+        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
         this.deadSound();
         stopTimer();
         //Deuscredits.stop();
@@ -294,7 +293,7 @@ var Player = /** @class */ (function () {
             // if (riotShieldDeployed == false) {
             Player.health -= damage;
             if (Player.health > 0) {
-                elements.health.innerHTML = "Health: " + Player.health;
+                DOMUpdater.updateHealthCounter(Player.health);
                 document.body.style.animationName = "hit";
                 Hlifescream1.play();
                 setTimeout(function () { document.body.style.removeProperty("animation-name"); }, 1100);
@@ -312,7 +311,7 @@ var Player = /** @class */ (function () {
         openMenu();
         stopTimer();
         Deuscredits.stop();
-        elements.health.innerHTML = "Health: 0";
+        DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
         clearInterval(tgt22.attackRoller);
