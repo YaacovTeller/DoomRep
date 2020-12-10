@@ -3,8 +3,7 @@
 openMenu();
 elements.weaponDiv.style.top = screen.height - 280 + "px";
 var n;
-var tgt99;
-var tgt1, tgt2, tgt3, tgt4, tgt5, tgt6, tgt7, tgt8, tgt9, tgt10, tgt11, tgt12, tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21;
+var level;
 var tgt22;
 //var tgt23: regEnemy, tgt24: regEnemy, tgt25: regEnemy;
 function beginGame() {
@@ -17,38 +16,25 @@ function beginGame() {
     lev1();
 }
 function lev1() {
+    level = 1;
     elements.backImg.setAttribute("style", "width: 160%");
     elements.backImg.setAttribute("src", pics.background.wide);
     drawNewEnemies1();
 }
 function lev2() {
+    level = 2;
     elements.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%");
     clearTargets();
     setTimeout(function () {
-        for (n = 3; n <= (target.targetCount - target.extraCount); n++) {
-            showElement(document.getElementById("tgt" + n));
-        }
-        document.getElementById("tgt3").setAttribute("src", enemyPics.Troop);
-        document.getElementById("tgt3").style.pointerEvents = "auto";
-        tgt4.health = 20;
-        tgt4.deadFlag = false;
-        document.getElementById("tgt4").setAttribute("src", enemyPics.ShotGGuy);
-        document.getElementById("tgt4").style.pointerEvents = "auto";
-        tgt4.health = 30;
-        tgt4.deadFlag = false;
-        document.getElementById("tgt5").setAttribute("src", enemyPics.ShotGGuy);
-        document.getElementById("tgt5").style.pointerEvents = "auto";
-        tgt5.health = 30;
-        tgt5.deadFlag = false;
-        tgt6 = new Troop(6, 20);
-        tgt7 = new Troop(7, 20);
+        drawNewEnemies2();
     }, 700);
-    regEnemy.regEnemyArray.push(tgt6, tgt7);
 }
 function lev3() {
+    level = 3;
     genericLevel(pics.background.doom4, function () { return drawNewEnemies3(); });
 }
 function lev4() {
+    level = 4;
     genericLevel(pics.background.doom6, function () { return drawNewEnemies4(); });
 }
 function genericLevel(background, enemyFunc) {
@@ -66,6 +52,7 @@ function genericLevel(background, enemyFunc) {
     }, 2400);
 }
 function lev5() {
+    level = 5;
     clearTargets();
     fadeOut();
     setTimeout(function () {
@@ -79,37 +66,29 @@ function lev5() {
     }, 2000);
 }
 function drawNewEnemies1() {
-    tgt1 = new Troop(1, 30);
-    tgt2 = new Troop(2, 20);
-    tgt3 = new Troop(3, 20);
-    tgt4 = new ShotGGuy(4, 30);
-    tgt5 = new ShotGGuy(5, 30);
-    tgt99 = new ExtraTarget(99, "TroopLeft" + "_Tomer", 10);
-    regEnemy.regEnemyArray.push(tgt1, tgt2, tgt3, tgt4, tgt5);
+    regEnemy.regEnemyArray = [];
+    regEnemy.regEnemyArray.push(new Troop(1, 30), new Troop(2, 20), new Troop(3, 20), new ShotGGuy(4, 30), new ShotGGuy(5, 30));
+    ExtraTarget.extraTargetArray.push(new ExtraTarget(99, "TroopLeft" + "_Tomer", 10));
+}
+function drawNewEnemies2() {
+    regEnemy.regEnemyArray = [];
+    regEnemy.regEnemyArray.push(new Troop(3, 20), new ShotGGuy(4, 30), new ShotGGuy(5, 30), new Troop(6, 20), new Troop(7, 20));
 }
 function drawNewEnemies3() {
-    tgt8 = new Imp(8, 30);
-    tgt9 = new Imp(9, 30);
-    tgt10 = new Imp(10, 30);
-    tgt11 = new Imp(11, 30);
-    tgt12 = new Imp(12, 30);
-    regEnemy.regEnemyArray.push(tgt8, tgt9, tgt10, tgt11, tgt12);
+    regEnemy.regEnemyArray = [];
+    regEnemy.regEnemyArray.push(new Imp(9, 30), new Imp(10, 30), new Imp(11, 30), new Imp(12, 30), new Imp(8, 30));
 }
 function drawNewEnemies4() {
-    tgt13 = new Troop(13, 10);
-    tgt14 = new Troop(14, 10);
-    tgt15 = new ShotGGuy(15, 30);
-    tgt16 = new Troop(16, 10);
-    tgt17 = new ShotGGuy(17, 30);
-    tgt18 = new Troop(18, 10);
-    tgt19 = new Troop(19, 10);
-    tgt20 = new ShotGGuy(20, 30);
-    tgt21 = new Troop(21, 10);
-    regEnemy.regEnemyArray.push(tgt13, tgt14, tgt15, tgt16, tgt17, tgt18, tgt19, tgt20, tgt21);
+    regEnemy.regEnemyArray = [];
+    regEnemy.regEnemyArray.push(new Troop(13, 10), new Troop(14, 10), new ShotGGuy(15, 30), new Troop(16, 10), new ShotGGuy(17, 30), new Troop(18, 10), new Troop(19, 10), new ShotGGuy(20, 30), new Troop(21, 10));
 }
 function clearTargets() {
     for (var _i = 0, _a = regEnemy.regEnemyArray; _i < _a.length; _i++) {
         var enemy = _a[_i];
+        enemy.undraw();
+    }
+    for (var _b = 0, _c = ExtraTarget.extraTargetArray; _b < _c.length; _b++) {
+        var enemy = _c[_b];
         enemy.undraw();
     }
 }
