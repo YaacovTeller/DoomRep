@@ -1,7 +1,7 @@
 ﻿let music: boolean = true;
 let riotShieldDeployed: boolean = false;
 
-const elementObj ={
+const elements = {
     blood: document.getElementById("blood"),
     oneshot: document.getElementById("shot"),
     Bar: document.getElementById("BossBar1"),
@@ -19,7 +19,7 @@ const elementObj ={
 }
 
 function updateKillCounter(totalCount){
-    elementObj.killCounter.innerHTML = `Kills:${totalCount}`;
+    elements.killCounter.innerHTML = `Kills:${totalCount}`;
 }
 
 function hitWarning() {//THIS needs work
@@ -28,30 +28,43 @@ function hitWarning() {//THIS needs work
 function shieldMove(e) {
     var x = e.pageX;
     var y = e.pageY;
-    elementObj.riotShield.style.left = `${x - 600}px`;
-    elementObj.riotShield.style.top = `${y / 3 - 100}px`;
+    elements.riotShield.style.left = `${x - 600}px`;
+    elements.riotShield.style.top = `${y / 3 - 100}px`;
 
 }
 function shieldToggle() {
     if (riotShieldDeployed == false) {
         riotShieldDeployed = true;
-        elementObj.riotShield.style.animationName = "raiseShield";
+        elements.riotShield.style.animationName = "raiseShield";
         slungWeapon = PlayerWeapon;
         pistol.switchTo();
         clearInterval(hurting);
         // document.body.setAttribute("onmousemove", "shieldMove(event); PlayerWeapon.gunMove(event)")
     }
     else {
-        elementObj.riotShield.style.animationName = "lowerShield";
+        elements.riotShield.style.animationName = "lowerShield";
         riotShieldDeployed = false;
         slungWeapon.switchTo();
     }
 }
 
-function noShot() { elementObj.oneshot.style.display = "none" }
+function hideElement(elem: HTMLElement){
+    elem.style.display = "none";
+}
+function showElement(elem: HTMLElement){
+    elem.style.display = "block";
+}
+function clearAllEnemies(){
+    for (let enemy of regEnemy.regEnemyArray){
+        if (!enemy) continue
+        if (enemy.DOMImage){
+            hideElement(enemy.DOMImage);
+        }
+        clearInterval(enemy.attackRoller);
+    }
+}
 
 // Checks if the targets were killed, advances to next stage
-// בודק אם המטרות נהרגו, ההתקדמות לשלב הבא
 function levelCheck() {
     if (target.deadCount == 5) { lev2() }
     else if (target.deadCount == 10) { lev3() }
@@ -60,12 +73,12 @@ function levelCheck() {
 }
 var gameBegun: boolean = false;
 function openMenu() {
-    elementObj.menu.style.display = "block";
+    showElement(elements.menu)
     clearInterval(time);
     stopTimer();
 }
 function closeMenu() {
-    elementObj.menu.style.display = "none";
+    hideElement(elements.menu)
     if (gameBegun == true) {
         startTimer()
     }
@@ -85,12 +98,12 @@ function startingValues(){
     playerHealth = 100;
 }
 function restart() {
-    elementObj.Bar.style.display = "none";
-    elementObj.targetBackdrop.innerHTML = "";
-    elementObj.riotShield.style.display = "block";
-    elementObj.health.innerHTML = `Health: ${playerHealth}`;
-    elementObj.ammoCount.innerHTML = `${PlayerWeapon.ammo}`;
+    elements.targetBackdrop.innerHTML = "";
+    elements.health.innerHTML = `Health: ${playerHealth}`;
+    elements.ammoCount.innerHTML = `${PlayerWeapon.ammo}`;
     document.getElementById("fin").innerHTML = "";
+    hideElement(elements.Bar)
+    showElement(elements.riotShield)
     clearTimer();
     startingValues();
     startingAmmo();
@@ -99,9 +112,9 @@ function restart() {
 }
 function creditsMenu() {
     Deuscredits.stop();
-    elementObj.menu.style.display = "none";
+    hideElement(elements.menu);
     UTcredits.play();
-    document.getElementById("CreditScreen").style.display = "block";
+    showElement(document.getElementById("CreditScreen"));
 }
 function muteMusic(button) {
     if (music == true) {
@@ -120,10 +133,10 @@ function muteMusic(button) {
 //Instead, ADD CSS FADING, it's that simple.
 //Actually, can use jquery fading now.
 function fadeOut() {
-    elementObj.backImg.setAttribute("style", "animation-name: fadeOut; animation-duration: 2s; width: 100% ")
+    elements.backImg.setAttribute("style", "animation-name: fadeOut; animation-duration: 2s; width: 100% ")
 }
 function fadeIn() {
-    elementObj.backImg.style.animationName = "fadeIn";
+    elements.backImg.style.animationName = "fadeIn";
 }
 
 function playerDeath() {
@@ -133,19 +146,14 @@ function playerDeath() {
     openMenu();
     stopTimer();
     Deuscredits.stop();
-    elementObj.health.innerHTML = "Health: 0"
-    elementObj.backImg.style.animationFillMode = "forwards";
-    for (n = 1; n <= (target.objectCount - target.extraCount); n++) {
-        document.getElementById(`tgt${n}`).style.display = "none";
-    }
-    for (n = 0; n <= (regEnemy.regEnemyArray.length - 1); n++) {
-        clearInterval(regEnemy.regEnemyArray[n].attackRoller)
-    }
+    elements.health.innerHTML = "Health: 0"
+    elements.backImg.style.animationFillMode = "forwards";
+    clearAllEnemies();
     clearInterval(tgt22.attackRoller)
 }
 
 function finishMessage(){
-    elementObj.finishMsg.innerHTML = 
+    elements.finishMsg.innerHTML = 
     `Completed in ${timerObj.m} minutes, ${timerObj.s} seconds and ${timerObj.ss} split seconds!`
 }
 
