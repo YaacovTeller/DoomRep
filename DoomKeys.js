@@ -34,10 +34,10 @@ document.addEventListener('keydown', function (ev) {
         shieldToggle();
     }
     else if (ev.key === "Escape") {
-        if (elementObj.menu.style.display == "none") {
+        if (elements.menu.style.display == "none") {
             openMenu();
             if (document.getElementById("CreditScreen").style.display == "block") {
-                document.getElementById("CreditScreen").style.display = "none";
+                hideElement(document.getElementById("CreditScreen"));
                 UTcredits.stop();
             }
         }
@@ -45,38 +45,28 @@ document.addEventListener('keydown', function (ev) {
             closeMenu();
     }
     // CHEATS - For checking the game stages // DEPRECATED
-    else if (ev.key === "e") //&& "..." > 1) 
-     {
-        document.getElementById("exit2").style.display = "block";
-    }
-    else if (ev.key === "w") {
-        document.getElementById("exit3").style.display = "block";
-    }
-    else if (ev.key === "q") {
-        document.getElementById("exit4").style.display = "block";
-    }
-    else if (ev.key === "k") {
-        target.deadCount++;
-        document.getElementById("DCount").innerHTML = "Kills:" + target.deadCount;
-        if (target.deadCount == 5 && target.deadCount < 10) {
-            document.getElementById("exit1").style.display = "block";
-        }
-        else if (target.deadCount == 10) {
-            document.getElementById("exit2").style.display = "block";
-        }
-        else if (target.deadCount == 15) {
-            document.getElementById("exit3").style.display = "block";
-        }
-        else if (target.deadCount == 24) {
-            document.getElementById("exit4").style.display = "block";
-        }
-    }
+    // else if (ev.key === "e") //&& "..." > 1) 
+    // {
+    //     document.getElementById("exit2").style.display = "block";
+    // }
+    // else if (ev.key === "w") {
+    //     document.getElementById("exit3").style.display = "block";
+    // }
+    // else if (ev.key === "q") {
+    //     document.getElementById("exit4").style.display = "block";
+    // }
+    // else if (ev.key === "k") {
+    //     target.deadCount++; document.getElementById("DCount").innerHTML = `Kills:${target.deadCount}`;
+    //     if (target.deadCount == 5 && target.deadCount < 10) {
+    //         document.getElementById("exit1").style.display = "block";
+    //     }
+    //     else if (target.deadCount == 10) { document.getElementById("exit2").style.display = "block"; }
+    //     else if (target.deadCount == 15) { document.getElementById("exit3").style.display = "block"; }
+    //     else if (target.deadCount == 24) { document.getElementById("exit4").style.display = "block"; }
+    // }
     // Clears all enemies
     else if (ev.key === "c") {
-        var n_1;
-        for (n_1 = 1; n_1 <= 21; n_1++) {
-            document.getElementById("tgt" + n_1).style.display = "none";
-        }
+        clearAllEnemies();
     }
 });
 // jQuerystuff
