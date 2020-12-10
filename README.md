@@ -2,9 +2,9 @@
 Controls: 1 - Chainsaw;
           2 - Pistol, default;
           3 - Shotgun;
-          4 - Chaingun, spin-up;
+          4 - Duke3d machineGun;
           5 - N/A
-          6 - Duke3d machineGun;
+          6 - Chaingun, spin-up;
           7 - DuelNeutron from Apogee's BlakeStone;
           SPACE - Shields from oncoming damage;
           
@@ -22,11 +22,13 @@ the animation frames on the duke machinegun(6). It's better than the original, t
 the changing ammo icons.
 the ricochets off raised shield.
 the credits.
+the chainsaw now has a 'reach' checker, based on "elem.getBoundingClientRect().height", which gives the final height after css.
+Will have to be improved for different sized enemies, but for now, it limits chainsaw use to more in-your-face distance.
 
 Current bugs:
 Scene shifts are bit glitchy.
 Machine guns can get stuck on strafe mode.
 Ammo sometimes reaches -1.
 Creatures can get stuck on hurt frame.
-Chainsaw can still kill things far away, needs real size-checker.
+
               
