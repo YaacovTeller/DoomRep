@@ -1,6 +1,6 @@
 //LEVELS
 openMenu()
-elementObj.weaponDiv.style.top = `${screen.height - 280}px`;
+elements.weaponDiv.style.top = `${screen.height - 280}px`;
 
 let n: number;
 var tgt99: ExtraTarget;
@@ -15,23 +15,23 @@ function beginGame() {
     gameBegun = true;
     if (music == true) { Deuscredits.play() }
     startTimer()
-    elementObj.weaponDiv.style.top = `${screen.height - weaponry.scrnMargin}px`;
+    elements.weaponDiv.style.top = `${screen.height - weaponry.scrnMargin}px`;
     lev1();
 }
 
 function lev1() {
-    elementObj.backImg.setAttribute("style", "width: 160%")
-    elementObj.backImg.setAttribute("src", "Pics/WideBack.jpg")
+    elements.backImg.setAttribute("style", "width: 160%")
+    elements.backImg.setAttribute("src", "Pics/WideBack.jpg")
     drawNewEnemies1();
 }
 
 function lev2() {
-    elementObj.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%")
+    elements.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%")
     clearTargets();
 
     setTimeout(function () {
         for (n = 3; n <= (target.objectCount - target.extraCount); n++) {
-            document.getElementById(`tgt${n}`).style.display = "block";
+            showElement(document.getElementById(`tgt${n}`));
         }
         document.getElementById("tgt3").setAttribute("src", "pics/Troop.gif");
         document.getElementById("tgt3").style.pointerEvents = "auto";
@@ -60,8 +60,8 @@ function genericLevel(background, enemyFunc){
         fadeOut();
     }, 500);
     setTimeout(function () {
-        elementObj.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
-        elementObj.backImg.setAttribute("src", background);
+        elements.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
+        elements.backImg.setAttribute("src", background);
         clearTargets();
         fadeIn();
     }, 1700);
@@ -75,14 +75,14 @@ function lev5() {
     fadeOut();
 
     setTimeout(function () {
-        elementObj.backImg.setAttribute("src", "Pics/BossBack.jpg");
+        elements.backImg.setAttribute("src", "Pics/BossBack.jpg");
         fadeIn()
     }, 1200);
 
     setTimeout(function () {
         tgt22 = new Boss(22, "ChainGuy", 200);
         tgt22.fillBar()
-        elementObj.Bar.style.width = `${tgt22.health / 2}%`;
+        elements.Bar.style.width = `${tgt22.health / 2}%`;
     }, 2000);
 }
 
@@ -120,6 +120,6 @@ function drawNewEnemies4(){
 
 function clearTargets() {
     for (n = 1; n <= (target.objectCount - target.extraCount); n++) {
-        document.getElementById(`tgt${n}`).style.display = "none";
+        hideElement(document.getElementById(`tgt${n}`));
     }
 }
