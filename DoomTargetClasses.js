@@ -12,6 +12,28 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var enemyPics = {
+    Troop: "pics/Troop.gif",
+    ShotGGuy: "pics/ShotGGuy.gif",
+    Imp: "pics/Imp.gif",
+    ChainGuy: "pics/ChainGuy.gif",
+    TroopLeft: "pics/TroopLeft.gif",
+    TroopLeft_Tomer: "pics/TroopLeft_Tomer.gif",
+    hurt: {
+        Troop: "pics/Troop_Hurt.png",
+        ShotGGuy: "pics/ShotGGuy_Hurt.png",
+        Imp: "pics/Imp_Hurt.png",
+        ChainGuy: "pics/ChainGuy_Hurt.png",
+    },
+    dead: {
+        Troop: "pics/Troop_Dead.gif",
+        ShotGGuy: "pics/ShotGGuy_Dead.gif",
+        Imp: "pics/Imp_Dead.gif",
+        ChainGuy: "pics/ChainGuy_DeadEd.gif",
+        TroopLeft: "pics/TroopLeft_Dead.gif",
+        TroopLeft_Tomer: "pics/TroopLeft_Tomer_Dead.gif",
+    }
+};
 //TheQuickAndTheDead
 var redrawing;
 var hitTarget;
@@ -29,11 +51,21 @@ var target = /** @class */ (function () {
         this.enemy = enemy;
         this.draw();
     }
-    // 'Re-draw' resets the target to orig .gif after being damaged
+    target.prototype.draw = function () {
+        var img = document.createElement("img");
+        img.setAttribute('class', "target");
+        img.setAttribute('id', "tgt" + this.num);
+        img.setAttribute('onmouseenter', "tgt" + this.num + ".MGhit()");
+        img.setAttribute('onmouseleave', "tgt" + this.num + ".MGhitEnd()");
+        img.setAttribute('src', enemyPics[this.enemy]);
+        img.setAttribute('draggable', "false");
+        elements.targetBackdrop.appendChild(img);
+        this.DOMImage = img;
+    };
     target.prototype.redraw = function () {
         if (hitTarget.deadFlag == false) {
-            hitImage = document.getElementById("tgt" + hitTarget.num);
-            hitImage.setAttribute("src", "pics/" + hitTarget.enemy + ".gif");
+            hitImage = hitTarget.DOMImage;
+            hitImage.setAttribute("src", enemyPics[hitTarget.enemy]);
         }
     };
     // All target damaging: calls `redraw` and `die`
@@ -50,11 +82,10 @@ var target = /** @class */ (function () {
         hitTarget.health -= hitTarget.healthUnit;
         // Changes image to 'hurt' image
         hitImage = document.getElementById("tgt" + this.num);
-        hitImage.setAttribute("src", "pics/" + this.enemy + "_Hurt.png");
+        hitImage.setAttribute("src", enemyPics.hurt[this.enemy]);
         // Here, the Boss uses the "loseHealth" function, with a condition
         if (this.enemy == "ChainGuy") {
-            var Bar = document.getElementById("BossBar1");
-            Bar.style.width = tgt22.health / 2 + "%";
+            elements.Bar.style.width = tgt22.health / 2 + "%";
         }
         if (this.health <= 0) {
             this.die();
@@ -74,7 +105,7 @@ var target = /** @class */ (function () {
             MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
         }
         else if (weaponry.w == 1.1) { //NEEDS FIXING, ALL ARE 300px
-            if (hitImage.height > 200) {
+            if (ChainSaw.chainsawDistanceCheck(hitImage)) {
                 MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
             }
         }
@@ -100,27 +131,20 @@ var regEnemy = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     regEnemy.prototype.draw = function () {
+        _super.prototype.draw.call(this);
         target.objectCount++;
-        var img = document.createElement("img");
-        img.setAttribute('class', "target");
-        img.setAttribute('id', "tgt" + this.num);
-        img.setAttribute('onmouseenter', "tgt" + this.num + ".MGhit()");
-        img.setAttribute('onmouseleave', "tgt" + this.num + ".MGhitEnd()");
-        img.setAttribute('src', "pics/" + this.enemy + ".gif");
-        img.setAttribute('draggable', "false");
-        elementObj.targetBackdrop.appendChild(img);
     };
     regEnemy.prototype.die = function () {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         this.body = document.getElementById("tgt" + this.num);
         this.body.style.animationPlayState = "paused";
-        this.body.setAttribute("src", "pics/" + this.enemy + "_Dead.gif" + "?a=" + Math.random());
+        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.body.style.pointerEvents = "none";
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         target.deadCount++;
-        elementObj.killCounter.innerHTML = "Kills:" + (target.deadCount + target.extraCount);
+        elements.killCounter.innerHTML = "Kills:" + (target.deadCount + target.extraCount);
         levelCheck();
         this.deadSound();
     };
@@ -134,7 +158,7 @@ var regEnemy = /** @class */ (function (_super) {
                         // if (riotShieldDeployed == false) {
                         playerHealth -= damageNumber;
                         if (playerHealth > 0) {
-                            elementObj.health.innerHTML = "Health: " + playerHealth;
+                            elements.health.innerHTML = "Health: " + playerHealth;
                             document.body.style.animationName = "hit";
                             Hlifescream1.play();
                             setTimeout(function () { document.body.style.removeProperty("animation-name"); }, 1100);
@@ -209,16 +233,15 @@ var ExtraTarget = /** @class */ (function (_super) {
         return _super.call(this, num, enemy, health) || this;
     }
     ExtraTarget.prototype.draw = function () {
+        _super.prototype.draw.call(this);
         target.extraCount++;
-        elementObj.targetBackdrop.innerHTML +=
-            "<img id = \"tgt" + this.num + "\" class=\"target\" onmouseenter = \"tgt" + this.num + ".MGhit()\" onmouseleave = \"tgt" + this.num + ".MGhitEnd()\"  src=\"pics/" + this.enemy + ".gif\" draggable = \"false\" >";
     };
     ExtraTarget.prototype.die = function () {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         this.body = document.getElementById("tgt" + this.num);
         this.body.style.animationPlayState = "paused";
-        this.body.setAttribute("src", "pics/" + this.enemy + "_Dead.gif" + "?a=" + Math.random());
+        this.body.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.body.style.pointerEvents = "none";
         if (this.enemy == "Troop") {
             ded2.play();
@@ -247,8 +270,8 @@ var Boss = /** @class */ (function (_super) {
         return _this;
     }
     Boss.prototype.fillBar = function () {
-        elementObj.Bar.style.display = "block";
-        elementObj.Bar.style.width = "100%";
+        showElement(elements.Bar);
+        elements.Bar.style.width = "100%";
     };
     Boss.prototype.die = function () {
         this.deadFlag = true;
@@ -256,13 +279,13 @@ var Boss = /** @class */ (function (_super) {
         clearInterval(this.attackRoller);
         clearInterval(hurting);
         var Boss = document.getElementById("tgt22");
-        var Bar = elementObj.Bar;
+        var Bar = elements.Bar;
         Bar.style.width = "0%";
         Boss.removeAttribute("onmouseenter");
         Boss.removeAttribute("onmousedown");
-        Boss.setAttribute("src", "pics/ChainGuy_DeadEd.gif");
+        Boss.setAttribute("src", enemyPics.dead.ChainGuy);
         updateKillCounter(target.deadCount + target.extraCount);
-        //   elementObj.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
+        //   elements.killCounter.innerHTML = `Kills:${target.deadCount + target.extraCount}`;
         this.deadSound();
         stopTimer();
         //Deuscredits.stop();
