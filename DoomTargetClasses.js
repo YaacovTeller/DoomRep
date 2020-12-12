@@ -12,28 +12,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var enemyPics = {
-    Troop: "pics/Troop.gif",
-    ShotGGuy: "pics/ShotGGuy.gif",
-    Imp: "pics/Imp.gif",
-    ChainGuy: "pics/ChainGuy.gif",
-    TroopLeft: "pics/TroopLeft.gif",
-    TroopLeft_Tomer: "pics/TroopLeft_Tomer.gif",
-    hurt: {
-        Troop: "pics/Troop_Hurt.png",
-        ShotGGuy: "pics/ShotGGuy_Hurt.png",
-        Imp: "pics/Imp_Hurt.png",
-        ChainGuy: "pics/ChainGuy_Hurt.png",
-    },
-    dead: {
-        Troop: "pics/Troop_Dead.gif",
-        ShotGGuy: "pics/ShotGGuy_Dead.gif",
-        Imp: "pics/Imp_Dead.gif",
-        ChainGuy: "pics/ChainGuy_DeadEd.gif",
-        TroopLeft: "pics/TroopLeft_Dead.gif",
-        TroopLeft_Tomer: "pics/TroopLeft_Tomer_Dead.gif",
-    }
-};
 //TheQuickAndTheDead
 var redrawing;
 var hitTarget;
@@ -61,7 +39,7 @@ var target = /** @class */ (function () {
     target.prototype.draw = function () {
         var _this = this;
         var img = document.createElement("img");
-        img.setAttribute('class', "target");
+        img.setAttribute('class', "target infiniteAlternateReverse");
         img.setAttribute('id', "tgt" + this.num);
         img.onmouseover = function () { return _this.MGhit(); };
         img.onmouseleave = function () { return _this.MGhitEnd(); };
@@ -228,6 +206,7 @@ var ExtraTarget = /** @class */ (function (_super) {
     }
     ExtraTarget.prototype.draw = function () {
         _super.prototype.draw.call(this);
+        this.DOMImage.classList.remove("infiniteAlternateReverse");
         target.extraCount++;
     };
     ExtraTarget.prototype.die = function () {

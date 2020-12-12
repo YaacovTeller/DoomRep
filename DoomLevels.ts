@@ -24,8 +24,11 @@ function lev1() {
 
 function lev2() {
     level = 2;
-    elements.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%")
-    clearTargets();
+    setTimeout(()=>{
+        elements.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%");
+        clearTargets();
+    },200)
+
     setTimeout(function () {
         drawNewEnemies2();
      }, 700);
@@ -35,6 +38,7 @@ function lev3(){
     level = 3;
     genericLevel(pics.background.doom4, ()=>drawNewEnemies3())
 }
+
 function lev4(){
     level = 4;
     genericLevel(pics.background.doom6, ()=>drawNewEnemies4())
@@ -43,16 +47,16 @@ function lev4(){
 function genericLevel(background, enemyFunc){
     setTimeout(function () {
         fadeOut();
+        clearTargets();
     }, 500);
     setTimeout(function () {
         elements.backImg.setAttribute("style", "margin-left: 0%; width: 100%");
         elements.backImg.setAttribute("src", background);
-        clearTargets();
         fadeIn();
     }, 1700);
     setTimeout(function () {
         enemyFunc();
-    }, 2400);
+    }, 3000);
 }
 
 function lev5() {

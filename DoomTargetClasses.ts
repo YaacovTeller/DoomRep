@@ -1,26 +1,3 @@
-const enemyPics = {
-    Troop: "pics/Troop.gif",
-    ShotGGuy: "pics/ShotGGuy.gif",
-    Imp: "pics/Imp.gif",
-    ChainGuy: "pics/ChainGuy.gif",
-    TroopLeft: "pics/TroopLeft.gif",
-    TroopLeft_Tomer: "pics/TroopLeft_Tomer.gif",
-    hurt: {
-        Troop: "pics/Troop_Hurt.png",
-        ShotGGuy: "pics/ShotGGuy_Hurt.png",
-        Imp: "pics/Imp_Hurt.png",
-        ChainGuy: "pics/ChainGuy_Hurt.png",
-    },
-    dead: {
-        Troop: "pics/Troop_Dead.gif",
-        ShotGGuy: "pics/ShotGGuy_Dead.gif",
-        Imp: "pics/Imp_Dead.gif",
-        ChainGuy: "pics/ChainGuy_DeadEd.gif",
-        TroopLeft: "pics/TroopLeft_Dead.gif",
-        TroopLeft_Tomer: "pics/TroopLeft_Tomer_Dead.gif",
-    }
-}
-
 //TheQuickAndTheDead
 var redrawing;
 var hitTarget: target;
@@ -60,7 +37,7 @@ abstract class target {
 
     protected draw(){
         var img:HTMLElement = document.createElement("img");
-        img.setAttribute('class', "target");
+        img.setAttribute('class', "target infiniteAlternateReverse");
         img.setAttribute('id', `tgt${this.num}`);
         img.onmouseover = () => this.MGhit();
         img.onmouseleave = () => this.MGhitEnd();
@@ -216,6 +193,7 @@ class ExtraTarget extends target {
     }
     public draw() {
         super.draw()
+        this.DOMImage.classList.remove("infiniteAlternateReverse");
         target.extraCount++;
    }
     public die() {
