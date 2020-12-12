@@ -2,24 +2,6 @@
 let riotShieldDeployed: boolean = false;
 var gameBegun: boolean = false;
 
-const elements = {
-    blood: document.getElementById("blood"),
-    oneshot: document.getElementById("shot"),
-    Bar: document.getElementById("BossBar1"),
-    backImg: document.getElementById("BackImg1"),
-    ammoCount: document.getElementById("ammo"),
-    ammoType: document.getElementById("ammoType"),
-    health: document.getElementById("health"),
-    menu: document.getElementById("menu"),
-    riotShield: document.getElementById("riotShield"),
-    weaponDiv: document.getElementById("weapon"),
-    weaponImg: document.getElementById("weaponImg"),
-    killCounter: document.getElementById("DCount"),
-    finishMsg: document.getElementById("fin"),
-    targetBackdrop: document.getElementById("targetBackdrop"),
-    credits: document.getElementById("CreditScreen")
-}
-
 class DOMUpdater {
     public static updateKillCounter(totalCount){
         this.updateCounter(elements.killCounter, "Kills:" + totalCount);
@@ -162,7 +144,7 @@ function muteMusic(button) {
 //Instead, ADD CSS FADING, it's that simple.
 //Actually, can use jquery fading now.
 function fadeOut() {
-  $(elements.backImg).fadeOut(2000)
+  $(elements.backImg).fadeOut(1700)
     //  elements.backImg.setAttribute("style", "animation-name: fadeOut; animation-duration: 2s; width: 100% ")
 }
 function fadeIn() {
