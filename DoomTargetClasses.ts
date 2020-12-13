@@ -1,7 +1,6 @@
 //TheQuickAndTheDead
 var redrawing;
 var hitTarget: target;
-var hitImage;
 var targeting: boolean = false;
 var hurting;
 
@@ -48,7 +47,7 @@ abstract class target {
     }
     public redraw() {
         if (hitTarget.deadFlag == false) {
-            hitImage = hitTarget.DOMImage;
+            let hitImage = hitTarget.DOMImage;
             hitImage.setAttribute("src", enemyPics[hitTarget.enemy]);
         }
     }
@@ -70,12 +69,9 @@ abstract class target {
         hitTarget.health -= hitTarget.healthUnit;
 
         // Changes image to 'hurt' image
-        hitImage = document.getElementById(`tgt${this.num}`);
+        let hitImage = hitTarget.DOMImage;
         hitImage.setAttribute("src", enemyPics.hurt[this.enemy]);
-        // Here, the Boss uses the "loseHealth" function, with a condition
-        if (this.enemy == "ChainGuy") {
-            elements.Bar.style.width = `${tgt22.health / 2}%`;
-        }
+
         if (this.health <= 0) { this.die() }
         // Calls redraw to reset
         else { redrawing = setTimeout(hitTarget.redraw, 200); }
@@ -85,7 +81,7 @@ abstract class target {
     public MGhit() {
         hitTarget = this;
         targeting = true;
-        hitImage = document.getElementById(`tgt${hitTarget.num}`);
+        let hitImage = hitTarget.DOMImage;
         // Checks if machine guns (7 and 4) or chainsaw (1) are being fired
 
         if (weaponry.w == 7.1 || weaponry.w == 6.1) {
@@ -209,30 +205,33 @@ class ExtraTarget extends target {
 class Boss extends regEnemy {
     damageNumber = 30;
     attackFrequency = 300;
+    bar:HTMLElement;
     constructor(num, enemy, health) {
         super(num, enemy, health)
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+        this.bar = elements.Bar;
     }
     public fillBar() {
-        showElement(elements.Bar);
-        elements.Bar.style.width = `100%`;
+        showElement(this.bar);
+        this.bar.style.width = `100%`;
     }
-
+    public loseHealth(){
+        super.loseHealth();
+        this.bar.style.width = `${this.health / 2}%`;
+    }
     public die() {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         clearInterval(this.attackRoller);
         clearInterval(hurting);
-        let Boss = document.getElementById("tgt22")
-        let Bar = elements.Bar;
-        Bar.style.width = `0%`;
-        Boss.removeAttribute("onmouseenter");
-        Boss.removeAttribute("onmousedown");
-        Boss.setAttribute("src", enemyPics.dead.ChainGuy);
-        Boss.style.pointerEvents = "none";
+        this.bar.style.width = `0%`;
+        this.DOMImage.removeAttribute("onmouseenter");
+        this.DOMImage.removeAttribute("onmousedown");
+        this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
+        this.DOMImage.style.pointerEvents = "none";
         DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
         this.deadSound();
         stopTimer();
-        //Deuscredits.stop();
         finishMessage();
     }
     public deadSound() {
@@ -245,6 +244,8 @@ class Boss extends regEnemy {
 class Player {
     static health: number = 100;
     static dead: boolean = false;
+    static weapon: weaponry;
+    static slungWeapon: weaponry;
     static damageCheck(damage){
         hurting = setTimeout(function () {
             // if (riotShieldDeployed == false) {
@@ -252,7 +253,7 @@ class Player {
             if (Player.health > 0) {
                 DOMUpdater.updateHealthCounter(Player.health);
                 document.body.style.animationName = "hit";
-                Hlifescream1.play()
+                this.hurtSound();
                 setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
             }
             else { Player.playerDeath() }
@@ -262,7 +263,7 @@ class Player {
 
     static playerDeath() {
         Player.dead = true;
-        Turokscream.play();
+        this.deadSound();
         fadeOut();
         openMenu();
         stopTimer();
@@ -270,6 +271,12 @@ class Player {
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
-        clearInterval(tgt22.attackRoller)
+   //     clearInterval(tgt22.attackRoller)
+    }
+    public static deadSound() {
+        Turokscream.play();
+    }
+    public static hurtSound() {
+        Hlifescream1.play()
     }
 }

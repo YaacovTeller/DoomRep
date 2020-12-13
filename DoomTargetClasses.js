@@ -15,7 +15,6 @@ var __extends = (this && this.__extends) || (function () {
 //TheQuickAndTheDead
 var redrawing;
 var hitTarget;
-var hitImage;
 var targeting = false;
 var hurting;
 // parent class, handles drawing and damaging.
@@ -50,7 +49,7 @@ var target = /** @class */ (function () {
     };
     target.prototype.redraw = function () {
         if (hitTarget.deadFlag == false) {
-            hitImage = hitTarget.DOMImage;
+            var hitImage = hitTarget.DOMImage;
             hitImage.setAttribute("src", enemyPics[hitTarget.enemy]);
         }
     };
@@ -70,12 +69,8 @@ var target = /** @class */ (function () {
         }
         hitTarget.health -= hitTarget.healthUnit;
         // Changes image to 'hurt' image
-        hitImage = document.getElementById("tgt" + this.num);
+        var hitImage = hitTarget.DOMImage;
         hitImage.setAttribute("src", enemyPics.hurt[this.enemy]);
-        // Here, the Boss uses the "loseHealth" function, with a condition
-        if (this.enemy == "ChainGuy") {
-            elements.Bar.style.width = tgt22.health / 2 + "%";
-        }
         if (this.health <= 0) {
             this.die();
         }
@@ -88,7 +83,7 @@ var target = /** @class */ (function () {
     target.prototype.MGhit = function () {
         hitTarget = this;
         targeting = true;
-        hitImage = document.getElementById("tgt" + hitTarget.num);
+        var hitImage = hitTarget.DOMImage;
         // Checks if machine guns (7 and 4) or chainsaw (1) are being fired
         if (weaponry.w == 7.1 || weaponry.w == 6.1) {
             MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
@@ -233,28 +228,31 @@ var Boss = /** @class */ (function (_super) {
         var _this = _super.call(this, num, enemy, health) || this;
         _this.damageNumber = 30;
         _this.attackFrequency = 300;
+        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
         return _this;
     }
     Boss.prototype.fillBar = function () {
         showElement(elements.Bar);
         elements.Bar.style.width = "100%";
     };
+    Boss.prototype.loseHealth = function () {
+        _super.prototype.loseHealth.call(this);
+        elements.Bar.style.width = this.health / 2 + "%";
+    };
     Boss.prototype.die = function () {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         clearInterval(this.attackRoller);
         clearInterval(hurting);
-        var Boss = document.getElementById("tgt22");
         var Bar = elements.Bar;
         Bar.style.width = "0%";
-        Boss.removeAttribute("onmouseenter");
-        Boss.removeAttribute("onmousedown");
-        Boss.setAttribute("src", enemyPics.dead.ChainGuy);
-        Boss.style.pointerEvents = "none";
+        this.DOMImage.removeAttribute("onmouseenter");
+        this.DOMImage.removeAttribute("onmousedown");
+        this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
+        this.DOMImage.style.pointerEvents = "none";
         DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
         this.deadSound();
         stopTimer();
-        //Deuscredits.stop();
         finishMessage();
     };
     Boss.prototype.deadSound = function () {
@@ -293,7 +291,7 @@ var Player = /** @class */ (function () {
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
-        clearInterval(tgt22.attackRoller);
+        //     clearInterval(tgt22.attackRoller)
     };
     Player.health = 100;
     Player.dead = false;
