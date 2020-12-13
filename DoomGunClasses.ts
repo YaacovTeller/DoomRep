@@ -1,5 +1,5 @@
-const gunMoveEvent: string = "PlayerWeapon.gunMove(event);";
-const MgunShotEvent: string = "PlayerWeapon.MGunShotDisplay(event);"
+const gunMoveEvent: string = "Player.weapon.gunMove(event);";
+const MgunShotEvent: string = "Player.weapon.MGunShotDisplay(event);"
 
 //WEAPON
 abstract class weaponry {
@@ -96,7 +96,7 @@ class Pistol extends regGun {
     }
 
     public switchTo() {
-        setTimeout(()=>PlayerWeapon = pistol,150) 
+        setTimeout(()=>Player.weapon = pistol,150) 
         super.switchTo();
         weaponry.w = 2;
         weaponry.scrnMargin = 280;
@@ -121,7 +121,7 @@ class Shotgun extends regGun {
     }
 
     public switchTo() {
-        setTimeout(()=>PlayerWeapon = shotgun,150) 
+        setTimeout(()=>Player.weapon = shotgun,150) 
         super.switchTo();
         weaponry.w = 3;
         weaponry.scrnMargin = 230;
@@ -214,7 +214,7 @@ class ChainSaw extends weaponry {
         weaponry.w = 1;
     }
     public switchTo() {
-        setTimeout(()=>PlayerWeapon = chainsaw,150) 
+        setTimeout(()=>Player.weapon = chainsaw,150) 
         super.switchTo();
         weaponry.w = 1;
         weaponry.scrnMargin = 305;
@@ -282,7 +282,7 @@ class Minigun extends MachineGun {
         document.body.setAttribute("onmousemove", gunMoveEvent)
     }
     public switchTo() {
-        setTimeout(()=>PlayerWeapon = minigun,150) 
+        setTimeout(()=>Player.weapon = minigun,150) 
         super.switchTo();
         weaponry.w = 4;
         weaponry.scrnMargin = 370;
@@ -322,7 +322,7 @@ class DukeMgun extends MachineGun {
         weaponry.w = 6;
     }
     public switchTo() {
-        setTimeout(()=>PlayerWeapon = dukemgun,150) 
+        setTimeout(()=>Player.weapon = dukemgun,150) 
         super.switchTo();
         weaponry.w = 6;
         weaponry.scrnMargin = 250;
@@ -363,7 +363,7 @@ class DuelNeutron extends MachineGun {
         weaponry.w = 7;
     }
     public switchTo() {
-        setTimeout(()=>PlayerWeapon = duelneutron,150) 
+        setTimeout(()=>Player.weapon = duelneutron,150) 
         super.switchTo();
         weaponry.w = 7;
         weaponry.scrnMargin = 250;
@@ -374,16 +374,17 @@ class DuelNeutron extends MachineGun {
 }
 
 function setMouseAttributes_Normal() {
-    document.body.setAttribute("onmousedown", "PlayerWeapon.shot(event)")
+    document.body.setAttribute("onmousedown", "Player.weapon.shot(event)")
     document.body.removeAttribute("onmouseup");
     document.body.setAttribute("onmousemove", gunMoveEvent)
 }
 function setMouseAttributes_MachineGun() {
-    document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
-    document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
+    document.body.setAttribute("onmousedown", "Player.weapon.strafe()");
+    document.body.setAttribute("onmouseup", "Player.weapon.stopstrafe()");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
 
+// new instance of each weapon. Move?
 let chainsaw = new ChainSaw;
 let pistol = new Pistol;
 let shotgun = new Shotgun;
@@ -391,13 +392,9 @@ let minigun = new Minigun;
 let dukemgun = new DukeMgun;
 let duelneutron = new DuelNeutron;
 
+// startingAmmo()
 pistol.ammo = 0;
 shotgun.ammo = 0;
 minigun.ammo = 0;
 dukemgun.ammo = 0;
 duelneutron.ammo = 0;
-// startingAmmo()
-
-let PlayerWeapon: weaponry = pistol;
-let slungWeapon: weaponry;
-PlayerWeapon.switchTo()

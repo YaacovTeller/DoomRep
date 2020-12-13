@@ -12,8 +12,8 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var gunMoveEvent = "PlayerWeapon.gunMove(event);";
-var MgunShotEvent = "PlayerWeapon.MGunShotDisplay(event);";
+var gunMoveEvent = "Player.weapon.gunMove(event);";
+var MgunShotEvent = "Player.weapon.MGunShotDisplay(event);";
 //WEAPON
 var weaponry = /** @class */ (function () {
     function weaponry() {
@@ -113,7 +113,7 @@ var Pistol = /** @class */ (function (_super) {
         }
     };
     Pistol.prototype.switchTo = function () {
-        setTimeout(function () { return PlayerWeapon = pistol; }, 150);
+        setTimeout(function () { return Player.weapon = pistol; }, 150);
         _super.prototype.switchTo.call(this);
         weaponry.w = 2;
         weaponry.scrnMargin = 280;
@@ -142,7 +142,7 @@ var Shotgun = /** @class */ (function (_super) {
         return true;
     };
     Shotgun.prototype.switchTo = function () {
-        setTimeout(function () { return PlayerWeapon = shotgun; }, 150);
+        setTimeout(function () { return Player.weapon = shotgun; }, 150);
         _super.prototype.switchTo.call(this);
         weaponry.w = 3;
         weaponry.scrnMargin = 230;
@@ -246,7 +246,7 @@ var ChainSaw = /** @class */ (function (_super) {
         weaponry.w = 1;
     };
     ChainSaw.prototype.switchTo = function () {
-        setTimeout(function () { return PlayerWeapon = chainsaw; }, 150);
+        setTimeout(function () { return Player.weapon = chainsaw; }, 150);
         _super.prototype.switchTo.call(this);
         weaponry.w = 1;
         weaponry.scrnMargin = 305;
@@ -322,7 +322,7 @@ var Minigun = /** @class */ (function (_super) {
         document.body.setAttribute("onmousemove", gunMoveEvent);
     };
     Minigun.prototype.switchTo = function () {
-        setTimeout(function () { return PlayerWeapon = minigun; }, 150);
+        setTimeout(function () { return Player.weapon = minigun; }, 150);
         _super.prototype.switchTo.call(this);
         weaponry.w = 4;
         weaponry.scrnMargin = 370;
@@ -373,7 +373,7 @@ var DukeMgun = /** @class */ (function (_super) {
         weaponry.w = 6;
     };
     DukeMgun.prototype.switchTo = function () {
-        setTimeout(function () { return PlayerWeapon = dukemgun; }, 150);
+        setTimeout(function () { return Player.weapon = dukemgun; }, 150);
         _super.prototype.switchTo.call(this);
         weaponry.w = 6;
         weaponry.scrnMargin = 250;
@@ -425,7 +425,7 @@ var DuelNeutron = /** @class */ (function (_super) {
         weaponry.w = 7;
     };
     DuelNeutron.prototype.switchTo = function () {
-        setTimeout(function () { return PlayerWeapon = duelneutron; }, 150);
+        setTimeout(function () { return Player.weapon = duelneutron; }, 150);
         _super.prototype.switchTo.call(this);
         weaponry.w = 7;
         weaponry.scrnMargin = 250;
@@ -436,27 +436,25 @@ var DuelNeutron = /** @class */ (function (_super) {
     return DuelNeutron;
 }(MachineGun));
 function setMouseAttributes_Normal() {
-    document.body.setAttribute("onmousedown", "PlayerWeapon.shot(event)");
+    document.body.setAttribute("onmousedown", "Player.weapon.shot(event)");
     document.body.removeAttribute("onmouseup");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
 function setMouseAttributes_MachineGun() {
-    document.body.setAttribute("onmousedown", "PlayerWeapon.strafe()");
-    document.body.setAttribute("onmouseup", "PlayerWeapon.stopstrafe()");
+    document.body.setAttribute("onmousedown", "Player.weapon.strafe()");
+    document.body.setAttribute("onmouseup", "Player.weapon.stopstrafe()");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
+// new instance of each weapon. Move?
 var chainsaw = new ChainSaw;
 var pistol = new Pistol;
 var shotgun = new Shotgun;
 var minigun = new Minigun;
 var dukemgun = new DukeMgun;
 var duelneutron = new DuelNeutron;
+// startingAmmo()
 pistol.ammo = 0;
 shotgun.ammo = 0;
 minigun.ammo = 0;
 dukemgun.ammo = 0;
 duelneutron.ammo = 0;
-// startingAmmo()
-var PlayerWeapon = pistol;
-var slungWeapon;
-PlayerWeapon.switchTo();
