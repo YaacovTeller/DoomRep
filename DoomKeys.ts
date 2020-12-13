@@ -3,22 +3,24 @@
 document.addEventListener('keydown', function (ev) {
 
     if (ev.key === "2") {
-        pistol.switchTo()
+        if(weaponCheck(pistol)){
+            pistol.switchTo();
+        }
     }
     else if (ev.key === "1") {
-        if (riotShieldDeployed == false){chainsaw.switchTo()}
+        if (riotShieldDeployed == false && weaponCheck(chainsaw)){chainsaw.switchTo()}
     }
     else if (ev.key === "3") {
-        if (riotShieldDeployed == false){shotgun.switchTo()}
+        if (riotShieldDeployed == false && weaponCheck(shotgun)){shotgun.switchTo()}
     }
     else if (ev.key === "4") {
-        if (riotShieldDeployed == false){dukemgun.switchTo()}
+        if (riotShieldDeployed == false && weaponCheck(dukemgun)){dukemgun.switchTo()}
     }
     else if (ev.key === "6") {
-        if (riotShieldDeployed == false){minigun.switchTo()}
+        if (riotShieldDeployed == false && weaponCheck(minigun)){minigun.switchTo()}
     }
     else if (ev.key === "7") {
-        if (riotShieldDeployed == false){duelneutron.switchTo()}
+        if (riotShieldDeployed == false && weaponCheck(duelneutron)){duelneutron.switchTo()}
     }
     else if (ev.key === " ") {
         shieldToggle()
@@ -33,23 +35,26 @@ document.addEventListener('keydown', function (ev) {
         }
         else closeMenu()
     }
+    //CHEATS
     else if (ev.key === "e")
     {
-        PlayerWeapon.ammo += 50;
-        DOMUpdater.updateAmmoCounter(PlayerWeapon.ammo)
+        Player.weapon.ammo += 50;
+        DOMUpdater.updateAmmoCounter(Player.weapon.ammo)
         click2.play()
     }
-    // CHEATS - For checking the game stages // DEPRECATED
-    // else if (ev.key === "e") //&& "..." > 1) 
-    // {
-    //     document.getElementById("exit2").style.display = "block";
-    // }
-
-    // Clears all enemies
     else if (ev.key === "c") {
         clearAllEnemies();
     }
+    else if (ev.key === "k") {
+        killAllEnemies();
+    }
+    else if (ev.key === "l") {
+        levelCheck();
+    }
 })
+function weaponCheck(weapon){
+    return weapon !== Player.weapon;
+}
 // jQuerystuff
 // var raiseShield = document.getElementById('riotShield').animate(
 //     [
