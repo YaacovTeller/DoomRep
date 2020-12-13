@@ -20,6 +20,9 @@ var pics = {
         shell: "Pics/Shell.png",
     },
     background: {
+        doom1: "Pics/Doom1.png",
+        doom2: "Pics/Doom2.png",
+        doom3: "Pics/Doom3.png",
         doom4: "Pics/Doom4.png",
         doom6: "Pics/Doom6.png",
         wide: "Pics/WideBack.jpg",
@@ -54,6 +57,7 @@ var elements = {
     oneshot: document.getElementById("shot"),
     Bar: document.getElementById("BossBar1"),
     backImg: document.getElementById("BackImg1"),
+    menuImage: document.getElementById("menuImage"),
     ammoCount: document.getElementById("ammo"),
     ammoType: document.getElementById("ammoType"),
     health: document.getElementById("health"),
