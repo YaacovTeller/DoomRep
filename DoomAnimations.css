@@ -37,6 +37,23 @@
         top: 110%;
     }
 }
+/* For the game backgrounds */
+@keyframes floatRight {
+    100%{
+        margin-left: -60%
+    }
+}
+@keyframes upScroll{
+    0% {
+        color: teal;
+        margin-top: 50%;
+    }
+    100% {
+        color: crimson;
+        margin-top: -60%;
+    }
+}
+
 
 /* For the targets */
 @keyframes approach{
@@ -57,23 +74,6 @@
     100% {
         top: 40%;
         left: -20%;
-    }
-}
-
-/* For the game backgrounds */
-@keyframes floatRight {
-    100%{
-        margin-left: -60%
-    }
-}
-@keyframes upScroll{
-    0% {
-        color: teal;
-        margin-top: 50%;
-    }
-    100% {
-        color: crimson;
-        margin-top: -60%;
     }
 }
 
@@ -104,25 +104,15 @@
         left: 0%;
     }
 }
-@keyframes move9 {
-    0% {
-        top: 65%;
-        left: 53%;
+@keyframes move8 {
+    50% {
+        left: 60%;
     }
-
+}
+@keyframes move9 {
     50% {
         transform: scale(3);
         top: 60%;
         left: 70%;
-    }
-
-    100% {
-        top: 65%;
-        left: 53%;
-    }
-}
-@keyframes move8 {
-    50% {
-        left: 45%;
     }
 }
