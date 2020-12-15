@@ -1,16 +1,60 @@
 const gunMoveEvent: string = "Player.weapon.gunMove(event);";
 const MgunShotEvent: string = "Player.weapon.MGunShotDisplay(event);"
 
+var gunConfig = {
+    Pistol: {
+        damage : 20,
+        scrnMargin: 280,
+        gunHeight: 390,
+    },
+    Shotgun: {
+        damage : 30,
+        scrnMargin : 230,
+        gunHeight : 350,
+    },
+    DukeMgun: {
+        damage : 10,
+        scrnMargin : 280,
+        gunHeight : 390,
+    },
+    Minigun: {
+        damage : 15,
+        scrnMargin : 370,
+        gunHeight : 480,
+    },
+    DualNuetron: {
+        damage : 10,
+        scrnMargin : 250,
+        gunHeight : 360,
+        firing : {
+            scrnMargin : 300,
+            gunHeight : 390,
+        }
+    },
+    ChainSaw: {
+        damage : 10,
+        reach: 240,
+        scrnMargin: 280,
+        gunHeight: 390,
+        firing : {
+            scrnMargin : 210,
+            gunHeight : 220,
+        }
+    },
+}
+
 //WEAPON
 abstract class weaponry {
     public static w: number = 2 //Sets weapon to pistol at the start
-    public static scrnMargin: number;
-    public static gunHeight: number;
+    public scrnMargin: number;
+    public gunHeight: number;
     public static gunDefaultY
     public static cX
     public static cY;
     public ammo: number;
-    protected gunImage;
+    public firing: boolean;
+    protected gunImage: string;
+    public damage: number;
 
     // Moves the chosen weapon to the mouse location, and keeps it at the base of the screen
     public abstract gunMove(e);
@@ -18,7 +62,7 @@ abstract class weaponry {
     public switchTo(){
         $(elements.weaponDiv).animate({top:'150%'}, 150); 
         $(elements.weaponDiv).animate({top:'90%'}, 150); 
-        elements.weaponDiv.style.top = `${window.outerHeight - weaponry.scrnMargin}px`; //screen.height
+        elements.weaponDiv.style.top = `${window.outerHeight - this.scrnMargin}px`; //screen.height
         elements.weaponImg.setAttribute("src", this.gunImage);
     };
     public static showBlood(e) {
@@ -37,14 +81,14 @@ abstract class weaponry {
 
         setTimeout(() => hideElement(elem), duration);
     }
-    public static gunLower(e) {
+    public gunLower(e) {
         var Screen: number = window.outerHeight;//screen.height;
         var x = e.pageX;
         var y = e.pageY;
         weaponry.cX = `${x - 44}px`;
 // Lowers the weapon when the mouse passes the gun height!
-  /*cY*/if (y > (Screen - weaponry.gunHeight)) { weaponry.cY = `${y + 110}px` } 
-        else weaponry.cY = `${Screen - weaponry.scrnMargin}px`;
+  /*cY*/if (y > (Screen - this.gunHeight)) { weaponry.cY = `${y + 110}px` } 
+        else weaponry.cY = `${Screen - this.scrnMargin}px`;
         elements.weaponDiv.style.left = weaponry.cX;
         elements.weaponDiv.style.top = weaponry.cY;
     }
@@ -73,7 +117,7 @@ abstract class regGun extends weaponry {
                 return false;
             }
             else {
-                hitTarget.loseHealth();
+                hitTarget.loseHealth(this.damage);
                 return true;
             }
         }
@@ -83,10 +127,11 @@ abstract class regGun extends weaponry {
 class Pistol extends regGun {
     protected firingSound = Pshot;
     protected gunImage = pics.guns.pistol;
+    public gunHeight = gunConfig.Pistol.gunHeight;
+    public scrnMargin = gunConfig.Pistol.scrnMargin;
+    public damage = gunConfig.Pistol.damage;
     public gunMove(e) {
-        weaponry.scrnMargin = 280;
-        weaponry.gunHeight = 390;
-        weaponry.gunLower(e)
+        super.gunLower(e)
     }
     public shot(e) {
         if (super.shot(e)) {
@@ -98,8 +143,7 @@ class Pistol extends regGun {
     public switchTo() {
         setTimeout(()=>Player.weapon = pistol,150) 
         super.switchTo();
-        weaponry.w = 2;
-        weaponry.scrnMargin = 280;
+
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullet);
         setMouseAttributes_Normal();
@@ -109,10 +153,11 @@ class Pistol extends regGun {
 class Shotgun extends regGun {
     protected firingSound = SGshot;
     protected gunImage = pics.guns.shotgun;
+    public gunHeight = gunConfig.Shotgun.gunHeight;
+    public scrnMargin = gunConfig.Shotgun.scrnMargin;
+    public damage = gunConfig.Shotgun.damage;
     public gunMove(e) {
-        weaponry.scrnMargin = 230;
-        weaponry.gunHeight = 350;
-        weaponry.gunLower(e)
+        this.gunLower(e)
     }
     public shot(e) {
         super.shot(e);
@@ -123,8 +168,6 @@ class Shotgun extends regGun {
     public switchTo() {
         setTimeout(()=>Player.weapon = shotgun,150) 
         super.switchTo();
-        weaponry.w = 3;
-        weaponry.scrnMargin = 230;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.shell);
         setMouseAttributes_Normal()
@@ -137,7 +180,11 @@ abstract class MachineGun extends weaponry {
     protected gunImage;
     protected firingSound;
     protected gunImage_firing;
+    public gunHeight;
+    public scrnMargin;
+    public firing: boolean
     public strafe() {
+        this.firing = true;
         document.addEventListener('mouseleave', e => { //avoid getting stuck on strafe mode
             this.stopstrafe()
         });
@@ -150,13 +197,18 @@ abstract class MachineGun extends weaponry {
             DOMUpdater.updateAmmoCounter(_this.ammo);
             if (_this.ammo <= 0) { _this.stopstrafe(); click2.play() }
         }, 200);
+
+        if (targeting == true) {
+            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(_this.damage); }, 200));
+        }
     }
     public stopstrafe(){
+        this.firing = false;
+        this.firingSound.stop();
+        elements.weaponImg.setAttribute("src", this.gunImage);
+        document.body.setAttribute("onmousemove", gunMoveEvent)
         clearInterval(MachineGun.mghit);
         clearInterval(MachineGun.spendingBullets);
-        elements.weaponImg.setAttribute("src", this.gunImage);
-        this.firingSound.stop();
-        document.body.setAttribute("onmousemove", gunMoveEvent)
     }
 
     public MGunShotDisplay(e) {
@@ -174,18 +226,19 @@ abstract class MachineGun extends weaponry {
 }
 
 
-class ChainSaw extends weaponry {
-    private static chainsawReach = 240; // target height
-    private firingSound = Saw;
+class ChainSaw extends MachineGun {
+    private static chainsawReach = gunConfig.ChainSaw.reach; // target height
+    protected firingSound = Saw;
     protected gunImage = pics.guns.chainsaw
     protected gunImage_firing = pics.guns.chainsaw_firing
+    public gunHeight = gunConfig.ChainSaw.gunHeight;
+    public scrnMargin = gunConfig.ChainSaw.scrnMargin;
+    public damage = gunConfig.ChainSaw.damage;
     public gunMove(e) {
-        if (weaponry.w == 1) { weaponry.scrnMargin = 305; weaponry.gunHeight = 415 }
-        else if (weaponry.w == 1.1) { weaponry.scrnMargin = 210; weaponry.gunHeight = 220 }
-        weaponry.gunLower(e)
+        this.gunLower(e)
     }
     public static chainsawDistanceCheck(hitImage) {
-        if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss)
+        if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss?)
             return true;
         }
         else if (hitImage.getBoundingClientRect().height > this.chainsawReach) {
@@ -195,29 +248,31 @@ class ChainSaw extends weaponry {
     }
 
     public strafe() {
+        this.firing = true;
+        this.gunHeight = gunConfig.ChainSaw.firing.gunHeight
+        this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin
         if (targeting == true && ChainSaw.chainsawDistanceCheck(hitTarget.DOMImage)) {
-            hitTarget.loseHealth()
-            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
+            hitTarget.loseHealth(this.damage)
+            let _this = this;
+            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(_this.damage); }, 200));
         }
-        weaponry.w = 1.1;
-        weaponry.scrnMargin = 210;
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
         this.firingSound.play()
         elements.weaponDiv.style.left = weaponry.cX;
         elements.weaponDiv.style.top = weaponry.cY;
     }
     public stopstrafe() {
+        this.gunHeight = gunConfig.ChainSaw.gunHeight
+        this.scrnMargin = gunConfig.ChainSaw.scrnMargin
         clearInterval(MachineGun.mghit);
         elements.weaponImg.setAttribute("src", this.gunImage);
         this.firingSound.stop()
         document.body.setAttribute("onmousemove", gunMoveEvent)
-        weaponry.w = 1;
     }
     public switchTo() {
         setTimeout(()=>Player.weapon = chainsaw,150) 
         super.switchTo();
-        weaponry.w = 1;
-        weaponry.scrnMargin = 305;
+
         DOMUpdater.updateAmmoCounter(`N/A`);
         elements.ammoType.removeAttribute("src");
         SawUp.play()
@@ -226,15 +281,17 @@ class ChainSaw extends weaponry {
 }
 
 class Minigun extends MachineGun {
-    public spinUpCheck: boolean = false
+    static spinUpCheck: boolean = false
     private mgfiring;
     private mgspinning;
     protected gunImage = pics.guns.chaingun;
     protected gunImage_firing = pics.guns.chaingun_firing;
+    public gunHeight = gunConfig.Minigun.gunHeight;
+    public scrnMargin = gunConfig.Minigun.scrnMargin;
+    public damage = gunConfig.Minigun.damage;
     protected firingSound = Avpminigun;
     public gunMove(e) {
-        if (weaponry.w == 4) { weaponry.scrnMargin = 370; weaponry.gunHeight = 480 }
-        weaponry.gunLower(e)
+        this.gunLower(e)
     }
     public spinUp() {
         elements.weaponImg.setAttribute("src", pics.guns.chaingun_spinup);
@@ -246,18 +303,12 @@ class Minigun extends MachineGun {
     public strafe() {
         if (this.ammo <= 0) { click2.play(); }
         else {
-            var thisGun = this;
             this.spinUp();
-            let superFire = () => { super.strafe(); }
+            let superStrafe = () => { super.strafe(); }
             this.mgfiring = setTimeout(function () {
-                thisGun.spinUpCheck = true;
-                weaponry.w = 4.1;
+                Minigun.spinUpCheck = true;
 
-                superFire();
-
-                if (targeting == true) {
-                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
-                }
+                superStrafe();
             }, 1000);
         }
     }
@@ -267,8 +318,7 @@ class Minigun extends MachineGun {
         clearInterval(MachineGun.spendingBullets);
         clearInterval(this.mgfiring);
         clearInterval(this.mgspinning);
-        minigun.spinUpCheck = false;
-        weaponry.w = 4;
+        Minigun.spinUpCheck = false;
         // The minigun sometimes ends on the off-spin!
         let randNum = Math.floor(Math.random() * (2 - 1 + 1) + 1);
         if (randNum == 1) {
@@ -284,8 +334,7 @@ class Minigun extends MachineGun {
     public switchTo() {
         setTimeout(()=>Player.weapon = minigun,150) 
         super.switchTo();
-        weaponry.w = 4;
-        weaponry.scrnMargin = 370;
+
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullets);
         setMouseAttributes_MachineGun();
@@ -295,11 +344,12 @@ class Minigun extends MachineGun {
 class DukeMgun extends MachineGun {
     protected gunImage = pics.guns.dukeMgun;
     protected gunImage_firing = pics.guns.dukeMgun_firing;
+    public gunHeight = gunConfig.DukeMgun.gunHeight;
+    public scrnMargin = gunConfig.DukeMgun.scrnMargin;
+    public damage = gunConfig.DukeMgun.damage;
     protected firingSound = MGun;
     public gunMove(e) {
-        if (weaponry.w == 6) { weaponry.scrnMargin = 280; weaponry.gunHeight = 390 }
-        else if (weaponry.w == 6.1) { weaponry.scrnMargin = 280; weaponry.gunHeight = 390 }
-        weaponry.gunLower(e)
+        this.gunLower(e)
     }
     public strafe() {
         if (this.ammo <= 0) { click2.play(); }
@@ -307,25 +357,17 @@ class DukeMgun extends MachineGun {
             var thisGun = this;
             thisGun.ammo--;
             DOMUpdater.updateAmmoCounter(thisGun.ammo);
-            weaponry.w = 6.1;
 
             super.strafe();
-
-            if (targeting == true) {
-                hitTarget.loseHealth()
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
-            }
         }
     }
     public stopstrafe() {
         super.stopstrafe();
-        weaponry.w = 6;
     }
     public switchTo() {
         setTimeout(()=>Player.weapon = dukemgun,150) 
         super.switchTo();
-        weaponry.w = 6;
-        weaponry.scrnMargin = 250;
+
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullets);
         setMouseAttributes_MachineGun()
@@ -334,39 +376,33 @@ class DukeMgun extends MachineGun {
 class DuelNeutron extends MachineGun {
     protected gunImage = pics.guns.dualNuetron;
     protected gunImage_firing = pics.guns.dualNuetron_firing;
+    public gunHeight = gunConfig.DualNuetron.gunHeight;
+    public scrnMargin = gunConfig.DualNuetron.scrnMargin;
+    public damage = gunConfig.DualNuetron.damage;
     protected firingSound = SSamMinigun;
     public gunMove(e) {
-        if (weaponry.w == 7) { weaponry.scrnMargin = 250; weaponry.gunHeight = 360 }
-        else if (weaponry.w == 7.1) { weaponry.scrnMargin = 300; weaponry.gunHeight = 390 }
-        weaponry.gunLower(e)
+        this.gunLower(e)
     }
     public strafe() {
-        super.strafe();
+        this.gunHeight = gunConfig.DualNuetron.firing.gunHeight
+        this.scrnMargin = gunConfig.DualNuetron.firing.scrnMargin
         if (this.ammo <= 0) { click2.play(); }
         else {
             var thisGun = this;
             thisGun.ammo--;
             DOMUpdater.updateAmmoCounter(thisGun.ammo);
-            weaponry.w = 7.1;
-
             super.strafe();
-
-            if (targeting == true) {
-                hitTarget.loseHealth()
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
-            }
         }
     }
 
     public stopstrafe() {
+        this.gunHeight = gunConfig.DualNuetron.gunHeight
+        this.scrnMargin = gunConfig.DualNuetron.scrnMargin
         super.stopstrafe();
-        weaponry.w = 7;
     }
     public switchTo() {
         setTimeout(()=>Player.weapon = duelneutron,150) 
         super.switchTo();
-        weaponry.w = 7;
-        weaponry.scrnMargin = 250;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullet);
         setMouseAttributes_MachineGun()

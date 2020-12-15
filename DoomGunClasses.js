@@ -14,6 +14,47 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var gunMoveEvent = "Player.weapon.gunMove(event);";
 var MgunShotEvent = "Player.weapon.MGunShotDisplay(event);";
+var gunConfig = {
+    Pistol: {
+        damage: 20,
+        scrnMargin: 280,
+        gunHeight: 390,
+    },
+    Shotgun: {
+        damage: 30,
+        scrnMargin: 230,
+        gunHeight: 350,
+    },
+    DukeMgun: {
+        damage: 10,
+        scrnMargin: 280,
+        gunHeight: 390,
+    },
+    Minigun: {
+        damage: 15,
+        scrnMargin: 370,
+        gunHeight: 480,
+    },
+    DualNuetron: {
+        damage: 10,
+        scrnMargin: 250,
+        gunHeight: 360,
+        firing: {
+            scrnMargin: 300,
+            gunHeight: 390,
+        }
+    },
+    ChainSaw: {
+        damage: 10,
+        reach: 240,
+        scrnMargin: 280,
+        gunHeight: 390,
+        firing: {
+            scrnMargin: 210,
+            gunHeight: 220,
+        }
+    },
+};
 //WEAPON
 var weaponry = /** @class */ (function () {
     function weaponry() {
@@ -22,7 +63,7 @@ var weaponry = /** @class */ (function () {
     weaponry.prototype.switchTo = function () {
         $(elements.weaponDiv).animate({ top: '150%' }, 150);
         $(elements.weaponDiv).animate({ top: '90%' }, 150);
-        elements.weaponDiv.style.top = window.outerHeight - weaponry.scrnMargin + "px"; //screen.height
+        elements.weaponDiv.style.top = window.outerHeight - this.scrnMargin + "px"; //screen.height
         elements.weaponImg.setAttribute("src", this.gunImage);
     };
     ;
@@ -41,17 +82,17 @@ var weaponry = /** @class */ (function () {
         elem.style.top = y - yOffset + "px";
         setTimeout(function () { return hideElement(elem); }, duration);
     };
-    weaponry.gunLower = function (e) {
+    weaponry.prototype.gunLower = function (e) {
         var Screen = window.outerHeight; //screen.height;
         var x = e.pageX;
         var y = e.pageY;
         weaponry.cX = x - 44 + "px";
         // Lowers the weapon when the mouse passes the gun height!
-        /*cY*/ if (y > (Screen - weaponry.gunHeight)) {
+        /*cY*/ if (y > (Screen - this.gunHeight)) {
             weaponry.cY = y + 110 + "px";
         }
         else
-            weaponry.cY = Screen - weaponry.scrnMargin + "px";
+            weaponry.cY = Screen - this.scrnMargin + "px";
         elements.weaponDiv.style.left = weaponry.cX;
         elements.weaponDiv.style.top = weaponry.cY;
     };
@@ -86,7 +127,7 @@ var regGun = /** @class */ (function (_super) {
                 return false;
             }
             else {
-                hitTarget.loseHealth();
+                hitTarget.loseHealth(this.damage);
                 return true;
             }
         }
@@ -99,12 +140,13 @@ var Pistol = /** @class */ (function (_super) {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
         _this_1.firingSound = Pshot;
         _this_1.gunImage = pics.guns.pistol;
+        _this_1.gunHeight = gunConfig.Pistol.gunHeight;
+        _this_1.scrnMargin = gunConfig.Pistol.scrnMargin;
+        _this_1.damage = gunConfig.Pistol.damage;
         return _this_1;
     }
     Pistol.prototype.gunMove = function (e) {
-        weaponry.scrnMargin = 280;
-        weaponry.gunHeight = 390;
-        weaponry.gunLower(e);
+        _super.prototype.gunLower.call(this, e);
     };
     Pistol.prototype.shot = function (e) {
         if (_super.prototype.shot.call(this, e)) {
@@ -115,8 +157,6 @@ var Pistol = /** @class */ (function (_super) {
     Pistol.prototype.switchTo = function () {
         setTimeout(function () { return Player.weapon = pistol; }, 150);
         _super.prototype.switchTo.call(this);
-        weaponry.w = 2;
-        weaponry.scrnMargin = 280;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullet);
         setMouseAttributes_Normal();
@@ -129,12 +169,13 @@ var Shotgun = /** @class */ (function (_super) {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
         _this_1.firingSound = SGshot;
         _this_1.gunImage = pics.guns.shotgun;
+        _this_1.gunHeight = gunConfig.Shotgun.gunHeight;
+        _this_1.scrnMargin = gunConfig.Shotgun.scrnMargin;
+        _this_1.damage = gunConfig.Shotgun.damage;
         return _this_1;
     }
     Shotgun.prototype.gunMove = function (e) {
-        weaponry.scrnMargin = 230;
-        weaponry.gunHeight = 350;
-        weaponry.gunLower(e);
+        this.gunLower(e);
     };
     Shotgun.prototype.shot = function (e) {
         _super.prototype.shot.call(this, e);
@@ -144,8 +185,6 @@ var Shotgun = /** @class */ (function (_super) {
     Shotgun.prototype.switchTo = function () {
         setTimeout(function () { return Player.weapon = shotgun; }, 150);
         _super.prototype.switchTo.call(this);
-        weaponry.w = 3;
-        weaponry.scrnMargin = 230;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.shell);
         setMouseAttributes_Normal();
@@ -159,6 +198,7 @@ var MachineGun = /** @class */ (function (_super) {
     }
     MachineGun.prototype.strafe = function () {
         var _this_1 = this;
+        this.firing = true;
         document.addEventListener('mouseleave', function (e) {
             _this_1.stopstrafe();
         });
@@ -174,13 +214,17 @@ var MachineGun = /** @class */ (function (_super) {
                 click2.play();
             }
         }, 200);
+        if (targeting == true) {
+            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(_this.damage); }, 200));
+        }
     };
     MachineGun.prototype.stopstrafe = function () {
+        this.firing = false;
+        this.firingSound.stop();
+        elements.weaponImg.setAttribute("src", this.gunImage);
+        document.body.setAttribute("onmousemove", gunMoveEvent);
         clearInterval(MachineGun.mghit);
         clearInterval(MachineGun.spendingBullets);
-        elements.weaponImg.setAttribute("src", this.gunImage);
-        this.firingSound.stop();
-        document.body.setAttribute("onmousemove", gunMoveEvent);
     };
     MachineGun.prototype.MGunShotDisplay = function (e) {
         if (targeting == false) {
@@ -203,21 +247,16 @@ var ChainSaw = /** @class */ (function (_super) {
         _this_1.firingSound = Saw;
         _this_1.gunImage = pics.guns.chainsaw;
         _this_1.gunImage_firing = pics.guns.chainsaw_firing;
+        _this_1.gunHeight = gunConfig.ChainSaw.gunHeight;
+        _this_1.scrnMargin = gunConfig.ChainSaw.scrnMargin;
+        _this_1.damage = gunConfig.ChainSaw.damage;
         return _this_1;
     }
     ChainSaw.prototype.gunMove = function (e) {
-        if (weaponry.w == 1) {
-            weaponry.scrnMargin = 305;
-            weaponry.gunHeight = 415;
-        }
-        else if (weaponry.w == 1.1) {
-            weaponry.scrnMargin = 210;
-            weaponry.gunHeight = 220;
-        }
-        weaponry.gunLower(e);
+        this.gunLower(e);
     };
     ChainSaw.chainsawDistanceCheck = function (hitImage) {
-        if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss)
+        if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss?)
             return true;
         }
         else if (hitImage.getBoundingClientRect().height > this.chainsawReach) {
@@ -227,53 +266,52 @@ var ChainSaw = /** @class */ (function (_super) {
             return false;
     };
     ChainSaw.prototype.strafe = function () {
+        this.firing = true;
+        this.gunHeight = gunConfig.ChainSaw.firing.gunHeight;
+        this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin;
         if (targeting == true && ChainSaw.chainsawDistanceCheck(hitTarget.DOMImage)) {
-            hitTarget.loseHealth();
-            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
+            hitTarget.loseHealth(this.damage);
+            var _this_2 = this;
+            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(_this_2.damage); }, 200));
         }
-        weaponry.w = 1.1;
-        weaponry.scrnMargin = 210;
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
         this.firingSound.play();
         elements.weaponDiv.style.left = weaponry.cX;
         elements.weaponDiv.style.top = weaponry.cY;
     };
     ChainSaw.prototype.stopstrafe = function () {
+        this.gunHeight = gunConfig.ChainSaw.gunHeight;
+        this.scrnMargin = gunConfig.ChainSaw.scrnMargin;
         clearInterval(MachineGun.mghit);
         elements.weaponImg.setAttribute("src", this.gunImage);
         this.firingSound.stop();
         document.body.setAttribute("onmousemove", gunMoveEvent);
-        weaponry.w = 1;
     };
     ChainSaw.prototype.switchTo = function () {
         setTimeout(function () { return Player.weapon = chainsaw; }, 150);
         _super.prototype.switchTo.call(this);
-        weaponry.w = 1;
-        weaponry.scrnMargin = 305;
         DOMUpdater.updateAmmoCounter("N/A");
         elements.ammoType.removeAttribute("src");
         SawUp.play();
         setMouseAttributes_MachineGun();
     };
-    ChainSaw.chainsawReach = 240; // target height
+    ChainSaw.chainsawReach = gunConfig.ChainSaw.reach; // target height
     return ChainSaw;
-}(weaponry));
+}(MachineGun));
 var Minigun = /** @class */ (function (_super) {
     __extends(Minigun, _super);
     function Minigun() {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
-        _this_1.spinUpCheck = false;
         _this_1.gunImage = pics.guns.chaingun;
         _this_1.gunImage_firing = pics.guns.chaingun_firing;
+        _this_1.gunHeight = gunConfig.Minigun.gunHeight;
+        _this_1.scrnMargin = gunConfig.Minigun.scrnMargin;
+        _this_1.damage = gunConfig.Minigun.damage;
         _this_1.firingSound = Avpminigun;
         return _this_1;
     }
     Minigun.prototype.gunMove = function (e) {
-        if (weaponry.w == 4) {
-            weaponry.scrnMargin = 370;
-            weaponry.gunHeight = 480;
-        }
-        weaponry.gunLower(e);
+        this.gunLower(e);
     };
     Minigun.prototype.spinUp = function () {
         elements.weaponImg.setAttribute("src", pics.guns.chaingun_spinup);
@@ -288,16 +326,11 @@ var Minigun = /** @class */ (function (_super) {
             click2.play();
         }
         else {
-            var thisGun = this;
             this.spinUp();
-            var superFire_1 = function () { _super.prototype.strafe.call(_this_1); };
+            var superStrafe_1 = function () { _super.prototype.strafe.call(_this_1); };
             this.mgfiring = setTimeout(function () {
-                thisGun.spinUpCheck = true;
-                weaponry.w = 4.1;
-                superFire_1();
-                if (targeting == true) {
-                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
-                }
+                Minigun.spinUpCheck = true;
+                superStrafe_1();
             }, 1000);
         }
     };
@@ -306,8 +339,7 @@ var Minigun = /** @class */ (function (_super) {
         clearInterval(MachineGun.spendingBullets);
         clearInterval(this.mgfiring);
         clearInterval(this.mgspinning);
-        minigun.spinUpCheck = false;
-        weaponry.w = 4;
+        Minigun.spinUpCheck = false;
         // The minigun sometimes ends on the off-spin!
         var randNum = Math.floor(Math.random() * (2 - 1 + 1) + 1);
         if (randNum == 1) {
@@ -324,12 +356,11 @@ var Minigun = /** @class */ (function (_super) {
     Minigun.prototype.switchTo = function () {
         setTimeout(function () { return Player.weapon = minigun; }, 150);
         _super.prototype.switchTo.call(this);
-        weaponry.w = 4;
-        weaponry.scrnMargin = 370;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullets);
         setMouseAttributes_MachineGun();
     };
+    Minigun.spinUpCheck = false;
     return Minigun;
 }(MachineGun));
 var DukeMgun = /** @class */ (function (_super) {
@@ -338,19 +369,14 @@ var DukeMgun = /** @class */ (function (_super) {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
         _this_1.gunImage = pics.guns.dukeMgun;
         _this_1.gunImage_firing = pics.guns.dukeMgun_firing;
+        _this_1.gunHeight = gunConfig.DukeMgun.gunHeight;
+        _this_1.scrnMargin = gunConfig.DukeMgun.scrnMargin;
+        _this_1.damage = gunConfig.DukeMgun.damage;
         _this_1.firingSound = MGun;
         return _this_1;
     }
     DukeMgun.prototype.gunMove = function (e) {
-        if (weaponry.w == 6) {
-            weaponry.scrnMargin = 280;
-            weaponry.gunHeight = 390;
-        }
-        else if (weaponry.w == 6.1) {
-            weaponry.scrnMargin = 280;
-            weaponry.gunHeight = 390;
-        }
-        weaponry.gunLower(e);
+        this.gunLower(e);
     };
     DukeMgun.prototype.strafe = function () {
         if (this.ammo <= 0) {
@@ -360,23 +386,15 @@ var DukeMgun = /** @class */ (function (_super) {
             var thisGun = this;
             thisGun.ammo--;
             DOMUpdater.updateAmmoCounter(thisGun.ammo);
-            weaponry.w = 6.1;
             _super.prototype.strafe.call(this);
-            if (targeting == true) {
-                hitTarget.loseHealth();
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
-            }
         }
     };
     DukeMgun.prototype.stopstrafe = function () {
         _super.prototype.stopstrafe.call(this);
-        weaponry.w = 6;
     };
     DukeMgun.prototype.switchTo = function () {
         setTimeout(function () { return Player.weapon = dukemgun; }, 150);
         _super.prototype.switchTo.call(this);
-        weaponry.w = 6;
-        weaponry.scrnMargin = 250;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullets);
         setMouseAttributes_MachineGun();
@@ -389,22 +407,18 @@ var DuelNeutron = /** @class */ (function (_super) {
         var _this_1 = _super !== null && _super.apply(this, arguments) || this;
         _this_1.gunImage = pics.guns.dualNuetron;
         _this_1.gunImage_firing = pics.guns.dualNuetron_firing;
+        _this_1.gunHeight = gunConfig.DualNuetron.gunHeight;
+        _this_1.scrnMargin = gunConfig.DualNuetron.scrnMargin;
+        _this_1.damage = gunConfig.DualNuetron.damage;
         _this_1.firingSound = SSamMinigun;
         return _this_1;
     }
     DuelNeutron.prototype.gunMove = function (e) {
-        if (weaponry.w == 7) {
-            weaponry.scrnMargin = 250;
-            weaponry.gunHeight = 360;
-        }
-        else if (weaponry.w == 7.1) {
-            weaponry.scrnMargin = 300;
-            weaponry.gunHeight = 390;
-        }
-        weaponry.gunLower(e);
+        this.gunLower(e);
     };
     DuelNeutron.prototype.strafe = function () {
-        _super.prototype.strafe.call(this);
+        this.gunHeight = gunConfig.DualNuetron.firing.gunHeight;
+        this.scrnMargin = gunConfig.DualNuetron.firing.scrnMargin;
         if (this.ammo <= 0) {
             click2.play();
         }
@@ -412,23 +426,17 @@ var DuelNeutron = /** @class */ (function (_super) {
             var thisGun = this;
             thisGun.ammo--;
             DOMUpdater.updateAmmoCounter(thisGun.ammo);
-            weaponry.w = 7.1;
             _super.prototype.strafe.call(this);
-            if (targeting == true) {
-                hitTarget.loseHealth();
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 200));
-            }
         }
     };
     DuelNeutron.prototype.stopstrafe = function () {
+        this.gunHeight = gunConfig.DualNuetron.gunHeight;
+        this.scrnMargin = gunConfig.DualNuetron.scrnMargin;
         _super.prototype.stopstrafe.call(this);
-        weaponry.w = 7;
     };
     DuelNeutron.prototype.switchTo = function () {
         setTimeout(function () { return Player.weapon = duelneutron; }, 150);
         _super.prototype.switchTo.call(this);
-        weaponry.w = 7;
-        weaponry.scrnMargin = 250;
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammo.bullet);
         setMouseAttributes_MachineGun();
