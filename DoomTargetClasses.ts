@@ -1,6 +1,10 @@
 //TheQuickAndTheDead
-var hitTarget: Target;
-var targeting: boolean = false;
+class GameInfo {
+    public static hitTarget: Target = null;
+    public static targeting: boolean = false;
+    public static deadCount: number = 0;
+    public static deadExtraCount: number = 0;
+}
 
 interface Function { // to get class names from an instance
     name: string;
@@ -42,8 +46,6 @@ abstract class Target {
     public health: number;
     public healthUnit: number;
     public DOMImage: HTMLElement;
-    public static deadCount: number = 0;
-    public static deadExtraCount: number = 0;
     public deadFlag: boolean = false;
     constructor(num, enemy, health, position: Position, anim: AnimationInfo) {
         this.health = health;
@@ -56,8 +58,8 @@ abstract class Target {
         var img:HTMLElement = document.createElement("img");
         img.setAttribute('class', "target"); //infiniteAlternateReverse
         img.setAttribute('id', `tgt${this.num}`);
-        img.onmouseover = () => this.MGhit();
-        img.onmouseleave = () => this.MGhitEnd();
+        img.onmouseover = () => this.setAsTarget();
+        img.onmouseleave = () => this.unsetTarget();
         img.setAttribute('src', enemyPics[this.enemy]);
         img.setAttribute('draggable', `false`);
         img.style.left = position.x +"%";
@@ -70,9 +72,9 @@ abstract class Target {
         elements.targetBackdrop.appendChild(img);
         this.DOMImage = img;
     }
-    public redraw() {
-        if (this.deadFlag == false) {
-            this.DOMImage.setAttribute("src", enemyPics[this.enemy]);
+    public redraw(_this) {
+        if (_this.deadFlag == false) {
+            _this.DOMImage.setAttribute("src", enemyPics[_this.enemy]);
         }
     }
     public undraw(){
@@ -85,12 +87,11 @@ abstract class Target {
         let _this = this;
         if (this.health <= 0) { this.die() }
         // Calls redraw to reset
-        else { setTimeout(_this.redraw, 200); }
+        else { setTimeout(()=>_this.redraw(_this), 200); }
     }
 
     protected die(){
         this.deadFlag = true;
-        clearInterval(MachineGun.mghit);
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.DOMImage.style.pointerEvents = "none";
@@ -100,34 +101,13 @@ abstract class Target {
     abstract deadSound()
 
     // The machine gun damage function
-    public MGhit() {
-        hitTarget = this;
-        targeting = true;
-        let hitImage = this.DOMImage;
-
-        if (!Player.weapon.firing) { return }
-        switch (Player.weapon.constructor.name) {
-            case 'ChainSaw': {
-                if (ChainSaw.chainsawDistanceCheck(hitImage)) { 
-                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
-                }
-                break;
-            }
-            case 'Minigun': {
-                if (Minigun.spinUpCheck == true) { 
-                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
-                }
-                break;
-            }
-            default: {
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
-            }
-        }
+    public setAsTarget() {
+        GameInfo.hitTarget = this;
+        GameInfo.targeting = true;
     }
-    public MGhitEnd() {
-        clearInterval(MachineGun.mghit);
-        targeting = false;
-        // hitTarget = null;
+    public unsetTarget() {
+        GameInfo.targeting = false;
+        GameInfo.hitTarget = null;
     }
 }
 
@@ -150,10 +130,10 @@ abstract class RegEnemy extends Target {
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         if (!(this instanceof Extra)){
-            Target.deadCount++
+            GameInfo.deadCount++
             levelCheck();
         } 
-        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
+        DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
     }
     private hitRoll(damage) {
         if (Player.dead == false) {
@@ -222,7 +202,7 @@ class Extra extends RegEnemy {
         this.DOMImage.classList.add('fillModeForwards', 'extraTarget')
    }
     public die() {
-        Target.deadExtraCount++
+        GameInfo.deadExtraCount++
         super.die();
     }
     public deadSound() {
@@ -251,7 +231,6 @@ class Boss extends RegEnemy {
     }
     public die() {
         this.deadFlag = true;
-        clearInterval(MachineGun.mghit);
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         this.bar.style.width = `0%`;
@@ -259,7 +238,7 @@ class Boss extends RegEnemy {
         this.DOMImage.removeAttribute("onmousedown");
         this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
         this.DOMImage.style.pointerEvents = "none";
-        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
+        DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
         this.deadSound();
         stopTimer();
         sectionFinish();

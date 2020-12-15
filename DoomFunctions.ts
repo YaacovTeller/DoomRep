@@ -119,8 +119,8 @@ function startingAmmo() {
 }
 function startingValues(){
     Player.dead = false;
-    Target.deadExtraCount = 0;
-    Target.deadCount = 0;
+    GameInfo.deadExtraCount = 0;
+    GameInfo.deadCount = 0;
     Player.health = 100;
 }
 function restart() {
@@ -177,7 +177,7 @@ function finishMessage(){
     let div2:HTMLElement = createMessageDiv("levelMsg","COMPLETED");
     let div3:HTMLElement = createMessageDiv("speedMsg", `Time: ${getTime()}`);
 
-    let killsStr = `Total kills: ${Target.deadCount + Target.deadExtraCount}`
+    let killsStr = `Total kills: ${GameInfo.deadCount + GameInfo.deadExtraCount}`
     let div4:HTMLElement = createMessageDiv("speedMsg", killsStr);
 
     slamMessage(div1, elements.finishMsg, 1000)
@@ -194,6 +194,7 @@ function slamMessage(elem:HTMLElement, parent:HTMLElement, delay:number){
 
 function sectionFinish(){
     gameBegun = false;
+    Deuscredits.stop();
     finishMessage()
 }
 

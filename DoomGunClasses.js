@@ -122,12 +122,12 @@ var regGun = /** @class */ (function (_super) {
             this.ammo--;
             DOMUpdater.updateAmmoCounter(this.ammo);
             this.firingSound.play();
-            if (targeting == false) {
+            if (GameInfo.targeting == false) {
                 this.ricochet();
                 return false;
             }
             else {
-                hitTarget.loseHealth(this.damage);
+                GameInfo.hitTarget.loseHealth(this.damage);
                 return true;
             }
         }
@@ -198,15 +198,27 @@ var MachineGun = /** @class */ (function (_super) {
     }
     MachineGun.prototype.strafe = function () {
         var _this_1 = this;
-        this.firing = true;
         document.addEventListener('mouseleave', function (e) {
             _this_1.stopstrafe();
         });
+        document.body.setAttribute("onmousemove", gunMoveEvent);
+        this.firing = true;
+        this.spendingBullets();
+        var _this = this;
+        if (GameInfo.targeting == true) {
+            GameInfo.hitTarget.loseHealth(_this.damage);
+        }
+        MachineGun.hittingInterval = (setInterval(function () {
+            if (GameInfo.targeting == true) {
+                GameInfo.hitTarget.loseHealth(_this.damage);
+            }
+        }, 200));
+    };
+    MachineGun.prototype.spendingBullets = function () {
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
         this.firingSound.play();
-        document.body.setAttribute("onmousemove", gunMoveEvent);
         var _this = this;
-        MachineGun.spendingBullets = setInterval(function () {
+        MachineGun.firingInterval = setInterval(function () {
             _this.ammo--;
             DOMUpdater.updateAmmoCounter(_this.ammo);
             if (_this.ammo <= 0) {
@@ -214,20 +226,17 @@ var MachineGun = /** @class */ (function (_super) {
                 click2.play();
             }
         }, 200);
-        if (targeting == true) {
-            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(_this.damage); }, 200));
-        }
     };
     MachineGun.prototype.stopstrafe = function () {
         this.firing = false;
         this.firingSound.stop();
         elements.weaponImg.setAttribute("src", this.gunImage);
         document.body.setAttribute("onmousemove", gunMoveEvent);
-        clearInterval(MachineGun.mghit);
-        clearInterval(MachineGun.spendingBullets);
+        clearInterval(MachineGun.hittingInterval);
+        clearInterval(MachineGun.firingInterval);
     };
     MachineGun.prototype.MGunShotDisplay = function (e) {
-        if (targeting == false) {
+        if (GameInfo.targeting == false) {
             this.ricochet();
         }
         else /*Bullet4.play()*/
@@ -269,10 +278,10 @@ var ChainSaw = /** @class */ (function (_super) {
         this.firing = true;
         this.gunHeight = gunConfig.ChainSaw.firing.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin;
-        if (targeting == true && ChainSaw.chainsawDistanceCheck(hitTarget.DOMImage)) {
-            hitTarget.loseHealth(this.damage);
+        if (GameInfo.targeting == true && ChainSaw.chainsawDistanceCheck(GameInfo.hitTarget.DOMImage)) {
+            GameInfo.hitTarget.loseHealth(this.damage);
             var _this_2 = this;
-            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(_this_2.damage); }, 200));
+            MachineGun.hittingInterval = (setInterval(function () { GameInfo.hitTarget.loseHealth(_this_2.damage); }, 200));
         }
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
         this.firingSound.play();
@@ -282,7 +291,7 @@ var ChainSaw = /** @class */ (function (_super) {
     ChainSaw.prototype.stopstrafe = function () {
         this.gunHeight = gunConfig.ChainSaw.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.scrnMargin;
-        clearInterval(MachineGun.mghit);
+        clearInterval(MachineGun.hittingInterval);
         elements.weaponImg.setAttribute("src", this.gunImage);
         this.firingSound.stop();
         document.body.setAttribute("onmousemove", gunMoveEvent);
@@ -335,8 +344,8 @@ var Minigun = /** @class */ (function (_super) {
         }
     };
     Minigun.prototype.stopstrafe = function () {
-        clearInterval(MachineGun.mghit);
-        clearInterval(MachineGun.spendingBullets);
+        clearInterval(MachineGun.hittingInterval);
+        clearInterval(MachineGun.firingInterval);
         clearInterval(this.mgfiring);
         clearInterval(this.mgspinning);
         Minigun.spinUpCheck = false;

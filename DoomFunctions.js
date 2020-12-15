@@ -129,8 +129,8 @@ function startingAmmo() {
 }
 function startingValues() {
     Player.dead = false;
-    Target.deadExtraCount = 0;
-    Target.deadCount = 0;
+    GameInfo.deadExtraCount = 0;
+    GameInfo.deadCount = 0;
     Player.health = 100;
 }
 function restart() {
@@ -184,7 +184,7 @@ function finishMessage() {
     var div1 = createMessageDiv("levelMsg", "LEVEL 1");
     var div2 = createMessageDiv("levelMsg", "COMPLETED");
     var div3 = createMessageDiv("speedMsg", "Time: " + getTime());
-    var killsStr = "Total kills: " + (Target.deadCount + Target.deadExtraCount);
+    var killsStr = "Total kills: " + (GameInfo.deadCount + GameInfo.deadExtraCount);
     var div4 = createMessageDiv("speedMsg", killsStr);
     slamMessage(div1, elements.finishMsg, 1000);
     slamMessage(div2, elements.finishMsg, 2000);
@@ -199,6 +199,7 @@ function slamMessage(elem, parent, delay) {
 }
 function sectionFinish() {
     gameBegun = false;
+    Deuscredits.stop();
     finishMessage();
 }
 // $(document).ready(function () {

@@ -13,8 +13,15 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 //TheQuickAndTheDead
-var hitTarget;
-var targeting = false;
+var GameInfo = /** @class */ (function () {
+    function GameInfo() {
+    }
+    GameInfo.hitTarget = null;
+    GameInfo.targeting = false;
+    GameInfo.deadCount = 0;
+    GameInfo.deadExtraCount = 0;
+    return GameInfo;
+}());
 var Position = /** @class */ (function () {
     function Position(x, y, scale) {
         this.x = x;
@@ -50,8 +57,8 @@ var Target = /** @class */ (function () {
         var img = document.createElement("img");
         img.setAttribute('class', "target"); //infiniteAlternateReverse
         img.setAttribute('id', "tgt" + this.num);
-        img.onmouseover = function () { return _this_1.MGhit(); };
-        img.onmouseleave = function () { return _this_1.MGhitEnd(); };
+        img.onmouseover = function () { return _this_1.setAsTarget(); };
+        img.onmouseleave = function () { return _this_1.unsetTarget(); };
         img.setAttribute('src', enemyPics[this.enemy]);
         img.setAttribute('draggable', "false");
         img.style.left = position.x + "%";
@@ -64,9 +71,9 @@ var Target = /** @class */ (function () {
         elements.targetBackdrop.appendChild(img);
         this.DOMImage = img;
     };
-    Target.prototype.redraw = function () {
-        if (this.deadFlag == false) {
-            this.DOMImage.setAttribute("src", enemyPics[this.enemy]);
+    Target.prototype.redraw = function (_this) {
+        if (_this.deadFlag == false) {
+            _this.DOMImage.setAttribute("src", enemyPics[_this.enemy]);
         }
     };
     Target.prototype.undraw = function () {
@@ -81,50 +88,25 @@ var Target = /** @class */ (function () {
         }
         // Calls redraw to reset
         else {
-            setTimeout(_this.redraw, 200);
+            setTimeout(function () { return _this.redraw(_this); }, 200);
         }
     };
     Target.prototype.die = function () {
         this.deadFlag = true;
-        clearInterval(MachineGun.mghit);
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.DOMImage.style.pointerEvents = "none";
         this.deadSound();
     };
     // The machine gun damage function
-    Target.prototype.MGhit = function () {
-        hitTarget = this;
-        targeting = true;
-        var hitImage = this.DOMImage;
-        if (!Player.weapon.firing) {
-            return;
-        }
-        switch (Player.weapon.constructor.name) {
-            case 'ChainSaw': {
-                if (ChainSaw.chainsawDistanceCheck(hitImage)) {
-                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
-                }
-                break;
-            }
-            case 'Minigun': {
-                if (Minigun.spinUpCheck == true) {
-                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
-                }
-                break;
-            }
-            default: {
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
-            }
-        }
+    Target.prototype.setAsTarget = function () {
+        GameInfo.hitTarget = this;
+        GameInfo.targeting = true;
     };
-    Target.prototype.MGhitEnd = function () {
-        clearInterval(MachineGun.mghit);
-        targeting = false;
-        // hitTarget = null;
+    Target.prototype.unsetTarget = function () {
+        GameInfo.targeting = false;
+        GameInfo.hitTarget = null;
     };
-    Target.deadCount = 0;
-    Target.deadExtraCount = 0;
     return Target;
 }());
 var RegEnemy = /** @class */ (function (_super) {
@@ -140,10 +122,10 @@ var RegEnemy = /** @class */ (function (_super) {
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         if (!(this instanceof Extra)) {
-            Target.deadCount++;
+            GameInfo.deadCount++;
             levelCheck();
         }
-        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
+        DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
     };
     RegEnemy.prototype.hitRoll = function (damage) {
         if (Player.dead == false) {
@@ -223,7 +205,7 @@ var Extra = /** @class */ (function (_super) {
         this.DOMImage.classList.add('fillModeForwards', 'extraTarget');
     };
     Extra.prototype.die = function () {
-        Target.deadExtraCount++;
+        GameInfo.deadExtraCount++;
         _super.prototype.die.call(this);
     };
     Extra.prototype.deadSound = function () {
@@ -259,7 +241,6 @@ var Boss = /** @class */ (function (_super) {
     };
     Boss.prototype.die = function () {
         this.deadFlag = true;
-        clearInterval(MachineGun.mghit);
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         this.bar.style.width = "0%";
@@ -267,7 +248,7 @@ var Boss = /** @class */ (function (_super) {
         this.DOMImage.removeAttribute("onmousedown");
         this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
         this.DOMImage.style.pointerEvents = "none";
-        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
+        DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
         this.deadSound();
         stopTimer();
         sectionFinish();
