@@ -37,7 +37,7 @@ function shieldToggle() {
             Player.slungWeapon.stopstrafe();
         }
         pistol.switchTo();
-        clearInterval(hurting);
+        // clearInterval(hurting); // NEEDED?
         // document.body.setAttribute("onmousemove", "shieldMove(event); Player.weapon.gunMove(event)")
     }
     else {
@@ -53,7 +53,7 @@ function showElement(elem) {
     elem.style.display = "block";
 }
 function killAllEnemies() {
-    for (var _i = 0, _a = regEnemy.regEnemyArray; _i < _a.length; _i++) {
+    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
         var enemy = _a[_i];
         if (!enemy)
             continue;
@@ -61,13 +61,21 @@ function killAllEnemies() {
     }
 }
 function clearAllEnemies() {
-    for (var _i = 0, _a = regEnemy.regEnemyArray; _i < _a.length; _i++) {
+    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
         var enemy = _a[_i];
         if (!enemy)
             continue;
         enemy.deadFlag = true;
         clearInterval(enemy.attackRoller);
         hideElement(enemy.DOMImage);
+    }
+}
+function godMode() {
+    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
+        var enemy = _a[_i];
+        if (!enemy)
+            continue;
+        clearInterval(enemy.attackRoller);
     }
 }
 // Checks if the targets were killed, advances to next stage
@@ -93,9 +101,9 @@ function levelCheck() {
     }
 }
 function checkAllDead() {
-    for (var _i = 0, _a = regEnemy.regEnemyArray; _i < _a.length; _i++) {
+    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
         var enemy = _a[_i];
-        if (enemy.deadFlag == false)
+        if (enemy.deadFlag == false && !(enemy instanceof Extra))
             return false;
     }
     return true;
@@ -103,7 +111,6 @@ function checkAllDead() {
 function openMenu() {
     showElement(elements.menuImage);
     showElement(elements.menu);
-    clearInterval(time);
     stopTimer();
 }
 function closeMenu() {
@@ -122,9 +129,8 @@ function startingAmmo() {
 }
 function startingValues() {
     Player.dead = false;
-    target.extraCount = 0;
-    target.targetCount = 0;
-    target.deadCount = 0;
+    Target.deadExtraCount = 0;
+    Target.deadCount = 0;
     Player.health = 100;
 }
 function restart() {
@@ -133,7 +139,6 @@ function restart() {
     hideElement(elements.Bar);
     showElement(elements.riotShield);
     clearTimer();
-    DOMUpdater.updateAmmoCounter(0);
     DOMUpdater.updateKillCounter(0);
     DOMUpdater.updateHealthCounter(Player.health);
     beginGame();
@@ -168,9 +173,33 @@ function fadeIn() {
     $(elements.backImg).fadeIn(500);
     //elements.backImg.style.animationName = "fadeIn";
 }
+function createMessageDiv(className, msg) {
+    var div = document.createElement("div");
+    div.innerText = msg;
+    div.classList.add(className);
+    return div;
+}
 function finishMessage() {
-    elements.finishMsg.innerHTML =
-        "Completed in " + timerObj.m + " minutes, " + timerObj.s + " seconds and " + timerObj.ss + " split seconds!";
+    elements.finishMsg.innerHTML = "";
+    var div1 = createMessageDiv("levelMsg", "LEVEL 1");
+    var div2 = createMessageDiv("levelMsg", "COMPLETED");
+    var div3 = createMessageDiv("speedMsg", "Time: " + getTime());
+    var killsStr = "Total kills: " + (Target.deadCount + Target.deadExtraCount);
+    var div4 = createMessageDiv("speedMsg", killsStr);
+    slamMessage(div1, elements.finishMsg, 1000);
+    slamMessage(div2, elements.finishMsg, 2000);
+    slamMessage(div3, elements.finishMsg, 3000);
+    slamMessage(div4, elements.finishMsg, 4000);
+}
+function slamMessage(elem, parent, delay) {
+    setTimeout(function () {
+        parent.append(elem);
+        SGshot.play();
+    }, delay);
+}
+function sectionFinish() {
+    gameBegun = false;
+    finishMessage();
 }
 // $(document).ready(function () {
 //     $("#Track").fadeOut();
