@@ -50,7 +50,7 @@
 
 .finishText{
     cursor: pointer ;
-    font-family: 'Aldrich';
+    font-family: 'Aldrich',Impact;
     color: red;
     background-color: rgba(100, 100, 100, 0.7);
     border-radius: 20px;
@@ -107,7 +107,7 @@
     left: 35%;
     top: 43%;
     font-size: 80px;
-    font-family: Aldrich;
+    font-family: Aldrich, Impact;
 }
 
 #timer {
@@ -126,7 +126,7 @@
     position: fixed;
     font-size: 60px;
     color: red;
-    font-family: Aldrich;
+    font-family: Aldrich, Impact;;
     pointer-events: none;
     }
 #ammoBox{
