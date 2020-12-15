@@ -45,6 +45,9 @@ document.addEventListener('keydown', function (ev) {
     else if (ev.key === "c") {
         clearAllEnemies();
     }
+    else if (ev.key === "g") {
+        godMode();
+    }
     else if (ev.key === "k") {
         killAllEnemies();
     }
