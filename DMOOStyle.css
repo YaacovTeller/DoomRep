@@ -36,8 +36,16 @@
 .flexJustifyCentre{
     position: absolute;
     top: 20%;
+    width: 100%;
     /* display: flex;
     justify-items: center; not working? */
+}
+.finishText .levelMsg{
+    font-size: 100px;
+    font-weight: bold;
+}
+.finishText .speedMsg{
+    font-size: 65px;
 }
 
 .finishText{
