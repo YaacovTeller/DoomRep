@@ -13,21 +13,78 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 //TheQuickAndTheDead
-var redrawing;
 var hitTarget;
 var targeting = false;
-var hurting;
+var Position = /** @class */ (function () {
+    function Position(x, y, scale) {
+        this.x = x;
+        this.y = y;
+        this.scale = scale;
+    }
+    return Position;
+}());
+var AnimationInfo = /** @class */ (function () {
+    function AnimationInfo(anim, dur, iter, dir, tim) {
+        this.animation = anim;
+        this.duration = dur || '5s';
+        this.timing = tim || 'ease';
+        this.iterations = iter || 'infinite';
+        this.direction = dir || "";
+    }
+    AnimationInfo.prototype.animationString = function () {
+        return this.animation + " " + this.duration + " " + this.timing + " " + this.iterations + " " + this.direction;
+    };
+    return AnimationInfo;
+}());
 // parent class, handles drawing and damaging.
-var target = /** @class */ (function () {
-    function target(num, enemy, health) {
+var Target = /** @class */ (function () {
+    function Target(num, enemy, health, position, anim) {
         this.deadFlag = false;
         this.health = health;
         this.num = num;
         this.enemy = enemy;
-        this.draw();
+        this.draw(position, anim);
     }
-    // The abstract "die" function. Implemented differently by the two child classes
-    target.prototype.die = function () {
+    Target.prototype.draw = function (position, anim) {
+        var _this_1 = this;
+        var img = document.createElement("img");
+        img.setAttribute('class', "target"); //infiniteAlternateReverse
+        img.setAttribute('id', "tgt" + this.num);
+        img.onmouseover = function () { return _this_1.MGhit(); };
+        img.onmouseleave = function () { return _this_1.MGhitEnd(); };
+        img.setAttribute('src', enemyPics[this.enemy]);
+        img.setAttribute('draggable', "false");
+        img.style.left = position.x + "%";
+        img.style.top = position.y + "%";
+        img.style.transform = position.scale ? "scale(" + position.scale + ")" : "scale(" + position.y / 50 * position.y / 50 + ")";
+        if (anim) {
+            var str = anim.animationString();
+            img.style.animation = str;
+        }
+        elements.targetBackdrop.appendChild(img);
+        this.DOMImage = img;
+    };
+    Target.prototype.redraw = function () {
+        if (this.deadFlag == false) {
+            this.DOMImage.setAttribute("src", enemyPics[this.enemy]);
+        }
+    };
+    Target.prototype.undraw = function () {
+        $(this.DOMImage).fadeOut(300, function () { $(this).remove(); });
+    };
+    Target.prototype.loseHealth = function (damage) {
+        this.health -= damage;
+        this.DOMImage.setAttribute("src", enemyPics.hurt[this.enemy]);
+        var _this = this;
+        if (this.health <= 0) {
+            this.die();
+        }
+        // Calls redraw to reset
+        else {
+            setTimeout(_this.redraw, 200);
+        }
+    };
+    Target.prototype.die = function () {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         this.DOMImage.style.animationPlayState = "paused";
@@ -35,105 +92,66 @@ var target = /** @class */ (function () {
         this.DOMImage.style.pointerEvents = "none";
         this.deadSound();
     };
-    target.prototype.draw = function () {
-        var _this = this;
-        var img = document.createElement("img");
-        img.setAttribute('class', "target infiniteAlternateReverse");
-        img.setAttribute('id', "tgt" + this.num);
-        img.onmouseover = function () { return _this.MGhit(); };
-        img.onmouseleave = function () { return _this.MGhitEnd(); };
-        img.setAttribute('src', enemyPics[this.enemy]);
-        img.setAttribute('draggable', "false");
-        elements.targetBackdrop.appendChild(img);
-        this.DOMImage = img;
-    };
-    target.prototype.redraw = function () {
-        if (hitTarget.deadFlag == false) {
-            var hitImage = hitTarget.DOMImage;
-            hitImage.setAttribute("src", enemyPics[hitTarget.enemy]);
-        }
-    };
-    target.prototype.undraw = function () {
-        $(this.DOMImage).fadeOut(300, function () { $(this).remove(); });
-    };
-    // All target damaging: calls `redraw` and `die`
-    target.prototype.loseHealth = function () {
-        if (weaponry.w == 2) {
-            hitTarget.healthUnit = 10;
-        }
-        else if (weaponry.w == 3) {
-            hitTarget.healthUnit = 30;
-        }
-        else if (weaponry.w == 1 || weaponry.w == 4 || weaponry.w == 7 || weaponry.w == 4.1 || weaponry.w == 7.1 || weaponry.w == 1.1 || weaponry.w == 6 || weaponry.w == 6.1) {
-            hitTarget.healthUnit = 10;
-        }
-        hitTarget.health -= hitTarget.healthUnit;
-        // Changes image to 'hurt' image
-        var hitImage = hitTarget.DOMImage;
-        hitImage.setAttribute("src", enemyPics.hurt[this.enemy]);
-        if (this.health <= 0) {
-            this.die();
-        }
-        // Calls redraw to reset
-        else {
-            redrawing = setTimeout(hitTarget.redraw, 200);
-        }
-    };
     // The machine gun damage function
-    target.prototype.MGhit = function () {
+    Target.prototype.MGhit = function () {
         hitTarget = this;
         targeting = true;
-        var hitImage = hitTarget.DOMImage;
-        // Checks if machine guns (7 and 4) or chainsaw (1) are being fired
-        if (weaponry.w == 7.1 || weaponry.w == 6.1) {
-            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
+        var hitImage = this.DOMImage;
+        if (!Player.weapon.firing) {
+            return;
         }
-        else if (weaponry.w == 1.1) {
-            if (ChainSaw.chainsawDistanceCheck(hitImage)) {
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
+        switch (Player.weapon.constructor.name) {
+            case 'ChainSaw': {
+                if (ChainSaw.chainsawDistanceCheck(hitImage)) {
+                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
+                }
+                break;
             }
-        }
-        else if (weaponry.w == 4.1) {
-            if (minigun.spinUpCheck == true) {
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
+            case 'Minigun': {
+                if (Minigun.spinUpCheck == true) {
+                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
+                }
+                break;
+            }
+            default: {
+                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
             }
         }
     };
-    target.prototype.MGhitEnd = function () {
+    Target.prototype.MGhitEnd = function () {
         clearInterval(MachineGun.mghit);
         targeting = false;
         // hitTarget = null;
     };
-    target.targetCount = 0;
-    target.deadCount = 0;
-    target.extraCount = 0;
-    target.deadExtraCount = 0;
-    return target;
+    Target.deadCount = 0;
+    Target.deadExtraCount = 0;
+    return Target;
 }());
-var regEnemy = /** @class */ (function (_super) {
-    __extends(regEnemy, _super);
-    function regEnemy(num, enemy, health) {
-        return _super.call(this, num, enemy, health) || this;
+var RegEnemy = /** @class */ (function (_super) {
+    __extends(RegEnemy, _super);
+    function RegEnemy(num, enemy, health, position, anim) {
+        return _super.call(this, num, enemy, health, position, anim) || this;
     }
-    regEnemy.prototype.draw = function () {
-        _super.prototype.draw.call(this);
-        target.targetCount++;
-    };
-    regEnemy.prototype.die = function () {
+    // public draw(position, anim) {
+    //     super.draw(position, anim);
+    // }
+    RegEnemy.prototype.die = function () {
         _super.prototype.die.call(this);
         clearInterval(this.attackRoller);
-        clearInterval(hurting);
-        target.deadCount++;
-        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
-        levelCheck();
+        clearInterval(this.damaging);
+        if (!(this instanceof Extra)) {
+            Target.deadCount++;
+            levelCheck();
+        }
+        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
     };
-    regEnemy.prototype.hitRoll = function (damage) {
+    RegEnemy.prototype.hitRoll = function (damage) {
         if (Player.dead == false) {
             var die = (Math.floor(Math.random() * 7));
             if (die == 6) {
                 hitWarning();
                 if (riotShieldDeployed == false) {
-                    Player.damageCheck(damage);
+                    Player.damageCheck(this, damage);
                 }
                 else {
                     setTimeout(function () {
@@ -143,117 +161,116 @@ var regEnemy = /** @class */ (function (_super) {
             }
         }
     };
-    regEnemy.prototype.inflictDamage = function (damage, attackFrequency) {
+    RegEnemy.prototype.inflictDamage = function (damage, attackFrequency) {
         if (!damage)
             return;
         var firingEnemy = this;
         this.attackRoller = setInterval(function () { firingEnemy.hitRoll(damage); }, attackFrequency);
     };
-    regEnemy.regEnemyArray = new Array();
-    return regEnemy;
-}(target));
+    RegEnemy.enemyArray = new Array();
+    return RegEnemy;
+}(Target));
 var Troop = /** @class */ (function (_super) {
     __extends(Troop, _super);
-    function Troop(num, health) {
-        var _this = _super.call(this, num, "Troop", health) || this;
-        _this.damageNumber = 10;
-        _this.attackFrequency = 2000;
-        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
-        return _this;
+    function Troop(num, health, position, anim) {
+        var _this_1 = _super.call(this, num, "Troop", health, position, anim) || this;
+        _this_1.damageNumber = 10;
+        _this_1.attackFrequency = 2000;
+        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
+        return _this_1;
     }
     Troop.prototype.deadSound = function () {
         ded2.play();
     };
     return Troop;
-}(regEnemy));
+}(RegEnemy));
 var ShotGGuy = /** @class */ (function (_super) {
     __extends(ShotGGuy, _super);
-    function ShotGGuy(num, health) {
-        var _this = _super.call(this, num, "ShotGGuy", health) || this;
-        _this.damageNumber = 20;
-        _this.attackFrequency = 2000;
-        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
-        return _this;
+    function ShotGGuy(num, health, position, anim) {
+        var _this_1 = _super.call(this, num, "ShotGGuy", health, position, anim) || this;
+        _this_1.damageNumber = 20;
+        _this_1.attackFrequency = 2000;
+        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
+        return _this_1;
     }
     ShotGGuy.prototype.deadSound = function () {
         ded.play();
     };
     return ShotGGuy;
-}(regEnemy));
+}(RegEnemy));
 var Imp = /** @class */ (function (_super) {
     __extends(Imp, _super);
-    function Imp(num, health) {
-        var _this = _super.call(this, num, "Imp", health) || this;
-        _this.damageNumber = 15;
-        _this.attackFrequency = 2000;
-        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
-        return _this;
+    function Imp(num, health, position, anim) {
+        var _this_1 = _super.call(this, num, "Imp", health, position, anim) || this;
+        _this_1.damageNumber = 15;
+        _this_1.attackFrequency = 2000;
+        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
+        return _this_1;
     }
     Imp.prototype.deadSound = function () {
         ded2.play();
     };
     return Imp;
-}(regEnemy));
-var ExtraTarget = /** @class */ (function (_super) {
-    __extends(ExtraTarget, _super);
-    function ExtraTarget(num, enemy, health) {
-        return _super.call(this, num, enemy, health) || this;
+}(RegEnemy));
+var Extra = /** @class */ (function (_super) {
+    __extends(Extra, _super);
+    function Extra(num, enemy, health, position, anim) {
+        return _super.call(this, num, enemy, health, position, anim) || this;
     }
-    ExtraTarget.prototype.draw = function () {
-        _super.prototype.draw.call(this);
-        this.DOMImage.classList.remove("infiniteAlternateReverse");
-        target.extraCount++;
+    Extra.prototype.draw = function (position, anim) {
+        _super.prototype.draw.call(this, position, anim);
+        //    this.DOMImage.classList.remove("infiniteAlternateReverse");
+        this.DOMImage.classList.add('fillModeForwards', 'extraTarget');
     };
-    ExtraTarget.prototype.die = function () {
+    Extra.prototype.die = function () {
+        Target.deadExtraCount++;
         _super.prototype.die.call(this);
-        target.deadExtraCount++;
     };
-    ExtraTarget.prototype.deadSound = function () {
+    Extra.prototype.deadSound = function () {
         if (this.enemy == "Troop") {
             ded2.play();
         }
-        else if (this.enemy == "SGunG") {
+        else if (this.enemy == "ShotGGuy") {
             ded.play();
         }
         else if (this.enemy == "Imp") {
             ded.play();
         }
     };
-    ExtraTarget.extraTargetArray = new Array();
-    return ExtraTarget;
-}(target));
+    return Extra;
+}(RegEnemy));
 var Boss = /** @class */ (function (_super) {
     __extends(Boss, _super);
-    function Boss(num, enemy, health) {
-        var _this = _super.call(this, num, enemy, health) || this;
-        _this.damageNumber = 30;
-        _this.attackFrequency = 300;
-        _this.inflictDamage(_this.damageNumber, _this.attackFrequency);
-        return _this;
+    function Boss(num, enemy, health, position, anim) {
+        var _this_1 = _super.call(this, num, enemy, health, position, anim) || this;
+        _this_1.damageNumber = 30;
+        _this_1.attackFrequency = 300;
+        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
+        _this_1.bar = elements.Bar;
+        return _this_1;
     }
     Boss.prototype.fillBar = function () {
-        showElement(elements.Bar);
-        elements.Bar.style.width = "100%";
+        showElement(this.bar);
+        this.bar.style.width = "100%";
     };
-    Boss.prototype.loseHealth = function () {
-        _super.prototype.loseHealth.call(this);
-        elements.Bar.style.width = this.health / 2 + "%";
+    Boss.prototype.loseHealth = function (damage) {
+        _super.prototype.loseHealth.call(this, damage);
+        this.bar.style.width = this.health / 2 + "%";
     };
     Boss.prototype.die = function () {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         clearInterval(this.attackRoller);
-        clearInterval(hurting);
-        var Bar = elements.Bar;
-        Bar.style.width = "0%";
+        clearInterval(this.damaging);
+        this.bar.style.width = "0%";
         this.DOMImage.removeAttribute("onmouseenter");
         this.DOMImage.removeAttribute("onmousedown");
         this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
         this.DOMImage.style.pointerEvents = "none";
-        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
+        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
         this.deadSound();
         stopTimer();
-        finishMessage();
+        sectionFinish();
     };
     Boss.prototype.deadSound = function () {
         if (this.enemy == "ChainGuy") {
@@ -261,29 +278,34 @@ var Boss = /** @class */ (function (_super) {
         }
     };
     return Boss;
-}(regEnemy));
+}(RegEnemy));
 var Player = /** @class */ (function () {
     function Player() {
     }
-    Player.damageCheck = function (damage) {
-        hurting = setTimeout(function () {
-            // if (riotShieldDeployed == false) {
-            Player.health -= damage;
-            if (Player.health > 0) {
-                DOMUpdater.updateHealthCounter(Player.health);
-                document.body.style.animationName = "hit";
-                Hlifescream1.play();
-                setTimeout(function () { document.body.style.removeProperty("animation-name"); }, 1100);
+    Player.damageCheck = function (damager, damage) {
+        damager.damaging = setTimeout(function () {
+            if (riotShieldDeployed == false) {
+                Player.playerHit(damage);
             }
-            else {
-                Player.playerDeath();
-            }
-            // else Turicochet.play();
+            else
+                Turicochet.play();
         }, 1000);
+    };
+    Player.playerHit = function (damage) {
+        Player.health -= damage;
+        if (Player.health > 0) {
+            DOMUpdater.updateHealthCounter(Player.health);
+            document.body.style.animationName = "hit";
+            Player.hurtSound();
+            setTimeout(function () { document.body.style.removeProperty("animation-name"); }, 1100);
+        }
+        else {
+            Player.playerDeath();
+        }
     };
     Player.playerDeath = function () {
         Player.dead = true;
-        Turokscream.play();
+        this.deadSound();
         fadeOut();
         openMenu();
         stopTimer();
@@ -292,6 +314,12 @@ var Player = /** @class */ (function () {
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
         //     clearInterval(tgt22.attackRoller)
+    };
+    Player.deadSound = function () {
+        Turokscream.play();
+    };
+    Player.hurtSound = function () {
+        Hlifescream1.play();
     };
     Player.health = 100;
     Player.dead = false;

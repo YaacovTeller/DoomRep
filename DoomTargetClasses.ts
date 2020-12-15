@@ -1,28 +1,93 @@
 //TheQuickAndTheDead
-var redrawing;
-var hitTarget: target;
+var hitTarget: Target;
 var targeting: boolean = false;
-var hurting;
+
+interface Function { // to get class names from an instance
+    name: string;
+}
+
+class Position{
+    x: number;
+    y: number;
+    scale: number;
+    constructor(x,y,scale?){
+        this.x = x;
+        this.y = y;
+        this.scale = scale
+    }
+}
+class AnimationInfo{
+    animation: string;
+    duration: string;
+    timing: string;
+    iterations: string;
+    direction: string; //alternate-reverse
+
+    constructor(anim, dur, iter?, dir?, tim?){
+        this.animation = anim;
+        this.duration = dur || '5s';
+        this.timing = tim || 'ease';
+        this.iterations = iter || 'infinite';
+        this.direction = dir || "";
+    }
+    public animationString(){
+        return this.animation+" "+this.duration+" "+this.timing+" "+this.iterations+" "+this.direction;
+    }
+}
 
 // parent class, handles drawing and damaging.
-abstract class target {
+abstract class Target {
     public num: number;
     public enemy: string;
     public health: number;
     public healthUnit: number;
     public DOMImage: HTMLElement;
-    public static targetCount: number = 0;
     public static deadCount: number = 0;
-    public static extraCount: number = 0;
     public static deadExtraCount: number = 0;
     public deadFlag: boolean = false;
-    constructor(num, enemy, health) {
+    constructor(num, enemy, health, position: Position, anim: AnimationInfo) {
         this.health = health;
         this.num = num;
         this.enemy = enemy;
-        this.draw();
+        this.draw(position, anim);
     }
-    // The abstract "die" function. Implemented differently by the two child classes
+    
+    protected draw(position, anim?){
+        var img:HTMLElement = document.createElement("img");
+        img.setAttribute('class', "target"); //infiniteAlternateReverse
+        img.setAttribute('id', `tgt${this.num}`);
+        img.onmouseover = () => this.MGhit();
+        img.onmouseleave = () => this.MGhitEnd();
+        img.setAttribute('src', enemyPics[this.enemy]);
+        img.setAttribute('draggable', `false`);
+        img.style.left = position.x +"%";
+        img.style.top = position.y +"%";
+        img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y/50*position.y/50})`
+        if (anim){
+            let str = anim.animationString();
+            img.style.animation = str;
+        }
+        elements.targetBackdrop.appendChild(img);
+        this.DOMImage = img;
+    }
+    public redraw() {
+        if (this.deadFlag == false) {
+            this.DOMImage.setAttribute("src", enemyPics[this.enemy]);
+        }
+    }
+    public undraw(){
+        $(this.DOMImage).fadeOut(300, function() { $(this).remove(); })
+    }
+    
+    public loseHealth(damage) {
+        this.health -= damage;
+        this.DOMImage.setAttribute("src", enemyPics.hurt[this.enemy]);
+        let _this = this;
+        if (this.health <= 0) { this.die() }
+        // Calls redraw to reset
+        else { setTimeout(_this.redraw, 200); }
+    }
+
     protected die(){
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
@@ -34,65 +99,28 @@ abstract class target {
 
     abstract deadSound()
 
-    protected draw(){
-        var img:HTMLElement = document.createElement("img");
-        img.setAttribute('class', "target infiniteAlternateReverse");
-        img.setAttribute('id', `tgt${this.num}`);
-        img.onmouseover = () => this.MGhit();
-        img.onmouseleave = () => this.MGhitEnd();
-        img.setAttribute('src', enemyPics[this.enemy]);
-        img.setAttribute('draggable', `false`);
-        elements.targetBackdrop.appendChild(img);
-        this.DOMImage = img;
-    }
-    public redraw() {
-        if (hitTarget.deadFlag == false) {
-            let hitImage = hitTarget.DOMImage;
-            hitImage.setAttribute("src", enemyPics[hitTarget.enemy]);
-        }
-    }
-    public undraw(){
-        $(this.DOMImage).fadeOut(300, function() { $(this).remove(); })
-    }
-
-    // All target damaging: calls `redraw` and `die`
-    public loseHealth() {
-        if (weaponry.w == 2) {
-            hitTarget.healthUnit = 10;
-        }
-        else if (weaponry.w == 3) { 
-            hitTarget.healthUnit = 30 
-        }
-        else if (weaponry.w == 1 || weaponry.w == 4 || weaponry.w == 7 || weaponry.w == 4.1 || weaponry.w == 7.1 || weaponry.w == 1.1 || weaponry.w == 6 || weaponry.w == 6.1) {
-             hitTarget.healthUnit = 10 
-            }
-        hitTarget.health -= hitTarget.healthUnit;
-
-        // Changes image to 'hurt' image
-        let hitImage = hitTarget.DOMImage;
-        hitImage.setAttribute("src", enemyPics.hurt[this.enemy]);
-
-        if (this.health <= 0) { this.die() }
-        // Calls redraw to reset
-        else { redrawing = setTimeout(hitTarget.redraw, 200); }
-    }
-
     // The machine gun damage function
     public MGhit() {
         hitTarget = this;
         targeting = true;
-        let hitImage = hitTarget.DOMImage;
-        // Checks if machine guns (7 and 4) or chainsaw (1) are being fired
+        let hitImage = this.DOMImage;
 
-        if (weaponry.w == 7.1 || weaponry.w == 6.1) {
-            MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
-        }
-        else if (weaponry.w == 1.1) {
-            if (ChainSaw.chainsawDistanceCheck(hitImage)) { MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100)); }
-        }
-        else if (weaponry.w == 4.1) {
-            if (minigun.spinUpCheck == true) {
-                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(); }, 100));
+        if (!Player.weapon.firing) { return }
+        switch (Player.weapon.constructor.name) {
+            case 'ChainSaw': {
+                if (ChainSaw.chainsawDistanceCheck(hitImage)) { 
+                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
+                }
+                break;
+            }
+            case 'Minigun': {
+                if (Minigun.spinUpCheck == true) { 
+                    MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
+                }
+                break;
+            }
+            default: {
+                MachineGun.mghit = (setInterval(function () { hitTarget.loseHealth(Player.weapon.damage); }, 100));
             }
         }
     }
@@ -103,27 +131,29 @@ abstract class target {
     }
 }
 
-abstract class regEnemy extends target {
-    public static regEnemyArray: Array<regEnemy> = new Array();
+abstract class RegEnemy extends Target {
+    public static enemyArray: Array<RegEnemy> = new Array();
     protected damageNumber: number;
     public attackFrequency: number;
     public attackRoller;
+    public damaging;
 
-    constructor(num, enemy, health) {
-        super(num, enemy, health)
+    constructor(num, enemy, health, position, anim) {
+        super(num, enemy, health, position, anim)
     }
 
-    public draw() {
-        super.draw();
-        target.targetCount++;
-    }
+    // public draw(position, anim) {
+    //     super.draw(position, anim);
+    // }
     public die() {
         super.die();
         clearInterval(this.attackRoller);
-        clearInterval(hurting);
-        target.deadCount++
-        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
-        levelCheck();
+        clearInterval(this.damaging);
+        if (!(this instanceof Extra)){
+            Target.deadCount++
+            levelCheck();
+        } 
+        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
     }
     private hitRoll(damage) {
         if (Player.dead == false) {
@@ -131,7 +161,7 @@ abstract class regEnemy extends target {
             if (die == 6) {
                 hitWarning();
                 if (riotShieldDeployed == false) {
-                    Player.damageCheck(damage);
+                    Player.damageCheck(this, damage);
                 }
                 else {
                     setTimeout(function () {
@@ -148,66 +178,66 @@ abstract class regEnemy extends target {
     }
 }
 
-class Troop extends regEnemy {
+class Troop extends RegEnemy {
     public damageNumber = 10;
     public attackFrequency = 2000;
 
-    constructor(num, health) {
-        super(num, "Troop", health)
+    constructor(num, health, position, anim?) {
+        super(num, "Troop", health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded2.play()
     }
 }
-class ShotGGuy extends regEnemy {
+class ShotGGuy extends RegEnemy {
     public damageNumber = 20;
     public attackFrequency = 2000;
-    constructor(num, health) {
-        super(num, "ShotGGuy", health)
+    constructor(num, health, position, anim?) {
+        super(num, "ShotGGuy", health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded.play()
     }
 }
-class Imp extends regEnemy {
+class Imp extends RegEnemy {
     public damageNumber = 15;
     public attackFrequency = 2000;
-    constructor(num, health) {
-        super(num, "Imp", health)
+    constructor(num, health, position, anim?) {
+        super(num, "Imp", health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded2.play()
     }
 }
-class ExtraTarget extends target {
-    public static extraTargetArray: Array<ExtraTarget> = new Array();
-    constructor(num, enemy, health) {
-        super(num, enemy, health)
+class Extra extends RegEnemy {
+    constructor(num, enemy, health, position, anim?) {
+        super(num, enemy, health, position, anim)
     }
-    public draw() {
-        super.draw()
-        this.DOMImage.classList.remove("infiniteAlternateReverse");
-        target.extraCount++;
+    public draw(position, anim) {
+        super.draw(position, anim)
+    //    this.DOMImage.classList.remove("infiniteAlternateReverse");
+        this.DOMImage.classList.add('fillModeForwards', 'extraTarget')
    }
     public die() {
+        Target.deadExtraCount++
         super.die();
-        target.deadExtraCount++
     }
     public deadSound() {
          if (this.enemy == "Troop") { ded2.play() }
-         else if (this.enemy == "SGunG") { ded.play() }
+         else if (this.enemy == "ShotGGuy") { ded.play() }
          else if (this.enemy == "Imp") { ded.play() }
     }
 }
-class Boss extends regEnemy {
+
+class Boss extends RegEnemy {
     damageNumber = 30;
     attackFrequency = 300;
     bar:HTMLElement;
-    constructor(num, enemy, health) {
-        super(num, enemy, health)
+    constructor(num, enemy, health, position, anim?) {
+        super(num, enemy, health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
         this.bar = elements.Bar;
     }
@@ -215,24 +245,24 @@ class Boss extends regEnemy {
         showElement(this.bar);
         this.bar.style.width = `100%`;
     }
-    public loseHealth(){
-        super.loseHealth();
+    public loseHealth(damage){
+        super.loseHealth(damage);
         this.bar.style.width = `${this.health / 2}%`;
     }
     public die() {
         this.deadFlag = true;
         clearInterval(MachineGun.mghit);
         clearInterval(this.attackRoller);
-        clearInterval(hurting);
+        clearInterval(this.damaging);
         this.bar.style.width = `0%`;
         this.DOMImage.removeAttribute("onmouseenter");
         this.DOMImage.removeAttribute("onmousedown");
         this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
         this.DOMImage.style.pointerEvents = "none";
-        DOMUpdater.updateKillCounter(target.deadCount + target.deadExtraCount);
+        DOMUpdater.updateKillCounter(Target.deadCount + Target.deadExtraCount);
         this.deadSound();
         stopTimer();
-        finishMessage();
+        sectionFinish();
     }
     public deadSound() {
         if (this.enemy == "ChainGuy") {
@@ -246,19 +276,24 @@ class Player {
     static dead: boolean = false;
     static weapon: weaponry;
     static slungWeapon: weaponry;
-    static damageCheck(damage){
-        hurting = setTimeout(function () {
-            // if (riotShieldDeployed == false) {
-                Player.health -= damage;
-            if (Player.health > 0) {
-                DOMUpdater.updateHealthCounter(Player.health);
-                document.body.style.animationName = "hit";
-                this.hurtSound();
-                setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
+    static damageCheck(damager: RegEnemy, damage) {
+        damager.damaging = setTimeout(function () { 
+            if (riotShieldDeployed == false) {
+                Player.playerHit(damage)
             }
-            else { Player.playerDeath() }
-            // else Turicochet.play();
+            else Turicochet.play();
         }, 1000);
+    }
+
+    static playerHit(damage){
+        Player.health -= damage;
+        if (Player.health > 0) {
+            DOMUpdater.updateHealthCounter(Player.health);
+            document.body.style.animationName = "hit";
+            Player.hurtSound();
+            setTimeout(function () { document.body.style.removeProperty("animation-name") }, 1100);
+        }
+        else { Player.playerDeath() }
     }
 
     static playerDeath() {
