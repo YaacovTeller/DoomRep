@@ -9,11 +9,10 @@ var timerObj = {
     strSS: "",
     blankTimerStr: "00:00:00",
     elem: document.getElementById("timer"),
+    timeInterval: null,
 };
-clearTimer();
-var time;
 function startTimer() {
-    time = setInterval(function () {
+    timerObj.timeInterval = setInterval(function () {
         timerObj.ss++;
         if (timerObj.ss == 99) {
             timerObj.ss = 0;
@@ -38,11 +37,14 @@ function startTimer() {
         }
         else
             timerObj.strSS = timerObj.ss.toString();
-        timerObj.elem.innerHTML = timerObj.strM + ":" + timerObj.strS + ":" + timerObj.strSS;
+        timerObj.elem.innerHTML = getTime();
     }, 10);
 }
 function stopTimer() {
-    clearInterval(time);
+    clearInterval(timerObj.timeInterval);
+}
+function getTime() {
+    return timerObj.strM + ":" + timerObj.strS + ":" + timerObj.strSS;
 }
 function clearTimer() {
     timerObj.m = 0;
