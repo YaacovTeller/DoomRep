@@ -6,9 +6,9 @@ class GameInfo {
     public static deadExtraCount: number = 0;
 }
 
-interface Function { // to get class names from an instance
-    name: string;
-}
+// interface Function { // to get class names from an instance // relevant for es5
+//     name: string;
+// }
 
 class Position{
     x: number;
@@ -39,6 +39,51 @@ class AnimationInfo{
     }
 }
 
+class pickup {
+    protected source: Target
+    protected image;// = pics.pickups.shotgun;
+    protected cssClass
+    constructor(source) {
+        this.source = source;
+    }
+    public draw(){
+        let img:HTMLElement = document.createElement('img');
+        
+        img.setAttribute('src', this.image);
+        img.classList.add('pickup');
+        img.classList.add(this.cssClass);
+        let left = this.source.DOMImage.getBoundingClientRect().right;
+        let top = this.source.DOMImage.getBoundingClientRect().bottom - 100;
+        img.style.left = left + 'px';
+        img.style.top = top + 'px';
+     //   img.style.border = "3px solid red"
+        elements.targetBackdrop.appendChild(img);
+        this.throw(left, top, img);
+    }
+    private throw(left, top, img){
+        $(img).css({ fontSize: 0 }).animate({
+            fontSize: 45
+        },{
+            duration: 500,
+            easing: "linear",
+            step: function(t, fx){
+                var a = t/15;
+                var x = left - Math.cos(a) * 50;
+                var y = top - Math.sin(a) * 50;
+                $(this).css({ left: x, top: y });
+            }
+        });
+    }
+}
+class ammoPickup extends pickup{
+    protected cssClass = "pickup_ammo"
+    protected image = pics.pickups.shells;
+}
+class weaponPickup extends pickup{
+    protected cssClass = "pickup_weapon"
+    protected image = pics.pickups.shotgun;
+}
+
 // parent class, handles drawing and damaging.
 abstract class Target {
     public num: number;
@@ -47,9 +92,8 @@ abstract class Target {
     public healthUnit: number;
     public DOMImage: HTMLElement;
     public deadFlag: boolean = false;
-    constructor(num, enemy, health, position: Position, anim: AnimationInfo) {
+    constructor(enemy, health, position: Position, anim: AnimationInfo) {
         this.health = health;
-        this.num = num;
         this.enemy = enemy;
         this.draw(position, anim);
     }
@@ -57,11 +101,14 @@ abstract class Target {
     protected draw(position, anim?){
         var img:HTMLElement = document.createElement("img");
         img.setAttribute('class', "target"); //infiniteAlternateReverse
-        img.setAttribute('id', `tgt${this.num}`);
+        
+        img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
         img.onmouseover = () => this.setAsTarget();
         img.onmouseleave = () => this.unsetTarget();
         img.setAttribute('src', enemyPics[this.enemy]);
         img.setAttribute('draggable', `false`);
+      //  img.style.border = "2px solid red"
+        img.style.borderRadius = "55px" // reduce the hitbox?
         img.style.left = position.x +"%";
         img.style.top = position.y +"%";
         img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y/50*position.y/50})`
@@ -118,8 +165,8 @@ abstract class RegEnemy extends Target {
     public attackRoller;
     public damaging;
 
-    constructor(num, enemy, health, position, anim) {
-        super(num, enemy, health, position, anim)
+    constructor(enemy, health, position, anim) {
+        super(enemy, health, position, anim)
     }
 
     // public draw(position, anim) {
@@ -162,8 +209,8 @@ class Troop extends RegEnemy {
     public damageNumber = 10;
     public attackFrequency = 2000;
 
-    constructor(num, health, position, anim?) {
-        super(num, "Troop", health, position, anim)
+    constructor(health, position, anim?) {
+        super("Troop", health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
@@ -173,19 +220,24 @@ class Troop extends RegEnemy {
 class ShotGGuy extends RegEnemy {
     public damageNumber = 20;
     public attackFrequency = 2000;
-    constructor(num, health, position, anim?) {
-        super(num, "ShotGGuy", health, position, anim)
+    constructor(health, position, anim?) {
+        super("ShotGGuy", health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
         ded.play()
     }
+    public die(){
+        let p = new ammoPickup(this);
+        p.draw();
+        super.die();
+    }
 }
 class Imp extends RegEnemy {
     public damageNumber = 15;
     public attackFrequency = 2000;
-    constructor(num, health, position, anim?) {
-        super(num, "Imp", health, position, anim)
+    constructor(health, position, anim?) {
+        super("Imp", health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     public deadSound() {
@@ -193,8 +245,8 @@ class Imp extends RegEnemy {
     }
 }
 class Extra extends RegEnemy {
-    constructor(num, enemy, health, position, anim?) {
-        super(num, enemy, health, position, anim)
+    constructor(enemy, health, position, anim?) {
+        super(enemy, health, position, anim)
     }
     public draw(position, anim) {
         super.draw(position, anim)
@@ -204,20 +256,23 @@ class Extra extends RegEnemy {
     public die() {
         GameInfo.deadExtraCount++
         super.die();
+        let p = new weaponPickup(this);
+        p.draw();
     }
     public deadSound() {
-         if (this.enemy == "Troop") { ded2.play() }
+        let str = "";
+         if (this.enemy.includes("Troop")) { ded2.play() }
          else if (this.enemy == "ShotGGuy") { ded.play() }
          else if (this.enemy == "Imp") { ded.play() }
     }
 }
-
+let a: string
 class Boss extends RegEnemy {
     damageNumber = 30;
     attackFrequency = 300;
     bar:HTMLElement;
-    constructor(num, enemy, health, position, anim?) {
-        super(num, enemy, health, position, anim)
+    constructor(enemy, health, position, anim?) {
+        super(enemy, health, position, anim)
         this.inflictDamage(this.damageNumber, this.attackFrequency);
         this.bar = elements.Bar;
     }

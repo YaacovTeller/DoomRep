@@ -1,7 +1,7 @@
 const gunMoveEvent: string = "Player.weapon.gunMove(event);";
 const MgunShotEvent: string = "Player.weapon.MGunShotDisplay(event);"
 
-var gunConfig = {
+const gunConfig = {
     Pistol: {
         damage : 20,
         scrnMargin: 280,
@@ -86,9 +86,13 @@ abstract class weaponry {
         var x = e.pageX;
         var y = e.pageY;
         weaponry.cX = `${x - 44}px`;
-// Lowers the weapon when the mouse passes the gun height!
-  /*cY*/if (y > (Screen - this.gunHeight)) { weaponry.cY = `${y + 110}px` } 
-        else weaponry.cY = `${Screen - this.scrnMargin}px`;
+        // Lowers the weapon when the mouse passes the gun height!
+        if (y > (Screen - this.gunHeight)) {    
+            weaponry.cY = `${y + 110}px`
+        }
+        else {                                  
+            weaponry.cY = `${Screen - this.scrnMargin}px`;
+        }
         elements.weaponDiv.style.left = weaponry.cX;
         elements.weaponDiv.style.top = weaponry.cY;
     }
@@ -145,7 +149,7 @@ class Pistol extends regGun {
         super.switchTo();
 
         DOMUpdater.updateAmmoCounter(this.ammo);
-        elements.ammoType.setAttribute("src", pics.ammo.bullet);
+        elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
         setMouseAttributes_Normal();
     }
 }
@@ -169,7 +173,7 @@ class Shotgun extends regGun {
         setTimeout(()=>Player.weapon = shotgun,150) 
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
-        elements.ammoType.setAttribute("src", pics.ammo.shell);
+        elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
         setMouseAttributes_Normal()
     }
 }
@@ -346,7 +350,7 @@ class Minigun extends MachineGun {
         super.switchTo();
 
         DOMUpdater.updateAmmoCounter(this.ammo);
-        elements.ammoType.setAttribute("src", pics.ammo.bullets);
+        elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
         setMouseAttributes_MachineGun();
     }
 }
@@ -379,7 +383,7 @@ class DukeMgun extends MachineGun {
         super.switchTo();
 
         DOMUpdater.updateAmmoCounter(this.ammo);
-        elements.ammoType.setAttribute("src", pics.ammo.bullets);
+        elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
         setMouseAttributes_MachineGun()
     }
 }
@@ -414,7 +418,7 @@ class DuelNeutron extends MachineGun {
         setTimeout(()=>Player.weapon = duelneutron,150) 
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
-        elements.ammoType.setAttribute("src", pics.ammo.bullet);
+        elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
         setMouseAttributes_MachineGun()
     }
 }

@@ -23,17 +23,17 @@ function startTimer() {
             timerObj.m++;
         }
         if (timerObj.m < 10) {
-            timerObj.strM = "0" + timerObj.m;
+            timerObj.strM = `0${timerObj.m}`;
         }
         else
             timerObj.strM = timerObj.m.toString();
         if (timerObj.s < 10) {
-            timerObj.strS = "0" + timerObj.s;
+            timerObj.strS = `0${timerObj.s}`;
         }
         else
             timerObj.strS = timerObj.s.toString();
         if (timerObj.ss < 10) {
-            timerObj.strSS = "0" + timerObj.ss;
+            timerObj.strSS = `0${timerObj.ss}`;
         }
         else
             timerObj.strSS = timerObj.ss.toString();

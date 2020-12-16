@@ -77,6 +77,16 @@
     transform: scale(3.5);
     
 }
+.pickup{
+    position: absolute;
+}
+.pickup_weapon{
+    width: 270px;
+}
+.pickup_ammo{
+    width: 100px;
+}
+
 #riotShield{
     /* animation-name: lowerShield; */
     animation-duration: 0.5s;

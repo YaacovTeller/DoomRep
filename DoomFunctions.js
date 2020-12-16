@@ -1,24 +1,21 @@
 "use strict";
-var music = true;
-var riotShieldDeployed = false;
+let music = true;
+let riotShieldDeployed = false;
 var gameBegun = false;
-var DOMUpdater = /** @class */ (function () {
-    function DOMUpdater() {
-    }
-    DOMUpdater.updateKillCounter = function (totalCount) {
+class DOMUpdater {
+    static updateKillCounter(totalCount) {
         this.updateCounter(elements.killCounter, "Kills:" + totalCount);
-    };
-    DOMUpdater.updateAmmoCounter = function (ammo) {
+    }
+    static updateAmmoCounter(ammo) {
         this.updateCounter(elements.ammoCount, ammo);
-    };
-    DOMUpdater.updateHealthCounter = function (health) {
+    }
+    static updateHealthCounter(health) {
         this.updateCounter(elements.health, "Health:" + health);
-    };
-    DOMUpdater.updateCounter = function (elem, str) {
+    }
+    static updateCounter(elem, str) {
         elem.innerText = str;
-    };
-    return DOMUpdater;
-}());
+    }
+}
 function hitWarning() {
     bizwarn.play();
 }
@@ -53,16 +50,14 @@ function showElement(elem) {
     elem.style.display = "block";
 }
 function killAllEnemies() {
-    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
-        var enemy = _a[_i];
+    for (let enemy of RegEnemy.enemyArray) {
         if (!enemy)
             continue;
         enemy.die();
     }
 }
 function clearAllEnemies() {
-    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
-        var enemy = _a[_i];
+    for (let enemy of RegEnemy.enemyArray) {
         if (!enemy)
             continue;
         enemy.deadFlag = true;
@@ -71,8 +66,7 @@ function clearAllEnemies() {
     }
 }
 function godMode() {
-    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
-        var enemy = _a[_i];
+    for (let enemy of RegEnemy.enemyArray) {
         if (!enemy)
             continue;
         clearInterval(enemy.attackRoller);
@@ -101,8 +95,7 @@ function levelCheck() {
     }
 }
 function checkAllDead() {
-    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
-        var enemy = _a[_i];
+    for (let enemy of RegEnemy.enemyArray) {
         if (enemy.deadFlag == false && !(enemy instanceof Extra))
             return false;
     }
@@ -174,25 +167,25 @@ function fadeIn() {
     //elements.backImg.style.animationName = "fadeIn";
 }
 function createMessageDiv(className, msg) {
-    var div = document.createElement("div");
+    let div = document.createElement("div");
     div.innerText = msg;
     div.classList.add(className);
     return div;
 }
 function finishMessage() {
     elements.finishMsg.innerHTML = "";
-    var div1 = createMessageDiv("levelMsg", "LEVEL 1");
-    var div2 = createMessageDiv("levelMsg", "COMPLETED");
-    var div3 = createMessageDiv("speedMsg", "Time: " + getTime());
-    var killsStr = "Total kills: " + (GameInfo.deadCount + GameInfo.deadExtraCount);
-    var div4 = createMessageDiv("speedMsg", killsStr);
+    let div1 = createMessageDiv("levelMsg", "LEVEL 1");
+    let div2 = createMessageDiv("levelMsg", "COMPLETED");
+    let div3 = createMessageDiv("speedMsg", `Time: ${getTime()}`);
+    let killsStr = `Total kills: ${GameInfo.deadCount + GameInfo.deadExtraCount}`;
+    let div4 = createMessageDiv("speedMsg", killsStr);
     slamMessage(div1, elements.finishMsg, 1000);
     slamMessage(div2, elements.finishMsg, 2000);
     slamMessage(div3, elements.finishMsg, 3000);
     slamMessage(div4, elements.finishMsg, 4000);
 }
 function slamMessage(elem, parent, delay) {
-    setTimeout(function () {
+    setTimeout(() => {
         parent.append(elem);
         SGshot.play();
     }, delay);

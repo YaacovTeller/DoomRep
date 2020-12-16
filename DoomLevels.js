@@ -1,8 +1,8 @@
 "use strict";
 //LEVELS
 openMenu();
-elements.weaponDiv.style.top = screen.height - 280 + "px";
-var n;
+elements.weaponDiv.style.top = `${screen.height - 280}px`;
+let n;
 var level;
 function beginGame() {
     Player.weapon = pistol;
@@ -15,7 +15,7 @@ function beginGame() {
         Deuscredits.play();
     }
     startTimer();
-    elements.weaponDiv.style.top = screen.height - Player.weapon.scrnMargin + "px";
+    elements.weaponDiv.style.top = `${screen.height - Player.weapon.scrnMargin}px`;
     lev1();
 }
 function lev1() {
@@ -27,7 +27,7 @@ function lev1() {
 }
 function lev2() {
     level = 2;
-    setTimeout(function () {
+    setTimeout(() => {
         elements.backImg.setAttribute("style", "animation-name: floatRight; animation-duration: 1s; animation-fill-mode: forwards; width: 160%");
         clearTargets();
     }, 300);
@@ -37,15 +37,15 @@ function lev2() {
 }
 function lev3() {
     level = 3;
-    genericLevel(pics.background.doom4, "width: 100%", function () { return drawNewEnemies3(); });
+    genericLevel(pics.background.doom4, "width: 100%", () => drawNewEnemies3());
 }
 function lev4() {
     level = 4;
-    genericLevel(pics.background.doom6, "", function () { return drawNewEnemies4(); });
+    genericLevel(pics.background.doom6, "", () => drawNewEnemies4());
 }
 function lev5() {
     level = 5;
-    genericLevel(pics.background.doom1, "width: 100%; margin-top: -10%", function () { return drawNewEnemies5(); });
+    genericLevel(pics.background.doom1, "width: 100%; margin-top: -10%", () => drawNewEnemies5());
 }
 function genericLevel(background, attributes, enemyFunc) {
     setTimeout(function () {
@@ -74,35 +74,34 @@ function finalLev() {
     }, 1200);
     setTimeout(function () {
         RegEnemy.enemyArray = [];
-        var boss = new Boss(22, "ChainGuy", 200, new Position(40, 23, 1.8));
+        let boss = new Boss("ChainGuy", 200, new Position(40, 23, 1.8));
         RegEnemy.enemyArray.push(boss);
         boss.fillBar();
-        elements.Bar.style.width = boss.health / 2 + "%";
+        elements.Bar.style.width = `${boss.health / 2}%`;
     }, 2000);
 }
 function drawNewEnemies1() {
     RegEnemy.enemyArray = [];
-    RegEnemy.enemyArray.push(new Troop(1, 30, new Position(10, 60), new AnimationInfo("move", '7s')), new Troop(2, 20, new Position(20, 37)), new Troop(3, 20, new Position(30, 60)), new ShotGGuy(4, 30, new Position(50, 55)), new ShotGGuy(5, 30, new Position(70, 30), new AnimationInfo("approach", '8s', '', 'alternate')), new Extra(99, "TroopLeft" + "_Tomer", 10, new Position(70, 30, 0.6), new AnimationInfo("flee", '7s', '1')));
+    RegEnemy.enemyArray.push(new Troop(30, new Position(10, 60), new AnimationInfo("move", '7s')), new Troop(20, new Position(20, 37)), new Troop(20, new Position(30, 60)), new ShotGGuy(30, new Position(50, 55)), new ShotGGuy(30, new Position(70, 30), new AnimationInfo("approach", '8s', '', 'alternate')), new Extra("TroopLeft" + "_Tomer", 10, new Position(70, 30, 0.6), new AnimationInfo("flee", '7s', '1')));
 }
 function drawNewEnemies2() {
     RegEnemy.enemyArray = [];
-    RegEnemy.enemyArray.push(new Troop(3, 20, new Position(30, 50)), new ShotGGuy(4, 30, new Position(40, 45)), new ShotGGuy(5, 30, new Position(60, 55)), new Troop(6, 20, new Position(85, 65)), new Troop(7, 20, new Position(75, 35)));
+    RegEnemy.enemyArray.push(new Troop(20, new Position(30, 50)), new ShotGGuy(30, new Position(40, 45)), new ShotGGuy(30, new Position(60, 55)), new Troop(20, new Position(85, 65)), new Troop(20, new Position(75, 35)));
 }
 function drawNewEnemies3() {
     RegEnemy.enemyArray = [];
-    RegEnemy.enemyArray.push(new Imp(8, 30, new Position(10, 40), new AnimationInfo("move8", '4s')), new Imp(9, 30, new Position(50, 40), new AnimationInfo("move9", '3s')), new Imp(10, 30, new Position(40, 45)), new Imp(11, 30, new Position(25, 55)), new Imp(12, 30, new Position(16, 48), new AnimationInfo("move12", '4s')));
+    RegEnemy.enemyArray.push(new Imp(30, new Position(10, 40), new AnimationInfo("move8", '4s')), new Imp(30, new Position(50, 40), new AnimationInfo("move9", '3s')), new Imp(30, new Position(40, 45)), new Imp(30, new Position(25, 55)), new Imp(30, new Position(16, 48), new AnimationInfo("move12", '4s')));
 }
 function drawNewEnemies4() {
     RegEnemy.enemyArray = [];
-    RegEnemy.enemyArray.push(new Troop(13, 10, new Position(10, 28, 0.2)), new Troop(14, 10, new Position(15, 28, 0.2)), new ShotGGuy(15, 30, new Position(40, 48, 0.3)), new Troop(16, 10, new Position(46, 48, 0.3)), new ShotGGuy(17, 30, new Position(7, 55, 1)), new Troop(18, 10, new Position(18, 60, 1.2)), new Troop(19, 10, new Position(50, 53, 0.5)), new ShotGGuy(20, 30, new Position(60, 53, 0.5)), new Troop(21, 10, new Position(68, 53, 0.5)));
+    RegEnemy.enemyArray.push(new Troop(10, new Position(10, 28, 0.2)), new Troop(10, new Position(15, 28, 0.2)), new ShotGGuy(30, new Position(40, 48, 0.3)), new Troop(10, new Position(46, 48, 0.3)), new ShotGGuy(30, new Position(7, 55, 1)), new Troop(10, new Position(18, 60, 1.2)), new Troop(10, new Position(50, 53, 0.5)), new ShotGGuy(30, new Position(60, 53, 0.5)), new Troop(10, new Position(68, 53, 0.5)));
 }
 function drawNewEnemies5() {
     RegEnemy.enemyArray = [];
-    RegEnemy.enemyArray.push(new Troop(2, 10, new Position(5, 45)), new Troop(4, 10, new Position(15, 50)), new Imp(5, 30, new Position(20, 60)), new ShotGGuy(6, 30, new Position(47, 27, 0.4)), new Troop(8, 10, new Position(60, 50)), new ShotGGuy(10, 30, new Position(65, 45)), new Troop(12, 10, new Position(70, 30, 0.5)), new Imp(11, 30, new Position(70, 45)), new ShotGGuy(16, 30, new Position(80, 27, 0.4)), new Troop(18, 10, new Position(85, 58)), new Extra(99, "ShotGGuy", 10, new Position(15, 18, 0.1)));
+    RegEnemy.enemyArray.push(new Troop(10, new Position(5, 45)), new Troop(10, new Position(15, 50)), new Imp(30, new Position(20, 60)), new ShotGGuy(30, new Position(47, 27, 0.4)), new Troop(10, new Position(60, 50)), new ShotGGuy(30, new Position(65, 45)), new Troop(10, new Position(70, 30, 0.5)), new Imp(30, new Position(70, 45)), new ShotGGuy(30, new Position(80, 27, 0.4)), new Troop(10, new Position(85, 58)), new Extra("ShotGGuy", 10, new Position(15, 18, 0.1)));
 }
 function clearTargets() {
-    for (var _i = 0, _a = RegEnemy.enemyArray; _i < _a.length; _i++) {
-        var enemy = _a[_i];
+    for (let enemy of RegEnemy.enemyArray) {
         enemy.undraw();
     }
 }

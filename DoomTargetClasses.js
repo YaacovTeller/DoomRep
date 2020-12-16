@@ -1,124 +1,153 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 //TheQuickAndTheDead
-var GameInfo = /** @class */ (function () {
-    function GameInfo() {
-    }
-    GameInfo.hitTarget = null;
-    GameInfo.targeting = false;
-    GameInfo.deadCount = 0;
-    GameInfo.deadExtraCount = 0;
-    return GameInfo;
-}());
-var Position = /** @class */ (function () {
-    function Position(x, y, scale) {
+class GameInfo {
+}
+GameInfo.hitTarget = null;
+GameInfo.targeting = false;
+GameInfo.deadCount = 0;
+GameInfo.deadExtraCount = 0;
+// interface Function { // to get class names from an instance // relevant for es5
+//     name: string;
+// }
+class Position {
+    constructor(x, y, scale) {
         this.x = x;
         this.y = y;
         this.scale = scale;
     }
-    return Position;
-}());
-var AnimationInfo = /** @class */ (function () {
-    function AnimationInfo(anim, dur, iter, dir, tim) {
+}
+class AnimationInfo {
+    constructor(anim, dur, iter, dir, tim) {
         this.animation = anim;
         this.duration = dur || '5s';
         this.timing = tim || 'ease';
         this.iterations = iter || 'infinite';
         this.direction = dir || "";
     }
-    AnimationInfo.prototype.animationString = function () {
+    animationString() {
         return this.animation + " " + this.duration + " " + this.timing + " " + this.iterations + " " + this.direction;
-    };
-    return AnimationInfo;
-}());
+    }
+}
+class pickup {
+    constructor(source) {
+        this.source = source;
+    }
+    draw() {
+        let img = document.createElement('img');
+        img.setAttribute('src', this.image);
+        img.classList.add('pickup');
+        img.classList.add(this.cssClass);
+        let left = this.source.DOMImage.getBoundingClientRect().right;
+        let top = this.source.DOMImage.getBoundingClientRect().bottom - 100;
+        img.style.left = left + 'px';
+        img.style.top = top + 'px';
+        //   img.style.border = "3px solid red"
+        elements.targetBackdrop.appendChild(img);
+        this.throw(left, top, img);
+    }
+    throw(left, top, img) {
+        $(img).css({ fontSize: 0 }).animate({
+            fontSize: 45
+        }, {
+            duration: 500,
+            easing: "linear",
+            step: function (t, fx) {
+                var a = t / 15;
+                var x = left - Math.cos(a) * 50;
+                var y = top - Math.sin(a) * 50;
+                $(this).css({ left: x, top: y });
+            }
+        });
+    }
+}
+class ammoPickup extends pickup {
+    constructor() {
+        super(...arguments);
+        this.cssClass = "pickup_ammo";
+        this.image = pics.pickups.shells;
+    }
+}
+class weaponPickup extends pickup {
+    constructor() {
+        super(...arguments);
+        this.cssClass = "pickup_weapon";
+        this.image = pics.pickups.shotgun;
+    }
+}
 // parent class, handles drawing and damaging.
-var Target = /** @class */ (function () {
-    function Target(num, enemy, health, position, anim) {
+class Target {
+    constructor(enemy, health, position, anim) {
         this.deadFlag = false;
         this.health = health;
-        this.num = num;
         this.enemy = enemy;
         this.draw(position, anim);
     }
-    Target.prototype.draw = function (position, anim) {
-        var _this_1 = this;
+    draw(position, anim) {
         var img = document.createElement("img");
         img.setAttribute('class', "target"); //infiniteAlternateReverse
-        img.setAttribute('id', "tgt" + this.num);
-        img.onmouseover = function () { return _this_1.setAsTarget(); };
-        img.onmouseleave = function () { return _this_1.unsetTarget(); };
+        img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
+        img.onmouseover = () => this.setAsTarget();
+        img.onmouseleave = () => this.unsetTarget();
         img.setAttribute('src', enemyPics[this.enemy]);
-        img.setAttribute('draggable', "false");
+        img.setAttribute('draggable', `false`);
+        //  img.style.border = "2px solid red"
+        img.style.borderRadius = "55px"; // reduce the hitbox?
         img.style.left = position.x + "%";
         img.style.top = position.y + "%";
-        img.style.transform = position.scale ? "scale(" + position.scale + ")" : "scale(" + position.y / 50 * position.y / 50 + ")";
+        img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y / 50 * position.y / 50})`;
         if (anim) {
-            var str = anim.animationString();
+            let str = anim.animationString();
             img.style.animation = str;
         }
         elements.targetBackdrop.appendChild(img);
         this.DOMImage = img;
-    };
-    Target.prototype.redraw = function (_this) {
+    }
+    redraw(_this) {
         if (_this.deadFlag == false) {
             _this.DOMImage.setAttribute("src", enemyPics[_this.enemy]);
         }
-    };
-    Target.prototype.undraw = function () {
+    }
+    undraw() {
         $(this.DOMImage).fadeOut(300, function () { $(this).remove(); });
-    };
-    Target.prototype.loseHealth = function (damage) {
+    }
+    loseHealth(damage) {
         this.health -= damage;
         this.DOMImage.setAttribute("src", enemyPics.hurt[this.enemy]);
-        var _this = this;
+        let _this = this;
         if (this.health <= 0) {
             this.die();
         }
         // Calls redraw to reset
         else {
-            setTimeout(function () { return _this.redraw(_this); }, 200);
+            setTimeout(() => _this.redraw(_this), 200);
         }
-    };
-    Target.prototype.die = function () {
+    }
+    die() {
         this.deadFlag = true;
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.DOMImage.style.pointerEvents = "none";
         this.deadSound();
-    };
+    }
     // The machine gun damage function
-    Target.prototype.setAsTarget = function () {
+    setAsTarget() {
         GameInfo.hitTarget = this;
         GameInfo.targeting = true;
-    };
-    Target.prototype.unsetTarget = function () {
+    }
+    unsetTarget() {
         GameInfo.targeting = false;
         GameInfo.hitTarget = null;
-    };
-    return Target;
-}());
-var RegEnemy = /** @class */ (function (_super) {
-    __extends(RegEnemy, _super);
-    function RegEnemy(num, enemy, health, position, anim) {
-        return _super.call(this, num, enemy, health, position, anim) || this;
+    }
+}
+class RegEnemy extends Target {
+    constructor(enemy, health, position, anim) {
+        super(enemy, health, position, anim);
     }
     // public draw(position, anim) {
     //     super.draw(position, anim);
     // }
-    RegEnemy.prototype.die = function () {
-        _super.prototype.die.call(this);
+    die() {
+        super.die();
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         if (!(this instanceof Extra)) {
@@ -126,8 +155,8 @@ var RegEnemy = /** @class */ (function (_super) {
             levelCheck();
         }
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
-    };
-    RegEnemy.prototype.hitRoll = function (damage) {
+    }
+    hitRoll(damage) {
         if (Player.dead == false) {
             var die = (Math.floor(Math.random() * 7));
             if (die == 6) {
@@ -142,74 +171,71 @@ var RegEnemy = /** @class */ (function (_super) {
                 }
             }
         }
-    };
-    RegEnemy.prototype.inflictDamage = function (damage, attackFrequency) {
+    }
+    inflictDamage(damage, attackFrequency) {
         if (!damage)
             return;
         var firingEnemy = this;
         this.attackRoller = setInterval(function () { firingEnemy.hitRoll(damage); }, attackFrequency);
-    };
-    RegEnemy.enemyArray = new Array();
-    return RegEnemy;
-}(Target));
-var Troop = /** @class */ (function (_super) {
-    __extends(Troop, _super);
-    function Troop(num, health, position, anim) {
-        var _this_1 = _super.call(this, num, "Troop", health, position, anim) || this;
-        _this_1.damageNumber = 10;
-        _this_1.attackFrequency = 2000;
-        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
-        return _this_1;
     }
-    Troop.prototype.deadSound = function () {
+}
+RegEnemy.enemyArray = new Array();
+class Troop extends RegEnemy {
+    constructor(health, position, anim) {
+        super("Troop", health, position, anim);
+        this.damageNumber = 10;
+        this.attackFrequency = 2000;
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+    }
+    deadSound() {
         ded2.play();
-    };
-    return Troop;
-}(RegEnemy));
-var ShotGGuy = /** @class */ (function (_super) {
-    __extends(ShotGGuy, _super);
-    function ShotGGuy(num, health, position, anim) {
-        var _this_1 = _super.call(this, num, "ShotGGuy", health, position, anim) || this;
-        _this_1.damageNumber = 20;
-        _this_1.attackFrequency = 2000;
-        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
-        return _this_1;
     }
-    ShotGGuy.prototype.deadSound = function () {
+}
+class ShotGGuy extends RegEnemy {
+    constructor(health, position, anim) {
+        super("ShotGGuy", health, position, anim);
+        this.damageNumber = 20;
+        this.attackFrequency = 2000;
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+    }
+    deadSound() {
         ded.play();
-    };
-    return ShotGGuy;
-}(RegEnemy));
-var Imp = /** @class */ (function (_super) {
-    __extends(Imp, _super);
-    function Imp(num, health, position, anim) {
-        var _this_1 = _super.call(this, num, "Imp", health, position, anim) || this;
-        _this_1.damageNumber = 15;
-        _this_1.attackFrequency = 2000;
-        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
-        return _this_1;
     }
-    Imp.prototype.deadSound = function () {
+    die() {
+        let p = new ammoPickup(this);
+        p.draw();
+        super.die();
+    }
+}
+class Imp extends RegEnemy {
+    constructor(health, position, anim) {
+        super("Imp", health, position, anim);
+        this.damageNumber = 15;
+        this.attackFrequency = 2000;
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+    }
+    deadSound() {
         ded2.play();
-    };
-    return Imp;
-}(RegEnemy));
-var Extra = /** @class */ (function (_super) {
-    __extends(Extra, _super);
-    function Extra(num, enemy, health, position, anim) {
-        return _super.call(this, num, enemy, health, position, anim) || this;
     }
-    Extra.prototype.draw = function (position, anim) {
-        _super.prototype.draw.call(this, position, anim);
+}
+class Extra extends RegEnemy {
+    constructor(enemy, health, position, anim) {
+        super(enemy, health, position, anim);
+    }
+    draw(position, anim) {
+        super.draw(position, anim);
         //    this.DOMImage.classList.remove("infiniteAlternateReverse");
         this.DOMImage.classList.add('fillModeForwards', 'extraTarget');
-    };
-    Extra.prototype.die = function () {
+    }
+    die() {
         GameInfo.deadExtraCount++;
-        _super.prototype.die.call(this);
-    };
-    Extra.prototype.deadSound = function () {
-        if (this.enemy == "Troop") {
+        super.die();
+        let p = new weaponPickup(this);
+        p.draw();
+    }
+    deadSound() {
+        let str = "";
+        if (this.enemy.includes("Troop")) {
             ded2.play();
         }
         else if (this.enemy == "ShotGGuy") {
@@ -218,32 +244,30 @@ var Extra = /** @class */ (function (_super) {
         else if (this.enemy == "Imp") {
             ded.play();
         }
-    };
-    return Extra;
-}(RegEnemy));
-var Boss = /** @class */ (function (_super) {
-    __extends(Boss, _super);
-    function Boss(num, enemy, health, position, anim) {
-        var _this_1 = _super.call(this, num, enemy, health, position, anim) || this;
-        _this_1.damageNumber = 30;
-        _this_1.attackFrequency = 300;
-        _this_1.inflictDamage(_this_1.damageNumber, _this_1.attackFrequency);
-        _this_1.bar = elements.Bar;
-        return _this_1;
     }
-    Boss.prototype.fillBar = function () {
+}
+let a;
+class Boss extends RegEnemy {
+    constructor(enemy, health, position, anim) {
+        super(enemy, health, position, anim);
+        this.damageNumber = 30;
+        this.attackFrequency = 300;
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+        this.bar = elements.Bar;
+    }
+    fillBar() {
         showElement(this.bar);
-        this.bar.style.width = "100%";
-    };
-    Boss.prototype.loseHealth = function (damage) {
-        _super.prototype.loseHealth.call(this, damage);
-        this.bar.style.width = this.health / 2 + "%";
-    };
-    Boss.prototype.die = function () {
+        this.bar.style.width = `100%`;
+    }
+    loseHealth(damage) {
+        super.loseHealth(damage);
+        this.bar.style.width = `${this.health / 2}%`;
+    }
+    die() {
         this.deadFlag = true;
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
-        this.bar.style.width = "0%";
+        this.bar.style.width = `0%`;
         this.DOMImage.removeAttribute("onmouseenter");
         this.DOMImage.removeAttribute("onmousedown");
         this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
@@ -252,18 +276,15 @@ var Boss = /** @class */ (function (_super) {
         this.deadSound();
         stopTimer();
         sectionFinish();
-    };
-    Boss.prototype.deadSound = function () {
+    }
+    deadSound() {
         if (this.enemy == "ChainGuy") {
             bossDed.play();
         }
-    };
-    return Boss;
-}(RegEnemy));
-var Player = /** @class */ (function () {
-    function Player() {
     }
-    Player.damageCheck = function (damager, damage) {
+}
+class Player {
+    static damageCheck(damager, damage) {
         damager.damaging = setTimeout(function () {
             if (riotShieldDeployed == false) {
                 Player.playerHit(damage);
@@ -271,8 +292,8 @@ var Player = /** @class */ (function () {
             else
                 Turicochet.play();
         }, 1000);
-    };
-    Player.playerHit = function (damage) {
+    }
+    static playerHit(damage) {
         Player.health -= damage;
         if (Player.health > 0) {
             DOMUpdater.updateHealthCounter(Player.health);
@@ -283,8 +304,8 @@ var Player = /** @class */ (function () {
         else {
             Player.playerDeath();
         }
-    };
-    Player.playerDeath = function () {
+    }
+    static playerDeath() {
         Player.dead = true;
         this.deadSound();
         fadeOut();
@@ -295,14 +316,13 @@ var Player = /** @class */ (function () {
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
         //     clearInterval(tgt22.attackRoller)
-    };
-    Player.deadSound = function () {
+    }
+    static deadSound() {
         Turokscream.play();
-    };
-    Player.hurtSound = function () {
+    }
+    static hurtSound() {
         Hlifescream1.play();
-    };
-    Player.health = 100;
-    Player.dead = false;
-    return Player;
-}());
+    }
+}
+Player.health = 100;
+Player.dead = false;
