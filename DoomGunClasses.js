@@ -3,27 +3,32 @@ const gunMoveEvent = "Player.weapon.gunMove(event);";
 const MgunShotEvent = "Player.weapon.MGunShotDisplay(event);";
 const gunConfig = {
     Pistol: {
+        startingAmmo: 24,
         damage: 20,
         scrnMargin: 280,
         gunHeight: 390,
     },
     Shotgun: {
+        startingAmmo: 8,
         damage: 30,
         scrnMargin: 230,
         gunHeight: 350,
     },
     DukeMgun: {
+        startingAmmo: 80,
         damage: 10,
         scrnMargin: 280,
         gunHeight: 390,
     },
     Minigun: {
+        startingAmmo: 50,
         damage: 15,
         scrnMargin: 370,
         gunHeight: 480,
     },
     DualNuetron: {
-        damage: 10,
+        startingAmmo: 36,
+        damage: 12,
         scrnMargin: 250,
         gunHeight: 360,
         firing: {
@@ -40,16 +45,21 @@ const gunConfig = {
             scrnMargin: 210,
             gunHeight: 220,
         }
-    },
+    }
 };
 //WEAPON
 class weaponry {
     // sliding gun switch
     switchTo() {
-        $(elements.weaponDiv).animate({ top: '150%' }, 150);
-        $(elements.weaponDiv).animate({ top: '90%' }, 150);
+        if (weaponry.switching == false) { //avoid bobs for multiple weapon pickup
+            weaponry.switching = true;
+            setTimeout(() => { weaponry.switching = false; }, 150);
+            $(elements.weaponDiv).animate({ top: '150%' }, 150);
+            $(elements.weaponDiv).animate({ top: '90%' }, 150);
+        }
         elements.weaponDiv.style.top = `${window.outerHeight - this.scrnMargin}px`; //screen.height
         elements.weaponImg.setAttribute("src", this.gunImage);
+        Player.weapon = this;
     }
     ;
     static showBlood(e) {
@@ -73,10 +83,10 @@ class weaponry {
         var y = e.pageY;
         weaponry.cX = `${x - 44}px`;
         // Lowers the weapon when the mouse passes the gun height!
-        if (y > (Screen - 200)) { // above gun
+        if (y > (Screen - this.gunHeight)) {
             weaponry.cY = `${y + 110}px`;
         }
-        else { // below gun
+        else {
             weaponry.cY = `${Screen - this.scrnMargin}px`;
         }
         elements.weaponDiv.style.left = weaponry.cX;
@@ -89,12 +99,16 @@ class weaponry {
     }
 }
 weaponry.w = 2; //Sets weapon to pistol at the start
+weaponry.switching = false;
 class regGun extends weaponry {
     ricochet() {
         let regGunSounds = new Array(Bullet1, Bullet2, Bullet3);
         super.ricochet(regGunSounds);
     }
     shot(e) {
+        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
+            return;
+        }
         if (this.ammo <= 0) {
             click2.play();
             return false;
@@ -122,6 +136,7 @@ class Pistol extends regGun {
         this.gunHeight = gunConfig.Pistol.gunHeight;
         this.scrnMargin = gunConfig.Pistol.scrnMargin;
         this.damage = gunConfig.Pistol.damage;
+        this.ammo = gunConfig.Pistol.startingAmmo;
     }
     gunMove(e) {
         super.gunLower(e);
@@ -133,7 +148,6 @@ class Pistol extends regGun {
         }
     }
     switchTo() {
-        setTimeout(() => Player.weapon = pistol, 150);
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
@@ -148,6 +162,7 @@ class Shotgun extends regGun {
         this.gunHeight = gunConfig.Shotgun.gunHeight;
         this.scrnMargin = gunConfig.Shotgun.scrnMargin;
         this.damage = gunConfig.Shotgun.damage;
+        this.ammo = gunConfig.Shotgun.startingAmmo;
     }
     gunMove(e) {
         this.gunLower(e);
@@ -158,7 +173,6 @@ class Shotgun extends regGun {
         return true;
     }
     switchTo() {
-        setTimeout(() => Player.weapon = shotgun, 150);
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
@@ -167,6 +181,9 @@ class Shotgun extends regGun {
 }
 class MachineGun extends weaponry {
     strafe() {
+        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
+            return;
+        }
         document.addEventListener('mouseleave', e => {
             this.stopstrafe();
         });
@@ -241,6 +258,9 @@ class ChainSaw extends MachineGun {
             return false;
     }
     strafe() {
+        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
+            return;
+        }
         this.firing = true;
         this.gunHeight = gunConfig.ChainSaw.firing.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin;
@@ -263,7 +283,6 @@ class ChainSaw extends MachineGun {
         document.body.setAttribute("onmousemove", gunMoveEvent);
     }
     switchTo() {
-        setTimeout(() => Player.weapon = chainsaw, 150);
         super.switchTo();
         DOMUpdater.updateAmmoCounter(`N/A`);
         elements.ammoType.removeAttribute("src");
@@ -275,18 +294,19 @@ ChainSaw.chainsawReach = gunConfig.ChainSaw.reach; // target height
 class Minigun extends MachineGun {
     constructor() {
         super(...arguments);
-        this.gunImage = pics.guns.chaingun;
-        this.gunImage_firing = pics.guns.chaingun_firing;
+        this.gunImage = pics.guns.minigun;
+        this.gunImage_firing = pics.guns.minigun_firing;
         this.gunHeight = gunConfig.Minigun.gunHeight;
         this.scrnMargin = gunConfig.Minigun.scrnMargin;
         this.damage = gunConfig.Minigun.damage;
+        this.ammo = gunConfig.Minigun.startingAmmo;
         this.firingSound = Avpminigun;
     }
     gunMove(e) {
         this.gunLower(e);
     }
     spinUp() {
-        elements.weaponImg.setAttribute("src", pics.guns.chaingun_spinup);
+        elements.weaponImg.setAttribute("src", pics.guns.minigun_spinup);
         SSamRotate2.play();
         this.mgspinning = setTimeout(function () {
             SSamRotate.play();
@@ -317,7 +337,7 @@ class Minigun extends MachineGun {
             elements.weaponImg.setAttribute("src", this.gunImage);
         }
         else
-            elements.weaponImg.setAttribute("src", pics.guns.chaingun_frame2);
+            elements.weaponImg.setAttribute("src", pics.guns.minigun_frame2);
         // SSamMinigun.stop();
         // SSamMinigun2.stop();
         this.firingSound.stop();
@@ -325,7 +345,6 @@ class Minigun extends MachineGun {
         document.body.setAttribute("onmousemove", gunMoveEvent);
     }
     switchTo() {
-        setTimeout(() => Player.weapon = minigun, 150);
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
@@ -341,6 +360,7 @@ class DukeMgun extends MachineGun {
         this.gunHeight = gunConfig.DukeMgun.gunHeight;
         this.scrnMargin = gunConfig.DukeMgun.scrnMargin;
         this.damage = gunConfig.DukeMgun.damage;
+        this.ammo = gunConfig.DukeMgun.startingAmmo;
         this.firingSound = MGun;
     }
     gunMove(e) {
@@ -361,14 +381,13 @@ class DukeMgun extends MachineGun {
         super.stopstrafe();
     }
     switchTo() {
-        setTimeout(() => Player.weapon = dukemgun, 150);
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
         setMouseAttributes_MachineGun();
     }
 }
-class DuelNeutron extends MachineGun {
+class DualNeutron extends MachineGun {
     constructor() {
         super(...arguments);
         this.gunImage = pics.guns.dualNuetron;
@@ -376,6 +395,7 @@ class DuelNeutron extends MachineGun {
         this.gunHeight = gunConfig.DualNuetron.gunHeight;
         this.scrnMargin = gunConfig.DualNuetron.scrnMargin;
         this.damage = gunConfig.DualNuetron.damage;
+        this.ammo = gunConfig.DualNuetron.startingAmmo;
         this.firingSound = SSamMinigun;
     }
     gunMove(e) {
@@ -400,7 +420,6 @@ class DuelNeutron extends MachineGun {
         super.stopstrafe();
     }
     switchTo() {
-        setTimeout(() => Player.weapon = duelneutron, 150);
         super.switchTo();
         DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
@@ -417,16 +436,11 @@ function setMouseAttributes_MachineGun() {
     document.body.setAttribute("onmouseup", "Player.weapon.stopstrafe()");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
-// new instance of each weapon. Move?
-let chainsaw = new ChainSaw;
-let pistol = new Pistol;
-let shotgun = new Shotgun;
-let minigun = new Minigun;
-let dukemgun = new DukeMgun;
-let duelneutron = new DuelNeutron;
-// startingAmmo()
-pistol.ammo = 0;
-shotgun.ammo = 0;
-minigun.ammo = 0;
-dukemgun.ammo = 0;
-duelneutron.ammo = 0;
+const allGuns = {
+    chainsaw: new ChainSaw,
+    Pistol: new Pistol,
+    Shotgun: new Shotgun,
+    DukeMgun: new DukeMgun,
+    Minigun: new Minigun,
+    DualNeutron: new DualNeutron,
+};

@@ -1,89 +1,4 @@
 //TheQuickAndTheDead
-class GameInfo {
-    public static hitTarget: Target = null;
-    public static targeting: boolean = false;
-    public static deadCount: number = 0;
-    public static deadExtraCount: number = 0;
-}
-
-// interface Function { // to get class names from an instance // relevant for es5
-//     name: string;
-// }
-
-class Position{
-    x: number;
-    y: number;
-    scale: number;
-    constructor(x,y,scale?){
-        this.x = x;
-        this.y = y;
-        this.scale = scale
-    }
-}
-class AnimationInfo{
-    animation: string;
-    duration: string;
-    timing: string;
-    iterations: string;
-    direction: string; //alternate-reverse
-
-    constructor(anim, dur, iter?, dir?, tim?){
-        this.animation = anim;
-        this.duration = dur || '5s';
-        this.timing = tim || 'ease';
-        this.iterations = iter || 'infinite';
-        this.direction = dir || "";
-    }
-    public animationString(){
-        return this.animation+" "+this.duration+" "+this.timing+" "+this.iterations+" "+this.direction;
-    }
-}
-
-class pickup {
-    protected source: Target
-    protected image;// = pics.pickups.shotgun;
-    protected cssClass
-    constructor(source) {
-        this.source = source;
-    }
-    public draw(){
-        let img:HTMLElement = document.createElement('img');
-        
-        img.setAttribute('src', this.image);
-        img.classList.add('pickup');
-        img.classList.add(this.cssClass);
-        let left = this.source.DOMImage.getBoundingClientRect().right;
-        let top = this.source.DOMImage.getBoundingClientRect().bottom - 100;
-        img.style.left = left + 'px';
-        img.style.top = top + 'px';
-     //   img.style.border = "3px solid red"
-        elements.targetBackdrop.appendChild(img);
-        this.throw(left, top, img);
-    }
-    private throw(left, top, img){
-        $(img).css({ fontSize: 0 }).animate({
-            fontSize: 45
-        },{
-            duration: 500,
-            easing: "linear",
-            step: function(t, fx){
-                var a = t/15;
-                var x = left - Math.cos(a) * 50;
-                var y = top - Math.sin(a) * 50;
-                $(this).css({ left: x, top: y });
-            }
-        });
-    }
-}
-class ammoPickup extends pickup{
-    protected cssClass = "pickup_ammo"
-    protected image = pics.pickups.shells;
-}
-class weaponPickup extends pickup{
-    protected cssClass = "pickup_weapon"
-    protected image = pics.pickups.shotgun;
-}
-
 // parent class, handles drawing and damaging.
 abstract class Target {
     public num: number;
@@ -228,8 +143,14 @@ class ShotGGuy extends RegEnemy {
         ded.play()
     }
     public die(){
-        let p = new ammoPickup(this);
-        p.draw();
+        if (!Player.weaponCollection[allGuns.Shotgun.constructor.name]){
+            let gun = new weaponPickup(this, allGuns.Shotgun);
+            gun.draw();
+        }
+        else{
+            let ammo = new ammoPickup(this, allGuns.Shotgun, 8);
+            ammo.draw();
+        }
         super.die();
     }
 }
@@ -256,8 +177,7 @@ class Extra extends RegEnemy {
     public die() {
         GameInfo.deadExtraCount++
         super.die();
-        let p = new weaponPickup(this);
-        p.draw();
+
     }
     public deadSound() {
         let str = "";
@@ -266,7 +186,7 @@ class Extra extends RegEnemy {
          else if (this.enemy == "Imp") { ded.play() }
     }
 }
-let a: string
+
 class Boss extends RegEnemy {
     damageNumber = 30;
     attackFrequency = 300;
@@ -295,6 +215,8 @@ class Boss extends RegEnemy {
         this.DOMImage.style.pointerEvents = "none";
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
         this.deadSound();
+        let gun = new weaponPickup(this, allGuns.Minigun);
+        gun.draw();
         stopTimer();
         sectionFinish();
     }
@@ -308,6 +230,7 @@ class Boss extends RegEnemy {
 class Player {
     static health: number = 100;
     static dead: boolean = false;
+    static weaponCollection: Object = {};
     static weapon: weaponry;
     static slungWeapon: weaponry;
     static damageCheck(damager: RegEnemy, damage) {
@@ -317,6 +240,15 @@ class Player {
             }
             else Turicochet.play();
         }, 1000);
+    }
+    static collectWeapon(weapon: weaponry){
+        this.weaponCollection[weapon.constructor.name] = weapon;
+        this.selectWeapon(weapon);
+    }
+
+    static selectWeapon(weapon: weaponry){
+        weapon.switchTo()
+        Player.weapon = weapon;
     }
 
     static playerHit(damage){

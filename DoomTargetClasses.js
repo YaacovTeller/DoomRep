@@ -1,79 +1,5 @@
 "use strict";
 //TheQuickAndTheDead
-class GameInfo {
-}
-GameInfo.hitTarget = null;
-GameInfo.targeting = false;
-GameInfo.deadCount = 0;
-GameInfo.deadExtraCount = 0;
-// interface Function { // to get class names from an instance // relevant for es5
-//     name: string;
-// }
-class Position {
-    constructor(x, y, scale) {
-        this.x = x;
-        this.y = y;
-        this.scale = scale;
-    }
-}
-class AnimationInfo {
-    constructor(anim, dur, iter, dir, tim) {
-        this.animation = anim;
-        this.duration = dur || '5s';
-        this.timing = tim || 'ease';
-        this.iterations = iter || 'infinite';
-        this.direction = dir || "";
-    }
-    animationString() {
-        return this.animation + " " + this.duration + " " + this.timing + " " + this.iterations + " " + this.direction;
-    }
-}
-class pickup {
-    constructor(source) {
-        this.source = source;
-    }
-    draw() {
-        let img = document.createElement('img');
-        img.setAttribute('src', this.image);
-        img.classList.add('pickup');
-        img.classList.add(this.cssClass);
-        let left = this.source.DOMImage.getBoundingClientRect().right;
-        let top = this.source.DOMImage.getBoundingClientRect().bottom - 100;
-        img.style.left = left + 'px';
-        img.style.top = top + 'px';
-        //   img.style.border = "3px solid red"
-        elements.targetBackdrop.appendChild(img);
-        this.throw(left, top, img);
-    }
-    throw(left, top, img) {
-        $(img).css({ fontSize: 0 }).animate({
-            fontSize: 45
-        }, {
-            duration: 500,
-            easing: "linear",
-            step: function (t, fx) {
-                var a = t / 15;
-                var x = left - Math.cos(a) * 50;
-                var y = top - Math.sin(a) * 50;
-                $(this).css({ left: x, top: y });
-            }
-        });
-    }
-}
-class ammoPickup extends pickup {
-    constructor() {
-        super(...arguments);
-        this.cssClass = "pickup_ammo";
-        this.image = pics.pickups.shells;
-    }
-}
-class weaponPickup extends pickup {
-    constructor() {
-        super(...arguments);
-        this.cssClass = "pickup_weapon";
-        this.image = pics.pickups.shotgun;
-    }
-}
 // parent class, handles drawing and damaging.
 class Target {
     constructor(enemy, health, position, anim) {
@@ -202,8 +128,14 @@ class ShotGGuy extends RegEnemy {
         ded.play();
     }
     die() {
-        let p = new ammoPickup(this);
-        p.draw();
+        if (!Player.weaponCollection[allGuns.Shotgun.constructor.name]) {
+            let gun = new weaponPickup(this, allGuns.Shotgun);
+            gun.draw();
+        }
+        else {
+            let ammo = new ammoPickup(this, allGuns.Shotgun, 8);
+            ammo.draw();
+        }
         super.die();
     }
 }
@@ -230,8 +162,6 @@ class Extra extends RegEnemy {
     die() {
         GameInfo.deadExtraCount++;
         super.die();
-        let p = new weaponPickup(this);
-        p.draw();
     }
     deadSound() {
         let str = "";
@@ -246,7 +176,6 @@ class Extra extends RegEnemy {
         }
     }
 }
-let a;
 class Boss extends RegEnemy {
     constructor(enemy, health, position, anim) {
         super(enemy, health, position, anim);
@@ -274,6 +203,8 @@ class Boss extends RegEnemy {
         this.DOMImage.style.pointerEvents = "none";
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
         this.deadSound();
+        let gun = new weaponPickup(this, allGuns.Minigun);
+        gun.draw();
         stopTimer();
         sectionFinish();
     }
@@ -292,6 +223,14 @@ class Player {
             else
                 Turicochet.play();
         }, 1000);
+    }
+    static collectWeapon(weapon) {
+        this.weaponCollection[weapon.constructor.name] = weapon;
+        this.selectWeapon(weapon);
+    }
+    static selectWeapon(weapon) {
+        weapon.switchTo();
+        Player.weapon = weapon;
     }
     static playerHit(damage) {
         Player.health -= damage;
@@ -326,3 +265,4 @@ class Player {
 }
 Player.health = 100;
 Player.dead = false;
+Player.weaponCollection = {};

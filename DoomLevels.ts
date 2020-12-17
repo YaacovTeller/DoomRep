@@ -4,12 +4,18 @@ elements.weaponDiv.style.top = `${screen.height - 280}px`;
 
 let n: number;
 var level: number;
+// // new instance of each weapon. Move?
+// let chainsaw = new ChainSaw;
+// let pistol = new Pistol;
+// let shotgun = new Shotgun;
+// let minigun = new Minigun;
+// let dukemgun = new DukeMgun;
+// let DualNeutron = new DualNeutron;
 
 function beginGame() {
-    Player.weapon = pistol;
-    Player.weapon.switchTo();
+    Player.collectWeapon(new Pistol);
     startingValues();
-    startingAmmo();
+   // startingAmmo();
     DOMUpdater.updateAmmoCounter(Player.weapon.ammo)
     gameBegun = true;
     if (music == true) { Deuscredits.play() }

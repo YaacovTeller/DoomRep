@@ -9,6 +9,10 @@ class DOMUpdater {
     static updateAmmoCounter(ammo) {
         this.updateCounter(elements.ammoCount, ammo);
     }
+    static updateAmmoWithClick(ammo) {
+        this.updateCounter(elements.ammoCount, ammo);
+        click2.play();
+    }
     static updateHealthCounter(health) {
         this.updateCounter(elements.health, "Health:" + health);
     }
@@ -33,7 +37,7 @@ function shieldToggle() {
         if (Player.slungWeapon instanceof MachineGun) {
             Player.slungWeapon.stopstrafe();
         }
-        pistol.switchTo();
+        Player.weaponCollection['Pistol'].switchTo();
         // clearInterval(hurting); // NEEDED?
         // document.body.setAttribute("onmousemove", "shieldMove(event); Player.weapon.gunMove(event)")
     }
@@ -114,11 +118,11 @@ function closeMenu() {
     }
 }
 function startingAmmo() {
-    pistol.ammo = 30;
-    shotgun.ammo = 16;
-    minigun.ammo = 0;
-    dukemgun.ammo = 120;
-    duelneutron.ammo = 0;
+    Player.weaponCollection['Pistol'].ammo = gunConfig.Pistol.startingAmmo;
+    // shotgun.ammo = 16;
+    // minigun.ammo = 0;
+    // dukemgun.ammo = 120;
+    // DualNeutron.ammo = 0;
 }
 function startingValues() {
     Player.dead = false;
