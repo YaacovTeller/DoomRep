@@ -484,9 +484,8 @@ class DualNeutron extends MachineGun {
         this.scrnMargin = gunConfig.DualNuetron.firing.scrnMargin
         if (this.ammo <= 0) { click2.play(); }
         else {
-            var thisGun = this;
-            thisGun.ammo--;
-            DOMUpdater.updateAmmoCounter(thisGun.ammo);
+            this.ammo--;
+            DOMUpdater.updateAmmoCounter(this.ammo);
             super.strafe();
         }
     }

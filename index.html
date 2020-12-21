@@ -32,18 +32,24 @@
         <div id="targetBackdrop">
             <!-- EVERYTHING happens within this area -->
         </div>
-        <div id="DCount"></div>
-        <div id="ammoBox">
+        <div class="hudBox DCountBox">
+            <div id="DCount"></div>
+        </div>
+
+        <div id="ammoBox" class="hudBox">
                 <img id="ammoType" />
             <div id="ammo"></div>
-           
         </div>
-        <div id="health">Health:100</div>
+        <div class="hudBox healthBox">
+            <div class="inline">Health: </div><span class="inline" id="health"></span>
+        </div>
         <img id="shot" src="assets/Crosshairs/shot.png" style="display:none; position:absolute" draggable="false">
         <img id="blood" src="assets/Blood_10.gif" style="display:none; position:absolute" draggable="false">
         <img id="riotShield" src="assets/RiotShield.png" style="display:none; position:absolute" draggable="false">
 
-        <div id="timer"></div>
+        <div class="hudBox timerBox">
+            <div id="timer"></div>
+        </div>
         <div class="flexJustifyCentre">
             <div id="fin" class="finishText centerMessage"></div>
         </div>

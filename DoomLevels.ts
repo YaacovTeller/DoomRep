@@ -3,6 +3,7 @@ openMenu()
 elements.weaponDiv.style.top = `${screen.height - 280}px`;
 
 function beginGame() {
+    Player.collectWeapon(new ChainSaw);
     Player.collectWeapon(new Pistol);
     if (GameInfo.music == true) { Deuscredits.play() }
     startTimer()

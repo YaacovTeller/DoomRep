@@ -8,13 +8,32 @@ class DOMUpdater {
     }
     static updateAmmoWithClick(ammo) {
         this.updateCounter(elements.ammoCount, ammo);
+        this.colorChange(elements.ammoCount, 'red', ammo, 10);
+        this.blipAnim(elements.ammoCount);
         click2.play();
     }
     static updateHealthCounter(health) {
-        this.updateCounter(elements.health, "Health:" + health);
+        this.updateCounter(elements.health, health);
+        this.colorChange(elements.health, 'red', health, 40);
     }
     static updateCounter(elem, str) {
         elem.innerText = str;
+    }
+    static colorChange(elem, color, ammount, limit) {
+        if (ammount < limit) {
+            elem.style.color = color;
+        }
+        else {
+            elem.style.color = "black";
+        }
+    }
+    static blipAnim(elem) {
+        // let width = parseInt($(elem).css('width'))
+        // $(elem).animate({width: (width + 20)+'px'}, 150);
+        // $(elem).animate({width: (width - 20)+'px'}, 150);
+        let fontSize = parseInt($(elem).css('fontSize'));
+        $(elem).animate({ fontSize: (fontSize + 10) + 'px' }, 150);
+        $(elem).animate({ fontSize: (fontSize) + 'px' }, 150);
     }
     static timedClearAllImages() {
         this.clearTargets();

@@ -75,8 +75,9 @@ class Pickup {
         setTimeout(() => { hideElement(this.DOMImage); }, 400);
     }
     blipAnim() {
-        $(this.DOMImage).animate({ width: (parseInt($(this.DOMImage).css('width')) + 20) + 'px' }, 150);
-        $(this.DOMImage).animate({ width: (parseInt($(this.DOMImage).css('width')) - 20) + 'px' }, 150);
+        let width = parseInt($(this.DOMImage).css('width'));
+        $(this.DOMImage).animate({ width: (width + 20) + 'px' }, 150);
+        $(this.DOMImage).animate({ width: (width) + 'px' }, 150);
     }
     setAsTarget() {
         GameInfo.hitTarget = this;

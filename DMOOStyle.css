@@ -134,43 +134,42 @@
     font-family: Aldrich, Impact;
 }
 
-#timer {
-    position: fixed;
+.timerBox {
     float: left;
     bottom: 0px;
     font-size: 100px;
-    color: red;
-    font-family: Aldrich, Impact;
-    pointer-events: none;
     z-index: 1;
+    width: 215px;
+}
+.DCountBox{
+    top: 5px;
+    font-family: Aldrich, Impact;;
 }
 
-#DCount {
-    top: 5px;
+.hudBox{
+    background-color: darkgray;
+    border-radius: 25px;
+    z-index: 2;
+    padding: 9px;
     position: fixed;
     font-size: 60px;
     color: red;
-    font-family: Aldrich, Impact;;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     pointer-events: none;
-    }
+}
+
 #ammoBox{
     width: 210px;
     height: 110px;
-    border-radius: 25px;
-    background-color: darkgray;
     top: 5px;
     right: 5px;
-    position: fixed;
-    z-index: 2;
     }
 #ammo {
     margin-right: 10px;
     margin-top: 5px;
     font-size: 60px;
     text-align: right;
-    color: red;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    pointer-events: none;
+
 }
 #ammoType{
     margin-left: 10px;
@@ -178,14 +177,13 @@
     width: 90px;
     position: fixed;
 }
-#health {
+.healthBox {
     bottom: 5px;
     right: 5px;
     position: fixed;
-    font-size: 60px;
-    color: red;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    pointer-events: none;
+}
+.inline {
+    display: inline;
 }
 #CreditScreen{
     display: none;
