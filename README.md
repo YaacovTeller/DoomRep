@@ -1,14 +1,15 @@
 # DoomRep
-Controls: 1 - Chainsaw;
-          2 - Pistol, default;
+Controls: 
+
+          1 - Chainsaw;
+          2 - Pistol;
           3 - Shotgun;
           4 - Duke3d machineGun;
           5 - N/A
           6 - Chaingun, spin-up;
           7 - DuelNeutron from Apogee's BlakeStone;
           SPACE - Shields from oncoming damage;
-
-'a' gives all weaopns, otherwise you only start with a pistol, and not all the others are available in-game.
+          'a' - all weaopns, otherwise you only start with a pistol, and not all the others are available in-game.
 
 You can still fire with the shield, but upon deploying your weapon defaults to pistol. It's the only weapon you can fire with your free hand!
 You can only switch weapons when your shield is lowered, you've only got two hands, right?
