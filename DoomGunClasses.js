@@ -3,30 +3,39 @@ const gunMoveEvent = "Player.weapon.gunMove(event);";
 const MgunShotEvent = "Player.weapon.MGunShotDisplay(event);";
 const gunConfig = {
     Pistol: {
+        pickup_ammo_small: 12,
         startingAmmo: 24,
         damage: 20,
         scrnMargin: 280,
         gunHeight: 390,
     },
     Shotgun: {
+        pickup_ammo_small: 4,
+        pickup_ammo_big: 8,
         startingAmmo: 8,
         damage: 30,
         scrnMargin: 230,
         gunHeight: 350,
     },
     DukeMgun: {
+        pickup_ammo_small: 20,
+        pickup_ammo_big: 50,
         startingAmmo: 80,
         damage: 10,
         scrnMargin: 280,
         gunHeight: 390,
     },
     Minigun: {
+        pickup_ammo_small: 20,
+        pickup_ammo_big: 50,
         startingAmmo: 50,
         damage: 15,
         scrnMargin: 370,
         gunHeight: 480,
     },
     DualNuetron: {
+        pickup_ammo_small: 15,
+        pickup_ammo_big: 30,
         startingAmmo: 36,
         damage: 12,
         scrnMargin: 250,
@@ -47,6 +56,19 @@ const gunConfig = {
         }
     }
 };
+class pickupStats {
+    constructor(gunImage, bigAmmount, smallAmmount, bigImage, smallImage) {
+        this.gunImage = gunImage;
+        this.ammoAmmounts = {
+            big: bigAmmount,
+            small: smallAmmount
+        };
+        this.ammoImages = {
+            big: bigImage,
+            small: smallImage
+        };
+    }
+}
 //WEAPON
 class weaponry {
     // sliding gun switch
@@ -60,6 +82,7 @@ class weaponry {
         elements.weaponDiv.style.top = `${window.outerHeight - this.scrnMargin}px`; //screen.height
         elements.weaponImg.setAttribute("src", this.gunImage);
         Player.weapon = this;
+        DOMUpdater.updateAmmoCounter(this.ammo);
     }
     ;
     static showBlood(e) {
@@ -97,8 +120,12 @@ class weaponry {
         let randNum = Math.floor(Math.random() * (length) + 1);
         sounds[randNum - 1].play();
     }
+    pickupShot() {
+        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
+            return true;
+        }
+    }
 }
-weaponry.w = 2; //Sets weapon to pistol at the start
 weaponry.switching = false;
 class regGun extends weaponry {
     ricochet() {
@@ -106,9 +133,8 @@ class regGun extends weaponry {
         super.ricochet(regGunSounds);
     }
     shot(e) {
-        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
+        if (this.pickupShot())
             return;
-        }
         if (this.ammo <= 0) {
             click2.play();
             return false;
@@ -137,6 +163,7 @@ class Pistol extends regGun {
         this.scrnMargin = gunConfig.Pistol.scrnMargin;
         this.damage = gunConfig.Pistol.damage;
         this.ammo = gunConfig.Pistol.startingAmmo;
+        this.pickupStats = new pickupStats(pics.guns.pistol, gunConfig.Pistol.pickup_ammo_small, gunConfig.Pistol.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     gunMove(e) {
         super.gunLower(e);
@@ -149,7 +176,6 @@ class Pistol extends regGun {
     }
     switchTo() {
         super.switchTo();
-        DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
         setMouseAttributes_Normal();
     }
@@ -163,6 +189,7 @@ class Shotgun extends regGun {
         this.scrnMargin = gunConfig.Shotgun.scrnMargin;
         this.damage = gunConfig.Shotgun.damage;
         this.ammo = gunConfig.Shotgun.startingAmmo;
+        this.pickupStats = new pickupStats(pics.pickups.Shotgun, gunConfig.Shotgun.pickup_ammo_big, gunConfig.Shotgun.pickup_ammo_small, pics.pickups.shells.big, pics.pickups.shells.small);
     }
     gunMove(e) {
         this.gunLower(e);
@@ -174,16 +201,12 @@ class Shotgun extends regGun {
     }
     switchTo() {
         super.switchTo();
-        DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
         setMouseAttributes_Normal();
     }
 }
 class MachineGun extends weaponry {
     strafe() {
-        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
-            return;
-        }
         document.addEventListener('mouseleave', e => {
             this.stopstrafe();
         });
@@ -243,6 +266,7 @@ class ChainSaw extends MachineGun {
         this.gunHeight = gunConfig.ChainSaw.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.scrnMargin;
         this.damage = gunConfig.ChainSaw.damage;
+        this.pickupStats = new pickupStats(pics.pickups.ChainSaw, "", "", "", "");
     }
     gunMove(e) {
         this.gunLower(e);
@@ -258,9 +282,8 @@ class ChainSaw extends MachineGun {
             return false;
     }
     strafe() {
-        if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
+        if (this.pickupShot())
             return;
-        }
         this.firing = true;
         this.gunHeight = gunConfig.ChainSaw.firing.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin;
@@ -301,6 +324,7 @@ class Minigun extends MachineGun {
         this.damage = gunConfig.Minigun.damage;
         this.ammo = gunConfig.Minigun.startingAmmo;
         this.firingSound = Avpminigun;
+        this.pickupStats = new pickupStats(pics.pickups.Minigun, gunConfig.Minigun.pickup_ammo_big, gunConfig.Minigun.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     gunMove(e) {
         this.gunLower(e);
@@ -313,6 +337,8 @@ class Minigun extends MachineGun {
         }, 700);
     }
     strafe() {
+        if (this.pickupShot())
+            return;
         if (this.ammo <= 0) {
             click2.play();
         }
@@ -346,7 +372,6 @@ class Minigun extends MachineGun {
     }
     switchTo() {
         super.switchTo();
-        DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
         setMouseAttributes_MachineGun();
     }
@@ -362,18 +387,20 @@ class DukeMgun extends MachineGun {
         this.damage = gunConfig.DukeMgun.damage;
         this.ammo = gunConfig.DukeMgun.startingAmmo;
         this.firingSound = MGun;
+        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DukeMgun.pickup_ammo_big, gunConfig.DukeMgun.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     gunMove(e) {
         this.gunLower(e);
     }
     strafe() {
+        if (this.pickupShot())
+            return;
         if (this.ammo <= 0) {
             click2.play();
         }
         else {
-            var thisGun = this;
-            thisGun.ammo--;
-            DOMUpdater.updateAmmoCounter(thisGun.ammo);
+            this.ammo--;
+            DOMUpdater.updateAmmoCounter(this.ammo);
             super.strafe();
         }
     }
@@ -382,7 +409,6 @@ class DukeMgun extends MachineGun {
     }
     switchTo() {
         super.switchTo();
-        DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
         setMouseAttributes_MachineGun();
     }
@@ -397,6 +423,7 @@ class DualNeutron extends MachineGun {
         this.damage = gunConfig.DualNuetron.damage;
         this.ammo = gunConfig.DualNuetron.startingAmmo;
         this.firingSound = SSamMinigun;
+        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DualNuetron.pickup_ammo_big, gunConfig.DualNuetron.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     gunMove(e) {
         this.gunLower(e);
@@ -421,7 +448,6 @@ class DualNeutron extends MachineGun {
     }
     switchTo() {
         super.switchTo();
-        DOMUpdater.updateAmmoCounter(this.ammo);
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
         setMouseAttributes_MachineGun();
     }
@@ -436,11 +462,3 @@ function setMouseAttributes_MachineGun() {
     document.body.setAttribute("onmouseup", "Player.weapon.stopstrafe()");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
-const allGuns = {
-    chainsaw: new ChainSaw,
-    Pistol: new Pistol,
-    Shotgun: new Shotgun,
-    DukeMgun: new DukeMgun,
-    Minigun: new Minigun,
-    DualNeutron: new DualNeutron,
-};

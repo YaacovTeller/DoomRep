@@ -10,12 +10,11 @@ class Target {
     }
     draw(position, anim) {
         var img = document.createElement("img");
-        img.setAttribute('class', "target"); //infiniteAlternateReverse
-        img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
+        img.classList.add("target", "undraggable");
+        //  img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
         img.onmouseover = () => this.setAsTarget();
         img.onmouseleave = () => this.unsetTarget();
         img.setAttribute('src', enemyPics[this.enemy]);
-        img.setAttribute('draggable', `false`);
         //  img.style.border = "2px solid red"
         img.style.borderRadius = "55px"; // reduce the hitbox?
         img.style.left = position.x + "%";
@@ -27,6 +26,20 @@ class Target {
         }
         elements.targetBackdrop.appendChild(img);
         this.DOMImage = img;
+    }
+    randomiseDrop(num) {
+        let roll = Math.floor(Math.random() * 100);
+        if (roll >= num) {
+            return true;
+        }
+    }
+    drop(pickup) {
+        let num = RandomNumberGen.randomNumBetween(1, 5);
+        let size = num == 5 ? "big" : "small";
+        if (pickup instanceof weaponPickup && Player.weaponCollection[pickup.weapon.constructor.name]) {
+            pickup = new ammoPickup(this, pickup.weapon, size);
+        }
+        pickup.draw();
     }
     redraw(_this) {
         if (_this.deadFlag == false) {
@@ -40,6 +53,9 @@ class Target {
         this.health -= damage;
         this.DOMImage.setAttribute("src", enemyPics.hurt[this.enemy]);
         let _this = this;
+        if (this.isBoss) {
+            reduceBar(this.health);
+        }
         if (this.health <= 0) {
             this.die();
         }
@@ -53,6 +69,8 @@ class Target {
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.DOMImage.style.pointerEvents = "none";
+        if (this.randomiseDrop(80))
+            this.drop(new healthPickup(this, 20));
         this.deadSound();
     }
     // The machine gun damage function
@@ -87,7 +105,7 @@ class RegEnemy extends Target {
             var die = (Math.floor(Math.random() * 7));
             if (die == 6) {
                 hitWarning();
-                if (riotShieldDeployed == false) {
+                if (GameInfo.riotShieldDeployed == false) {
                     Player.damageCheck(this, damage);
                 }
                 else {
@@ -105,37 +123,59 @@ class RegEnemy extends Target {
         this.attackRoller = setInterval(function () { firingEnemy.hitRoll(damage); }, attackFrequency);
     }
 }
-RegEnemy.enemyArray = new Array();
 class Troop extends RegEnemy {
     constructor(health, position, anim) {
         super("Troop", health, position, anim);
         this.damageNumber = 10;
         this.attackFrequency = 2000;
+        this.carriedWeapon = GameInfo.allGuns.Pistol;
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     deadSound() {
         ded2.play();
     }
+    die() {
+        if (this.randomiseDrop(30))
+            this.drop(new weaponPickup(this, GameInfo.allGuns.DukeMgun)); //this.carriedWeapon
+        super.die();
+    }
 }
-class ShotGGuy extends RegEnemy {
+class ShotGun_Troop extends RegEnemy {
     constructor(health, position, anim) {
-        super("ShotGGuy", health, position, anim);
+        super("ShotGun_Troop", health, position, anim);
         this.damageNumber = 20;
         this.attackFrequency = 2000;
+        this.carriedWeapon = GameInfo.allGuns.Shotgun;
         this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     deadSound() {
         ded.play();
     }
     die() {
-        if (!Player.weaponCollection[allGuns.Shotgun.constructor.name]) {
-            let gun = new weaponPickup(this, allGuns.Shotgun);
-            gun.draw();
+        if (this.randomiseDrop(30))
+            this.drop(new weaponPickup(this, this.carriedWeapon));
+        super.die();
+    }
+}
+class ChainGGuy extends RegEnemy {
+    constructor(health, position, anim, isBoss) {
+        super("ChainGuy", health, position, anim);
+        this.damageNumber = 30;
+        this.attackFrequency = 1000;
+        this.carriedWeapon = GameInfo.allGuns.Minigun;
+        this.isBoss = isBoss;
+        if (this.isBoss) {
+            this.attackFrequency;
         }
-        else {
-            let ammo = new ammoPickup(this, allGuns.Shotgun, 8);
-            ammo.draw();
-        }
+        this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+    }
+    deadSound() {
+        ded.play();
+    }
+    die() {
+        if (this.randomiseDrop(0))
+            this.drop(new weaponPickup(this, this.carriedWeapon));
         super.die();
     }
 }
@@ -164,11 +204,10 @@ class Extra extends RegEnemy {
         super.die();
     }
     deadSound() {
-        let str = "";
         if (this.enemy.includes("Troop")) {
             ded2.play();
         }
-        else if (this.enemy == "ShotGGuy") {
+        else if (this.enemy == "ShotGun_Troop") {
             ded.play();
         }
         else if (this.enemy == "Imp") {
@@ -176,57 +215,38 @@ class Extra extends RegEnemy {
         }
     }
 }
-class Boss extends RegEnemy {
-    constructor(enemy, health, position, anim) {
-        super(enemy, health, position, anim);
-        this.damageNumber = 30;
-        this.attackFrequency = 300;
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
-        this.bar = elements.Bar;
-    }
-    fillBar() {
-        showElement(this.bar);
-        this.bar.style.width = `100%`;
-    }
-    loseHealth(damage) {
-        super.loseHealth(damage);
-        this.bar.style.width = `${this.health / 2}%`;
-    }
-    die() {
-        this.deadFlag = true;
-        clearInterval(this.attackRoller);
-        clearInterval(this.damaging);
-        this.bar.style.width = `0%`;
-        this.DOMImage.removeAttribute("onmouseenter");
-        this.DOMImage.removeAttribute("onmousedown");
-        this.DOMImage.setAttribute("src", enemyPics.dead.ChainGuy);
-        this.DOMImage.style.pointerEvents = "none";
-        DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
-        this.deadSound();
-        let gun = new weaponPickup(this, allGuns.Minigun);
-        gun.draw();
-        stopTimer();
-        sectionFinish();
-    }
-    deadSound() {
-        if (this.enemy == "ChainGuy") {
-            bossDed.play();
-        }
-    }
-}
 class Player {
     static damageCheck(damager, damage) {
         damager.damaging = setTimeout(function () {
-            if (riotShieldDeployed == false) {
+            if (GameInfo.riotShieldDeployed == false) {
                 Player.playerHit(damage);
             }
             else
                 Turicochet.play();
         }, 1000);
     }
+    static reset() {
+        Player.dead = false;
+        Player.health = 100;
+        Player.weaponCollection = {};
+    }
+    static collectAmmo(ammount, weaponName) {
+        this.weaponCollection[weaponName].ammo += ammount;
+        DOMUpdater.updateAmmoWithClick(Player.weapon.ammo);
+    }
     static collectWeapon(weapon) {
-        this.weaponCollection[weapon.constructor.name] = weapon;
-        this.selectWeapon(weapon);
+        let weaponName = weapon.constructor.name;
+        if (!this.weaponCollection[weaponName]) {
+            this.weaponCollection[weaponName] = weapon;
+            this.selectWeapon(weapon);
+        }
+        else {
+            Player.collectAmmo(gunConfig[weaponName].startingAmmo, weaponName);
+        }
+    }
+    static collectHealth(ammount) {
+        Player.health += ammount;
+        DOMUpdater.updateHealthCounter(Player.health);
     }
     static selectWeapon(weapon) {
         weapon.switchTo();
@@ -245,16 +265,20 @@ class Player {
         }
     }
     static playerDeath() {
+        if (Player.dead == true) {
+            return;
+        }
         Player.dead = true;
         this.deadSound();
         fadeOut();
-        openMenu();
         stopTimer();
         Deuscredits.stop();
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
         clearAllEnemies();
-        //     clearInterval(tgt22.attackRoller)
+        let div1 = createMessageDiv("levelMsg", "YOU DIED");
+        slamMessage(div1, elements.finishMsg, 1000);
+        setTimeout(() => { openMenu(); }, 2500);
     }
     static deadSound() {
         Turokscream.play();

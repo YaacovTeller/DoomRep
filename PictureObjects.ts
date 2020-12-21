@@ -19,16 +19,30 @@ const pics = {
         shell: "assets/icons/Shell.png",
     },
     pickups: {
-        shells: "assets/pickups/Shells.png",
+        bullets:{
+            big:"assets/pickups/bullets_box.png",
+            small: "assets/pickups/bullets_clip.png"
+        },
+        shells:{
+            big:"assets/pickups/Shells.png",
+            small: "assets/pickups/shells_4.png"
+        },
+        health: {
+            big:"assets/pickups/health_big.png",
+            small: "assets/pickups/health_small.png"
+        },
+        Pistol: "assets/pickups/Pistol.png",
         Shotgun: "assets/pickups/Shotgun.png",
+        DukeMgun: "assets/pickups/DukeMGun.png",
         Minigun: "assets/pickups/Chaingun.png",
+        ChainSaw: "assets/pickups/Chainsaw.png"
     },
     background: {
         doom1: "assets/backgrounds/Doom1.png",
         doom2: "assets/backgrounds/Doom2.png",
         doom3: "assets/backgrounds/Doom3.png",
-
         doom4: "assets/backgrounds/Doom4.png",
+        doom5: "assets/backgrounds/Doom5.png",
         doom6: "assets/backgrounds/Doom6.png",
         wide: "assets/backgrounds/WideBack.jpg",
         boss: "assets/backgrounds/BossBack.jpg"
@@ -38,33 +52,33 @@ const pics = {
 
 const enemyPics = {
     Troop: "assets/enemies/Troop.gif",
-    ShotGGuy: "assets/enemies/ShotGGuy.gif",
+    ShotGun_Troop: "assets/enemies/ShotGGuy.gif",
     Imp: "assets/enemies/Imp.gif",
     ChainGuy: "assets/enemies/ChainGuy.gif",
     TroopLeft: "assets/enemies/TroopLeft.gif",
     TroopLeft_Tomer: "assets/enemies/TroopLeft_Tomer.gif",
     hurt: {
         Troop: "assets/enemies/Troop_Hurt.png",
-        ShotGGuy: "assets/enemies/ShotGGuy_Hurt.png",
+        ShotGun_Troop: "assets/enemies/ShotGGuy_Hurt.png",
         Imp: "assets/enemies/Imp_Hurt.png",
         ChainGuy: "assets/enemies/ChainGuy_Hurt.png",
     },
-    dead: {
-        Troop: "assets/enemies/Troop_Hurt.png",
-        ShotGGuy: "assets/enemies/ShotGGuy_Hurt.png",
-        Imp: "assets/enemies/Imp_Hurt.png",
-        ChainGuy: "assets/enemies/ChainGuy_Hurt.png",
-        TroopLeft: "assets/enemies/TroopLeft_Hurt.png",
-        TroopLeft_Tomer: "assets/enemies/Troop_Hurt.png",
-    }
     // dead: {
-    //     Troop: "assets/enemies/Troop_Dead.gif",
-    //     ShotGGuy: "assets/enemies/ShotGGuy_Dead.gif",
-    //     Imp: "assets/enemies/Imp_Dead.gif",
-    //     ChainGuy: "assets/enemies/ChainGuy_DeadEd.gif",
-    //     TroopLeft: "assets/enemies/TroopLeft_Dead.gif",
-    //     TroopLeft_Tomer: "assets/enemies/TroopLeft_Tomer_Dead.gif",
+    //     Troop: "assets/enemies/Troop_Hurt.png",
+    //     ShotGun_Troop: "assets/enemies/ShotGGuy_Hurt.png",
+    //     Imp: "assets/enemies/Imp_Hurt.png",
+    //     ChainGuy: "assets/enemies/ChainGuy_Hurt.png",
+    //     TroopLeft: "assets/enemies/TroopLeft_Hurt.png",
+    //     TroopLeft_Tomer: "assets/enemies/Troop_Hurt.png",
     // }
+    dead: {
+        Troop: "assets/enemies/Troop_Dead.gif",
+        ShotGun_Troop: "assets/enemies/ShotGGuy_Dead.gif",
+        Imp: "assets/enemies/Imp_Dead.gif",
+        ChainGuy: "assets/enemies/ChainGuy_DeadEd.gif",
+        TroopLeft: "assets/enemies/TroopLeft_Dead.gif",
+        TroopLeft_Tomer: "assets/enemies/TroopLeft_Tomer_Dead.gif",
+    }
 }
 
 const elements = {

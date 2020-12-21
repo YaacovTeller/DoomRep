@@ -86,6 +86,20 @@
 .pickup_ammo{
     width: 100px;
 }
+.pickup_ammo_small{
+    width: 30px;
+}
+.pickup_health_small{
+    width: 30px;
+}
+
+.undraggable{
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
 
 #riotShield{
     /* animation-name: lowerShield; */

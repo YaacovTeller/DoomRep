@@ -65,6 +65,15 @@
         transform: scale(0.8);
     }
 }
+@keyframes approachBoss{
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.8);
+    }
+}
 @keyframes flee {
     0% {
         top: 40%;

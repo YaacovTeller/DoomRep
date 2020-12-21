@@ -1,8 +1,4 @@
-﻿let music: boolean = true;
-let riotShieldDeployed: boolean = false;
-var gameBegun: boolean = false;
-
-class DOMUpdater {
+﻿class DOMUpdater {
     public static updateKillCounter(totalCount){
         this.updateCounter(elements.killCounter, "Kills:" + totalCount);
     }
@@ -13,13 +9,30 @@ class DOMUpdater {
         this.updateCounter(elements.ammoCount, ammo);
         click2.play();
     }
-
     public static updateHealthCounter(health){
         this.updateCounter(elements.health, "Health:" + health);
     }
-    
     private static updateCounter(elem, str){
         elem.innerText = str;
+    }
+    public static timedClearAllImages(){
+        this.clearTargets();
+        setTimeout(() => {
+            this.clearPickups()
+        }, 1000);
+    }
+    public static clearTargets() {
+        for (let enemy of GameInfo.enemyArray){
+            enemy.undraw();
+            clearInterval(enemy.attackRoller);
+        }
+        GameInfo.enemyArray = [];
+    }
+    public static clearPickups() {
+        for (let item of Pickup.array){
+            item.undraw();
+        }
+        Pickup.array = [];
     }
 }
 
@@ -35,8 +48,8 @@ function hitWarning() {//THIS needs work
 // }
 
 function shieldToggle() {
-    if (riotShieldDeployed == false) {
-        riotShieldDeployed = true;
+    if (GameInfo.riotShieldDeployed == false) {
+        GameInfo.riotShieldDeployed = true;
         elements.riotShield.style.animationName = "raiseShield";
         Player.slungWeapon = Player.weapon;
         if(Player.slungWeapon instanceof MachineGun){
@@ -48,7 +61,7 @@ function shieldToggle() {
     }
     else {
         elements.riotShield.style.animationName = "lowerShield";
-        riotShieldDeployed = false;
+        GameInfo.riotShieldDeployed = false;
         Player.slungWeapon.switchTo();
     }
 }
@@ -61,14 +74,14 @@ function showElement(elem: HTMLElement){
 }
 
 function killAllEnemies(){
-    for (let enemy of RegEnemy.enemyArray){
+    for (let enemy of GameInfo.enemyArray){
         if (!enemy) continue
         enemy.die();
     }
 }
 
 function clearAllEnemies(){
-    for (let enemy of RegEnemy.enemyArray){
+    for (let enemy of GameInfo.enemyArray){
         if (!enemy) continue
         enemy.deadFlag = true;
         clearInterval(enemy.attackRoller);
@@ -76,7 +89,7 @@ function clearAllEnemies(){
     }
 }
 function godMode(){
-    for (let enemy of RegEnemy.enemyArray){
+    for (let enemy of GameInfo.enemyArray){
         if (!enemy) continue
         clearInterval(enemy.attackRoller);
     }
@@ -85,20 +98,27 @@ function godMode(){
 // Checks if the targets were killed, advances to next stage
 function levelCheck() {
     if (checkAllDead()){
-        switch (level) {
-            case 1: lev2(); break;
-            case 2: lev3(); break;
-            case 3: lev4(); break;
-            case 4: lev5(); break;
-            case 5: finalLev(); break;
+        if (GameInfo.gameMode == 0){
+            switch (GameInfo.level) {
+                case 1: lev2(); break;
+                case 2: lev3(); break;
+                case 3: lev4(); break;
+                case 4: lev5(); break;
+                case 5: finalLev(); break;
+                case 6: sectionFinish(); break;
+            }
+        }
+        else if (GameInfo.gameMode == 1){
+            LevelGenerator.levelLoop();
         }
     }
 }
 
 function checkAllDead(){
-    for(let enemy of RegEnemy.enemyArray){
+    for(let enemy of GameInfo.enemyArray){
         if (enemy.deadFlag == false && !(enemy instanceof Extra)) return false
     }
+    GameInfo.enemiesCleared = true;
     return true;
 }
 
@@ -111,29 +131,24 @@ function openMenu() {
 function closeMenu() {
     hideElement(elements.menuImage)
     hideElement(elements.menu)
-    if (gameBegun == true) {
+    if (GameInfo.gameBegun == true) {
         startTimer()
     }
 }
 function startingAmmo() {
     Player.weaponCollection['Pistol'].ammo = gunConfig.Pistol.startingAmmo;
-    // shotgun.ammo = 16;
-    // minigun.ammo = 0;
-    // dukemgun.ammo = 120;
-    // DualNeutron.ammo = 0;
 }
-function startingValues(){
-    Player.dead = false;
-    GameInfo.deadExtraCount = 0;
-    GameInfo.deadCount = 0;
-    Player.health = 100;
-}
-function restart() {
+
+function restart(num) {
     document.getElementById("fin").innerHTML = "";
     hideElement(elements.backImg);
     hideElement(elements.Bar);
     showElement(elements.riotShield);
     clearTimer();
+    Player.reset();
+    GameInfo.reset();
+    GameInfo.gameMode = num;
+    DOMUpdater.clearTargets();
     DOMUpdater.updateKillCounter(0);
     DOMUpdater.updateHealthCounter(Player.health);
     beginGame();
@@ -146,14 +161,14 @@ function creditsMenu() {
     showElement(elements.credits);
 }
 function muteMusic(button) {
-    if (music == true) {
+    if (GameInfo.music == true) {
         button.innerText = "Unmute music"
-        music = false;
+        GameInfo.music = false;
         Deuscredits.stop();
     }
-    else if (music == false) {
+    else if (GameInfo.music == false) {
         button.innerText = "Mute music"
-        music = true;
+        GameInfo.music = true;
         Deuscredits.play();
     }
 }
@@ -198,11 +213,9 @@ function slamMessage(elem:HTMLElement, parent:HTMLElement, delay:number){
 }
 
 function sectionFinish(){
-    gameBegun = false;
+    reduceBar(0);
+    stopTimer();
+    GameInfo.gameBegun = false;
     Deuscredits.stop();
     finishMessage()
 }
-
-// $(document).ready(function () {
-//     $("#Track").fadeOut();
-// });
