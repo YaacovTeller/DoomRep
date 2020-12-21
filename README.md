@@ -1,5 +1,6 @@
 # DoomRep
 Controls: 
+
           1 - Chainsaw;
           2 - Pistol;
           3 - Shotgun;
