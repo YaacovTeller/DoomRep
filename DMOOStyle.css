@@ -147,6 +147,8 @@
 }
 
 .hudBox{
+    text-shadow: 2px 2px 2px black;
+    box-shadow: 5px 5px 15px 5px black;
     background-color: darkgray;
     border-radius: 25px;
     z-index: 2;
