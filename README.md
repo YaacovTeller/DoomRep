@@ -15,7 +15,7 @@ You can still fire with the shield, but upon deploying your weapon defaults to p
 You can only switch weapons when your shield is lowered, you've only got two hands, right?
 
 Oncoming damage is indicated by a klaxon;
-Do not be alarmed by the running Tomer in the first screen. He can be removed in the level.ts file.
+Do not be alarmed by the running Tomer in the first screen. He can be removed in the levels.js file ( + "_Tomer").
 At the mo, the second menu button only links to files on my computer.
 Music is on, by default.
 
@@ -31,6 +31,7 @@ the chainsaw now has a 'reach' checker, based on "elem.getBoundingClientRect().h
 Will have to be improved for different sized enemies, but for now, it limits chainsaw use to more in-your-face distance.
 
 Current bugs:
+You can double-(or triple!) click pickups to get double, before they go.
 Machine guns can get stuck on strafe mode - more rare now.
 Ammo sometimes reaches -1.
 Creatures can get stuck on hurt frame.
