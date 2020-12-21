@@ -1,6 +1,6 @@
 # DoomRep
 Controls: 1 - Chainsaw;
-          2 - Pistol, default;
+          2 - Pistol;
           3 - Shotgun;
           4 - Duke3d machineGun;
           5 - N/A
