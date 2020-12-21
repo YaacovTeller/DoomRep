@@ -271,14 +271,18 @@ class Player {
         Player.dead = true;
         this.deadSound();
         fadeOut();
+        //this.weapon = null;
+        document.body.setAttribute("onmousemove", null);
         stopTimer();
         Deuscredits.stop();
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
-        clearAllEnemies();
         let div1 = createMessageDiv("levelMsg", "YOU DIED");
         slamMessage(div1, elements.finishMsg, 1000);
-        setTimeout(() => { openMenu(); }, 2500);
+        setTimeout(() => {
+            openMenu();
+            clearAllEnemies();
+        }, 2500);
     }
     static deadSound() {
         Turokscream.play();
