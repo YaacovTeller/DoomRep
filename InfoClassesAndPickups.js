@@ -130,10 +130,10 @@ class healthPickup extends Pickup {
         super(source);
         this.image = pics.pickups.health.small;
         this.ammount = ammount;
-        this.image = ammount < 50 ? pics.pickups.health.small : pics.pickups.health.big;
-        if (ammount > 50) {
+        //  this.image = ammount <= 50 ? pics.pickups.health.small : pics.pickups.health.big;
+        if (ammount >= 50) {
             this.image = pics.pickups.health.big;
-            this.cssClass = "pickup_ammo_small";
+            this.cssClass = "pickup_health_big";
         }
         else {
             this.image = pics.pickups.health.small;

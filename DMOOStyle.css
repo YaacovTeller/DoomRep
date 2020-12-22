@@ -95,6 +95,9 @@
 .pickup_health_small{
     width: 30px;
 }
+.pickup_health_big{
+    width: 60px;
+}
 
 .undraggable{
     user-select: none;
