@@ -9,7 +9,7 @@ abstract class Target {
     public deadFlag: boolean = false;
     public isBoss: boolean;
     protected carriedWeapon: weaponry;
-    constructor(enemy, health, position: Position, anim: AnimationInfo) {
+    constructor(enemy, health, position: Position, anim: Array<AnimationInfo>) {
         this.health = health;
         this.enemy = enemy;
         this.draw(position, anim);
@@ -17,7 +17,7 @@ abstract class Target {
     
     protected draw(position, anim?){
         var img:HTMLElement = document.createElement("img");
-        img.classList.add("target", "undraggable")
+        img.classList.add("target", "undraggable","fillModeForwards")
 
       //  img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
         img.onmouseover = () => this.setAsTarget();
@@ -29,8 +29,11 @@ abstract class Target {
         img.style.top = position.y +"%";
         img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y/50*position.y/50})`
         if (anim){
-            let str = anim.animationString();
-            img.style.animation = str;
+            let arr = [];
+            for (let a of anim){
+                arr.push(a.animationString());
+            }
+            img.style.animation = arr.join(", ");
         }
         elements.targetBackdrop.appendChild(img);
         this.DOMImage = img;
@@ -72,6 +75,8 @@ abstract class Target {
     }
 
     protected die(){
+        //rescalForPotPlants(this.DOMImage)
+   
         this.deadFlag = true;
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
@@ -91,6 +96,12 @@ abstract class Target {
         GameInfo.targeting = false;
         GameInfo.hitTarget = null;
     }
+}
+function rescalForPotPlants(image){ // USED IN KID FRIENDLY MODE, see PictureObjects for alternate death-pics
+    let scale = image.style.transform
+    let num = parseFloat(scale.replace("scale(",""))
+    image.style.transform = `scale(${num/3})`
+
 }
 
 abstract class RegEnemy extends Target {
@@ -113,7 +124,7 @@ abstract class RegEnemy extends Target {
         clearInterval(this.damaging);
         if (!(this instanceof Extra)){
             GameInfo.deadCount++
-            levelCheck();
+            sceneCheck();
         } 
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
     }
@@ -232,7 +243,7 @@ class Extra extends RegEnemy {
 }
 
 class Player {
-    static health: number = 100;
+    static health: number;
     static dead: boolean = false;
     static weaponCollection: Object = {};
     static weapon: weaponry;
@@ -247,7 +258,7 @@ class Player {
     }
     static reset(){
         Player.dead = false;
-        Player.health = 100;
+        Player.health = 10000;
         Player.weaponCollection = {};
     }
 
@@ -300,7 +311,7 @@ class Player {
         Deuscredits.stop();
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
-        let div1:HTMLElement = createMessageDiv("levelMsg","YOU DIED");
+        let div1:HTMLElement = createMessageDiv("sceneMsg","YOU DIED");
         slamMessage(div1, elements.finishMsg, 1000);
         setTimeout(() => {
             openMenu(); 

@@ -2,8 +2,9 @@ class GameInfo {
     public static gameMode: number;
     public static AvailableEnemies: Array<string> = new Array();
     public static enemyArray: Array<RegEnemy> = new Array();
+    public static currentLevel: Array<Scene> = new Array();
+    public static currentScene: Scene;
     public static bossTotalHealth: number;
-    public static level: number;
     public static hitTarget: any = null;
     public static targeting: boolean = false;
     public static deadCount: number;
@@ -24,9 +25,29 @@ class GameInfo {
         this.deadCount = 0;
         this.deadExtraCount = 0;
         this.enemiesCleared = false;
-        this.level = 0;
+        this.currentLevel = [];
         this.gameBegun = true;
         this.music = true;
+    }
+}
+class Scene {
+    public number;
+    public background;
+    public attributes;
+    public enemyFunc;
+    constructor(background, attributes, enemyFunc, fadeOutDelay?, fadeInDelay?, enemiesDelay?, noFadeOut?){
+        this.background = background;
+        this.attributes = attributes;
+        this.enemyFunc = enemyFunc;
+        fadeOutDelay = fadeOutDelay != null ? fadeOutDelay : 500;
+        fadeInDelay = fadeInDelay != null ? fadeInDelay : 1700;
+        enemiesDelay = enemiesDelay != null ? enemiesDelay : 3000;
+        this.genericScene(background, attributes, enemyFunc, fadeOutDelay, fadeInDelay, enemiesDelay, noFadeOut)
+    }
+    public genericScene(background, attributes, enemyFunc, fadeOutDelay, fadeInDelay, enemiesDelay, noFadeOut?){
+        if(!noFadeOut){ fadeOutClear(fadeOutDelay);}
+        fadeInBackground(fadeInDelay, background, attributes);
+        generateEnemiesDelay(enemiesDelay, enemyFunc);
     }
 }
 
@@ -52,7 +73,7 @@ class AnimationInfo{
         this.duration = dur || '5s';
         this.timing = tim || 'ease';
         this.iterations = iter || 'infinite';
-        this.direction = dir || "";
+        this.direction = dir || "alternate";
     }
     public animationString(){
         return this.animation+" "+this.duration+" "+this.timing+" "+this.iterations+" "+this.direction;

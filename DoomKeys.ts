@@ -48,16 +48,16 @@ document.addEventListener('keydown', function (ev) {
         click2.play()
     }
     else if (ev.key === "c") {
-        clearAllEnemies(); // single stage
+        clearAllEnemies(); // single scene
     }
     else if (ev.key === "g") {
-        godMode(); // single stage
+        godMode(); // single scene
     }
     else if (ev.key === "k") {
-        killAllEnemies(); // single stage
+        killAllEnemies(); // single scene
     }
     else if (ev.key === "l") {
-        levelCheck();
+        sceneCheck();
     }
 })
 

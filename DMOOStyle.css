@@ -40,7 +40,7 @@
     /* display: flex;
     justify-items: center; not working? */
 }
-.finishText .levelMsg{
+.finishText .sceneMsg{
     font-size: 100px;
     font-weight: bold;
 }
@@ -64,6 +64,9 @@
     user-select: none;
     position: absolute;
     height: 300px;
+}
+.extraTarget {
+    z-index: 0;
 }
 .weapon{
     width: fit-content;
@@ -113,16 +116,6 @@
     left: -10%;
     top: 110%;
 }
-
-/* .exit {
-    position: absolute;
-    color: red;
-    display: none;
-    left: 43%;
-    top: 43%;
-    font-size: 80px;
-    font-family: Aldrich;
-} */
 
 .victory {
     position: absolute;

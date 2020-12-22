@@ -10,7 +10,7 @@ class Target {
     }
     draw(position, anim) {
         var img = document.createElement("img");
-        img.classList.add("target", "undraggable");
+        img.classList.add("target", "undraggable", "fillModeForwards");
         //  img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
         img.onmouseover = () => this.setAsTarget();
         img.onmouseleave = () => this.unsetTarget();
@@ -21,8 +21,11 @@ class Target {
         img.style.top = position.y + "%";
         img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y / 50 * position.y / 50})`;
         if (anim) {
-            let str = anim.animationString();
-            img.style.animation = str;
+            let arr = [];
+            for (let a of anim) {
+                arr.push(a.animationString());
+            }
+            img.style.animation = arr.join(", ");
         }
         elements.targetBackdrop.appendChild(img);
         this.DOMImage = img;
@@ -65,6 +68,7 @@ class Target {
         }
     }
     die() {
+        //rescalForPotPlants(this.DOMImage)
         this.deadFlag = true;
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
@@ -83,6 +87,11 @@ class Target {
         GameInfo.hitTarget = null;
     }
 }
+function rescalForPotPlants(image) {
+    let scale = image.style.transform;
+    let num = parseFloat(scale.replace("scale(", ""));
+    image.style.transform = `scale(${num / 3})`;
+}
 class RegEnemy extends Target {
     constructor(enemy, health, position, anim) {
         super(enemy, health, position, anim);
@@ -96,7 +105,7 @@ class RegEnemy extends Target {
         clearInterval(this.damaging);
         if (!(this instanceof Extra)) {
             GameInfo.deadCount++;
-            levelCheck();
+            sceneCheck();
         }
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
     }
@@ -227,7 +236,7 @@ class Player {
     }
     static reset() {
         Player.dead = false;
-        Player.health = 100;
+        Player.health = 10000;
         Player.weaponCollection = {};
     }
     static collectAmmo(ammount, weaponName) {
@@ -277,7 +286,7 @@ class Player {
         Deuscredits.stop();
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
-        let div1 = createMessageDiv("levelMsg", "YOU DIED");
+        let div1 = createMessageDiv("sceneMsg", "YOU DIED");
         slamMessage(div1, elements.finishMsg, 1000);
         setTimeout(() => {
             openMenu();
@@ -291,6 +300,5 @@ class Player {
         Hlifescream1.play();
     }
 }
-Player.health = 100;
 Player.dead = false;
 Player.weaponCollection = {};

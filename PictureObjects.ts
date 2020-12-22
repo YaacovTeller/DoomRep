@@ -35,7 +35,11 @@ const pics = {
         Shotgun: "assets/pickups/Shotgun.png",
         DukeMgun: "assets/pickups/DukeMGun.png",
         Minigun: "assets/pickups/Chaingun.png",
-        ChainSaw: "assets/pickups/Chainsaw.png"
+        ChainSaw: "assets/pickups/Chainsaw.png",
+        DualNeutron: "assets/pickups/DualNeutron.png",
+        misc: {
+            fizzy: "assets/pickups/DeusSoda.png",
+        }
     },
     background: {
         doom1: "assets/backgrounds/Doom1.png",
@@ -64,12 +68,12 @@ const enemyPics = {
         ChainGuy: "assets/enemies/ChainGuy_Hurt.png",
     },
     // dead: {
-    //     Troop: "assets/enemies/Troop_Hurt.png",
-    //     ShotGun_Troop: "assets/enemies/ShotGGuy_Hurt.png",
-    //     Imp: "assets/enemies/Imp_Hurt.png",
-    //     ChainGuy: "assets/enemies/ChainGuy_Hurt.png",
-    //     TroopLeft: "assets/enemies/TroopLeft_Hurt.png",
-    //     TroopLeft_Tomer: "assets/enemies/Troop_Hurt.png",
+    //     Troop: "assets/potplant.png",
+    //     ShotGun_Troop: "assets/potplant.png",
+    //     Imp: "assets/potplant.png",
+    //     ChainGuy: "assets/moneyBag.png",
+    //     TroopLeft: "assets/moneyBag.png",
+    //     TroopLeft_Tomer: "assets/moneyBag.png",
     // }
     dead: {
         Troop: "assets/enemies/Troop_Dead.gif",

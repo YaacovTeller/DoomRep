@@ -116,33 +116,6 @@ function godMode(){
     }
 }
 
-// Checks if the targets were killed, advances to next stage
-function levelCheck() {
-    if (checkAllDead()){
-        if (GameInfo.gameMode == 0){
-            switch (GameInfo.level) {
-                case 1: lev2(); break;
-                case 2: lev3(); break;
-                case 3: lev4(); break;
-                case 4: lev5(); break;
-                case 5: finalLev(); break;
-                case 6: sectionFinish(); break;
-            }
-        }
-        else if (GameInfo.gameMode == 1){
-            LevelGenerator.levelLoop();
-        }
-    }
-}
-
-function checkAllDead(){
-    for(let enemy of GameInfo.enemyArray){
-        if (enemy.deadFlag == false && !(enemy instanceof Extra)) return false
-    }
-    GameInfo.enemiesCleared = true;
-    return true;
-}
-
 function openMenu() {
     showElement(elements.menuImage)
     showElement(elements.menu)
@@ -162,6 +135,7 @@ function startingAmmo() {
 
 function restart(num) {
     document.getElementById("fin").innerHTML = "";
+  //  document.getElementById("targetBackdrop").innerHTML = "";
     hideElement(elements.backImg);
     hideElement(elements.Bar);
     showElement(elements.riotShield);
@@ -214,8 +188,8 @@ function createMessageDiv(className, msg){
 
 function finishMessage(){
     elements.finishMsg.innerHTML = "";
-    let div1:HTMLElement = createMessageDiv("levelMsg","LEVEL 1");
-    let div2:HTMLElement = createMessageDiv("levelMsg","COMPLETED");
+    let div1:HTMLElement = createMessageDiv("sceneMsg","STAGE 1");
+    let div2:HTMLElement = createMessageDiv("sceneMsg","COMPLETED");
     let div3:HTMLElement = createMessageDiv("speedMsg", `Time: ${getTime()}`);
 
     let killsStr = `Total kills: ${GameInfo.deadCount + GameInfo.deadExtraCount}`
