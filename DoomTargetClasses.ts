@@ -232,6 +232,7 @@ class Extra extends RegEnemy {
         this.DOMImage.classList.add('fillModeForwards', 'extraTarget')
    }
     public die() {
+        this.drop(new healthPickup(this, 50));
         GameInfo.deadExtraCount++
         super.die();
 
