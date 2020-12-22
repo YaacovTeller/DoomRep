@@ -81,7 +81,7 @@ abstract class Target {
         this.DOMImage.style.animationPlayState = "paused";
         this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
         this.DOMImage.style.pointerEvents = "none";
-        if (this.randomiseDrop(80))this.drop(new healthPickup(this, 20));
+        if (this.randomiseDrop(85))this.drop(new healthPickup(this, 20));
         this.deadSound();
     }
 
@@ -164,7 +164,7 @@ class Troop extends RegEnemy {
         ded2.play()
     }
     public die(){
-        if (this.randomiseDrop(30))this.drop(new weaponPickup(this, GameInfo.allGuns.DukeMgun));//this.carriedWeapon
+        if (this.randomiseDrop(40))this.drop(new weaponPickup(this, GameInfo.allGuns.DukeMgun));//this.carriedWeapon
         super.die();
     }
 }
@@ -182,7 +182,7 @@ class ShotGun_Troop extends RegEnemy {
         ded.play()
     }
     public die(){
-        if (this.randomiseDrop(30))this.drop(new weaponPickup(this, this.carriedWeapon));
+        if (this.randomiseDrop(40))this.drop(new weaponPickup(this, this.carriedWeapon));
         super.die();
     }
 }
@@ -204,7 +204,8 @@ class ChainGGuy extends RegEnemy {
         ded.play()
     }
     public die(){
-        if (this.randomiseDrop(0))this.drop(new weaponPickup(this, this.carriedWeapon));
+        this.drop(new weaponPickup(this, this.carriedWeapon));
+        this.drop(new healthPickup(this, 50));
         super.die();
     }
 }
@@ -258,7 +259,7 @@ class Player {
     }
     static reset(){
         Player.dead = false;
-        Player.health = 10000;
+        Player.health = 100;
         Player.weaponCollection = {};
     }
 
@@ -280,6 +281,7 @@ class Player {
 
     static collectHealth(ammount){
         Player.health += ammount;
+        Player.health = Player.health<120 ? Player.health : 120; // HEALTH CAP AT 120? 
         DOMUpdater.updateHealthCounter(Player.health);
     }
 
