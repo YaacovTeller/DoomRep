@@ -1,0 +1,221 @@
+﻿html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    user-select: none;
+    -moz-user-select: none;
+}
+.buttonStyle{
+    position: absolute;
+    padding: 10px;
+}     
+
+.walker {
+    user-select: none;
+    -moz-user-select: none;
+    position: absolute;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.handclass {
+    user-select: none;
+    -moz-user-select: none;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    transform: scale(3.5);
+}
+
+#shai1 {
+    animation-name: flee_H;
+    animation-duration: 7s;
+}
+
+#shai2 {
+    animation-name: flee_H;
+    animation-duration: 10s;
+}
+
+#shai3 {
+    animation-name: flee_H;
+    animation-duration: 6s;
+}
+
+#shai4 {
+    animation-name: flee_M;
+    animation-duration: 10s;
+    animation-timing-function: ease-in;
+}
+
+#shai5 {
+    animation-name: flee_M;
+    animation-duration: 6s;
+    animation-timing-function: ease-in;
+}
+
+#shai6 {
+    animation-name: flee_M;
+    animation-duration: 8s;
+}
+
+#shai7 {
+    animation-name: flee_L;
+    animation-duration: 6s;
+}
+
+#shai8 {
+    animation-name: flee_L;
+    animation-duration: 9s;
+}
+
+#shai9 {
+    animation-name: flee_L;
+    animation-duration: 10s;
+    animation-timing-function: ease-in;
+}
+
+#shai10 {
+    animation-name: flee_L;
+    animation-duration: 12s;
+}
+/*
+#shai11 {
+    animation-name: flee_NW;
+    animation-duration: 11s;
+}
+
+#shai12 {
+    animation-name: flee_NW;
+    animation-duration: 9s;
+    animation-timing-function: ease-out;
+}
+
+#shai13 {
+    animation-name: flee_NW_Low;
+    animation-duration: 9s;
+}
+
+#shai14 {
+    animation-name: flee_NW_Low;
+    animation-duration: 8s;
+    animation-timing-function: ease-in;
+}
+
+#shai15 {
+    animation-name: flee_NW;
+    animation-duration: 9s;
+    animation-timing-function: ease-in;
+}
+
+#shai16 {
+    animation-name: flee_NW_Lower;
+    animation-duration: 10s;
+    animation-timing-function: ease-out;
+}
+
+#shai17 {
+    animation-name: flee_NW_Low;
+    animation-duration: 10s;
+}
+*/
+@keyframes flee_H {
+    0% {
+        transform: scale(1);
+        top: 40%;
+        left: 110%;
+    }
+
+    100% {
+        top: 40%;
+        left: -10%;
+    }
+}
+
+@keyframes flee_M {
+    0% {
+        transform: scale(1.5);
+        top: 50%;
+        left: 110%;
+    }
+
+    100% {
+        top: 50%;
+        left: -10%;
+    }
+}
+
+@keyframes flee_L {
+    0% {
+        transform: scale(2);
+        top: 60%;
+        left: 110%;
+    }
+
+    100% {
+        top: 60%;
+        left: -10%;
+    }
+}
+/*
+@keyframes flee_NW {
+    0% {
+        z-index: 1;
+        transform: scale(4);
+        top: 60%;
+        left: 110%;
+    }
+
+    60% {
+        z-index: 0;
+    }
+
+    100% {
+        transform: scale(2);
+        top: 35%;
+        left: -10%;
+    }
+}
+
+@keyframes flee_NW_Low {
+
+    0% {
+        z-index: 1;
+        transform: scale(4);
+        top: 70%;
+        left: 110%;
+    }
+
+    60% {
+        z-index: 0;
+    }
+
+    100% {
+        transform: scale(2);
+        top: 35%;
+        left: -10%;
+    }
+}
+
+@keyframes flee_NW_Lower {
+    0% {
+        z-index: 1;
+        transform: scale(5);
+        top: 85%;
+        left: 110%;
+    }
+
+    60% {
+        z-index: 0;
+    }
+
+    100% {
+        transform: scale(2);
+        top: 35%;
+        left: -10%;
+    }
+}body {
+}
+ */
