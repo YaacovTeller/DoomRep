@@ -1,59 +1,6 @@
-﻿class DOMUpdater {
-    public static updateKillCounter(totalCount) {
-        this.updateCounter(elements.killCounter, "Kills:" + totalCount);
-    }
-    public static updateAmmoCounter(ammo) {
-        this.updateCounter(elements.ammoCount, ammo);
-    }
-    public static updateAmmoWithClick(ammo) {
-        this.updateCounter(elements.ammoCount, ammo);
-        this.colorChange(elements.ammoCount, 'red', ammo, 10);
-        this.blipAnim(elements.ammoCount);
-        click2.play();
-    }
-    public static updateHealthCounter(health) {
-        this.updateCounter(elements.health, health);
-        this.colorChange(elements.health, 'red', health, 40);
-    }
-    public static updateCounter(elem, str) {
-        elem.innerText = str;
-    }
-
-    public static colorChange(elem, color, ammount, limit) {
-        if (ammount < limit) {
-            elem.style.color = color;
-        }
-        else {
-            elem.style.color = "black";
-        }
-    }
-
-    public static blipAnim(elem){
-        // let width = parseInt($(elem).css('width'))
-        // $(elem).animate({width: (width + 20)+'px'}, 150);
-        // $(elem).animate({width: (width - 20)+'px'}, 150);
-        let fontSize = parseInt($(elem).css('fontSize'))
-        $(elem).animate({fontSize: (fontSize + 10)+'px'}, 150);
-        $(elem).animate({fontSize: (fontSize)+'px'}, 150);
-    }
-    public static timedClearAllImages(){
-        this.clearTargets();
-        setTimeout(() => {
-            this.clearPickups()
-        }, 1000);
-    }
-    public static clearTargets() {
-        for (let enemy of GameInfo.enemyArray){
-            enemy.undraw();
-            clearInterval(enemy.attackRoller);
-        }
-        GameInfo.enemyArray = [];
-    }
-    public static clearPickups() {
-        for (let item of Pickup.array){
-            item.undraw();
-        }
-        Pickup.array = [];
+﻿class RandomNumberGen {
+    static randomNumBetween(min, max){
+        return Math.floor(Math.random() * (max - min +1)) + min;
     }
 }
 
@@ -69,8 +16,8 @@ function hitWarning() {//THIS needs work
 // }
 
 function shieldToggle() {
-    if (GameInfo.riotShieldDeployed == false) {
-        GameInfo.riotShieldDeployed = true;
+    if (Player.riotShieldDeployed == false) {
+        Player.riotShieldDeployed = true;
         elements.riotShield.style.animationName = "raiseShield";
         Player.slungWeapon = Player.weapon;
         if(Player.slungWeapon instanceof MachineGun){
@@ -82,7 +29,7 @@ function shieldToggle() {
     }
     else {
         elements.riotShield.style.animationName = "lowerShield";
-        GameInfo.riotShieldDeployed = false;
+        Player.riotShieldDeployed = false;
         Player.slungWeapon.switchTo();
     }
 }
@@ -109,12 +56,6 @@ function clearAllEnemies(){
         hideElement(enemy.DOMImage);
     }
 }
-function godMode(){
-    for (let enemy of GameInfo.enemyArray){
-        if (!enemy) continue
-        clearInterval(enemy.attackRoller);
-    }
-}
 
 function openMenu() {
     showElement(elements.menuImage)
@@ -134,8 +75,7 @@ function startingAmmo() {
 }
 
 function restart(num) {
-    document.getElementById("fin").innerHTML = "";
-  //  document.getElementById("targetBackdrop").innerHTML = "";
+    clearScreenMessages();
     hideElement(elements.backImg);
     hideElement(elements.Bar);
     showElement(elements.riotShield);
@@ -146,23 +86,32 @@ function restart(num) {
     DOMUpdater.clearTargets();
     DOMUpdater.updateKillCounter(0);
     DOMUpdater.updateHealthCounter(Player.health);
-    beginGame();
+    LevelHandler.beginGame();
 }
+
 function creditsMenu() {
+    clearScreenMessages();
     Deuscredits.stop();
     hideElement(elements.menu);
     hideElement(elements.menuImage);
     UTcredits.play();
     showElement(elements.credits);
 }
-function muteMusic(button) {
-    if (GameInfo.music == true) {
-        button.innerText = "Unmute music"
+function kidMode(value){
+    if (value == true){
+        GameInfo.kidMode = true;
+    }
+    else GameInfo.kidMode = false;
+}
+
+function muteMusic(value) {
+    if (value == false) {
+        elements.muteLabel.innerText = "Music off"
         GameInfo.music = false;
         Deuscredits.stop();
     }
-    else if (GameInfo.music == false) {
-        button.innerText = "Mute music"
+    else if (value == true) {
+        elements.muteLabel.innerText = "Music on"
         GameInfo.music = true;
         Deuscredits.play();
     }
@@ -185,10 +134,13 @@ function createMessageDiv(className, msg){
     div.classList.add(className)
     return div;
 }
-
-function finishMessage(){
+function clearScreenMessages(){
     elements.finishMsg.innerHTML = "";
-    let div1:HTMLElement = createMessageDiv("sceneMsg","STAGE 1");
+}
+
+function genericFinishMessage(){
+    clearScreenMessages();
+    let div1:HTMLElement = createMessageDiv("sceneMsg",`STAGE ${GameInfo.levelArray.length}`);
     let div2:HTMLElement = createMessageDiv("sceneMsg","COMPLETED");
     let div3:HTMLElement = createMessageDiv("speedMsg", `Time: ${getTime()}`);
 
@@ -208,9 +160,9 @@ function slamMessage(elem:HTMLElement, parent:HTMLElement, delay:number){
 }
 
 function sectionFinish(){
-    reduceBar(0);
+    LevelHandler.reduceBar(0);
     stopTimer();
     GameInfo.gameBegun = false;
     Deuscredits.stop();
-    finishMessage()
+    genericFinishMessage()
 }

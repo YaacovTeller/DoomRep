@@ -4,9 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="..\..\Bootstrap_4.1.3\css\bootstrap.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
+    <!-- <link rel="stylesheet" href="..\..\Bootstrap_4.1.3\css\bootstrap.min.css"> -->
     <link href="DMOOStyle.css" rel="stylesheet" />
     <!-- <link href="positionClasses.css" rel="stylesheet" /> -->
     <link href="DoomAnimations.css" rel="stylesheet" />
@@ -44,8 +42,8 @@
         <div class="hudBox healthBox">
             <div class="inline">Health: </div><span class="inline" id="health"></span>
         </div>
-        <img id="shot" src="assets/Crosshairs/shot.png" style="display:none; position:absolute" draggable="false">
-        <img id="blood" src="assets/Blood_10.gif" style="display:none; position:absolute" draggable="false">
+        <img id="shot" src="assets/Crosshairs/shot.png"  style="display:none; position:absolute" draggable="false">
+        <img id="blood" src="assets/Blood_10.gif"        style="display:none; position:absolute" draggable="false">
         <img id="riotShield" src="assets/RiotShield.png" style="display:none; position:absolute" draggable="false">
 
         <div class="hudBox timerBox">
@@ -60,15 +58,34 @@
                 <span id="close" class="close" onclick="closeMenu()"> &times; </span>
                 <img src="assets/backgrounds/DOOMTITLE.png" style="position: fixed; height: 120px; margin-left: 100px; " />
                 <h1>Micro</h1>
+                <!-- <span style="height: 50px"></span> -->
                 <div class="btn-group">
-                    <span style="height: 50px"></span>
                     <button class="button" onclick="closeMenu(),restart(0)">New Game</button>
                     <button class="button" onclick="closeMenu(),restart(1)">Continuous Mode</button>
                     <a href="./Minigames/ShaiMarch/ShaiPage.html">
                         <button class="button">Shai Mini-game</button><!--  buttonDisabled -->
                     </a>
-                    <button class="button" onclick="muteMusic(this)">Mute music</button>
+                    <!-- <button class="button" onclick="muteMusic(this)">Mute music</button> -->
                     <button class="button" onclick="creditsMenu()">Credits</button>
+
+                    <div class="menuItem">
+                        <div class="switchDiv">   
+                            <label class="switch">
+                                <input type="checkbox" onchange="kidMode(this.checked)">
+                                <span class="slider round"></span>
+                            </label>
+                            <span>Kid mode</span>
+                        </div>
+                        <div class="switchDiv">
+                            <label class="switch">
+                                <input checked type="checkbox" onchange="muteMusic(this.checked)">
+                                <span class="slider round"></span>
+                            </label>
+                            <span id="muteLabel">Music on</span>
+                        </div>
+                
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -85,16 +102,19 @@
 
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="PictureObjects.js"></script>
+    <script src="DOMUpdater.js"></script> 
     <script src="DoomFunctions.js"></script>
     <script src="SoundPlayer.js"></script>
     <script src="DoomSound.js"></script>
     <script src="DoomKeys.js"></script>
     <script src="DoomGunClasses.js"></script>
+    <script src="GameInfo.js"></script>
     <script src="InfoClassesAndPickups.js"></script>
     <script src="DoomTargetClasses.js"></script>
+    <script src="Player.js"></script>
     <script src="DoomTimer.js"></script>
-    <script src="DoomLevels.js"></script>
+    <script src="drawEnemiesFuncs.js"></script>
+    <script src="LevelAndSceneHandlers.js"></script>
+    <script src="DoomLevelFuncs.js"></script>
 </body>
-
 </html>
-<!-- "\..\..\Runner\Runner\TargetAlley.html" -->

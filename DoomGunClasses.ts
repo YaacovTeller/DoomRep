@@ -1,10 +1,10 @@
-const gunMoveEvent: string = "Player.weapon.gunMove(event);";
+const gunMoveEvent: string = "Player.weapon.gunLower(event);";
 const MgunShotEvent: string = "Player.weapon.MGunShotDisplay(event);"
 
 const gunConfig = {
     Pistol: {
         pickup_ammo_small: 12,
-        startingAmmo : 24,
+        startingAmmo : 26,
         damage : 20,
         scrnMargin: 280,
         gunHeight: 390,
@@ -88,8 +88,6 @@ abstract class weaponry {
     public damage: number;
     public pickupStats: pickupStats;
 
-    // Moves the chosen weapon to the mouse location, and keeps it at the base of the screen
-    public abstract gunMove(e);
     // sliding gun switch
     public switchTo(){
         if (weaponry.switching == false){ //avoid bobs for multiple weapon pickup
@@ -98,11 +96,15 @@ abstract class weaponry {
             $(elements.weaponDiv).animate({top:'150%'}, 150); 
             $(elements.weaponDiv).animate({top:'90%'}, 150); 
         }
-        elements.weaponDiv.style.top = `${window.outerHeight - this.scrnMargin}px`; //screen.height
         elements.weaponImg.setAttribute("src", this.gunImage);
         Player.weapon = this;
         DOMUpdater.updateAmmoCounter(this.ammo);
     };
+    
+    // public static gunTobaseOfScreen(){
+    //     this.
+    //     elements.weaponDiv.style.top = `${window.outerHeight - this.scrnMargin}px`; 
+    // }
 
     public static showBlood(e) {
         this.displayScreenElement(e, elements.blood, 10, 10, 100);
@@ -120,7 +122,9 @@ abstract class weaponry {
 
         setTimeout(() => hideElement(elem), duration);
     }
+    // Moves weapon to the mouse location, and keeps it at the base of the screen
     public gunLower(e) {
+        
         var Screen: number = window.outerHeight;//screen.height;
         var x = e.pageX;
         var y = e.pageY;
@@ -186,9 +190,7 @@ class Pistol extends regGun {
         pics.pickups.bullets.big,
         pics.pickups.bullets.small
         );
-    public gunMove(e) {
-        super.gunLower(e)
-    }
+    
     public shot(e) {
         if (super.shot(e)) {
             weaponry.showBlood(e)
@@ -218,9 +220,7 @@ class Shotgun extends regGun {
         pics.pickups.shells.big,
         pics.pickups.shells.small
         );
-    public gunMove(e) {
-        this.gunLower(e)
-    }
+
     public shot(e) {
         super.shot(e);
         weaponry.showShot(e)
@@ -307,9 +307,7 @@ class ChainSaw extends MachineGun {
     public pickupStats: pickupStats = 
     new pickupStats( pics.pickups.ChainSaw, "","","","");
 
-    public gunMove(e) {
-        this.gunLower(e)
-    }
+  
     public static chainsawDistanceCheck(hitImage) {
         if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss?)
             return true;
@@ -372,9 +370,7 @@ class Minigun extends MachineGun {
         pics.pickups.bullets.small
         );
 
-    public gunMove(e) {
-        this.gunLower(e)
-    }
+ 
     public spinUp() {
         elements.weaponImg.setAttribute("src", pics.guns.minigun_spinup);
         SSamRotate2.play();
@@ -438,9 +434,6 @@ class DukeMgun extends MachineGun {
         pics.pickups.bullets.small
         );
     
-    public gunMove(e) {
-        this.gunLower(e)
-    }
     public strafe() {
         if (this.pickupShot()) return;
         if (this.ammo <= 0) { click2.play(); }
@@ -459,6 +452,7 @@ class DukeMgun extends MachineGun {
         setMouseAttributes_MachineGun()
     }
 }
+
 class DualNeutron extends MachineGun {
     protected gunImage = pics.guns.dualNuetron;
     protected gunImage_firing = pics.guns.dualNuetron_firing;
@@ -476,9 +470,6 @@ class DualNeutron extends MachineGun {
         pics.pickups.bullets.small
         );
 
-    public gunMove(e) {
-        this.gunLower(e)
-    }
     public strafe() {
         this.gunHeight = gunConfig.DualNuetron.firing.gunHeight
         this.scrnMargin = gunConfig.DualNuetron.firing.scrnMargin

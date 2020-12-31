@@ -49,13 +49,13 @@ document.addEventListener('keydown', function (ev) {
         clearAllEnemies(); // single scene
     }
     else if (ev.key === "g") {
-        godMode(); // single scene
+        GameInfo.invincible = GameInfo.invincible == true ? false : true;
     }
     else if (ev.key === "k") {
         killAllEnemies(); // single scene
     }
     else if (ev.key === "l") {
-        sceneCheck();
+        LevelHandler.sceneCheck();
     }
 });
 function weaponCheck(weapon) {
@@ -64,8 +64,11 @@ function weaponCheck(weapon) {
 function weaponKey(wepStr) {
     let requestedWeapon = Player.weaponCollection[wepStr];
     if (requestedWeapon && weaponCheck(requestedWeapon)) {
-        if (GameInfo.riotShieldDeployed == false || wepStr == 'Pistol') {
+        if (Player.riotShieldDeployed == false || wepStr == 'Pistol') {
             requestedWeapon.switchTo();
+        }
+        else {
+            Player.slungWeapon = requestedWeapon;
         }
     }
 }

@@ -11,15 +11,13 @@ class Target {
     draw(position, anim) {
         var img = document.createElement("img");
         img.classList.add("target", "undraggable", "fillModeForwards");
-        //  img.setAttribute('id', `tgt${RegEnemy.enemyArray.length}`);
         img.onmouseover = () => this.setAsTarget();
         img.onmouseleave = () => this.unsetTarget();
         img.setAttribute('src', enemyPics[this.enemy]);
-        //  img.style.border = "2px solid red"
         img.style.borderRadius = "55px"; // reduce the hitbox?
         img.style.left = position.x + "%";
         img.style.top = position.y + "%";
-        img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y / 50 * position.y / 50})`;
+        img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y / 50 * position.y / 50})`; // Attempt auto-size based on position
         if (anim) {
             let arr = [];
             for (let a of anim) {
@@ -57,7 +55,7 @@ class Target {
         this.DOMImage.setAttribute("src", enemyPics.hurt[this.enemy]);
         let _this = this;
         if (this.isBoss) {
-            reduceBar(this.health);
+            LevelHandler.reduceBar(this.health);
         }
         if (this.health <= 0) {
             this.die();
@@ -68,10 +66,16 @@ class Target {
         }
     }
     die() {
-        //rescalForPotPlants(this.DOMImage)
+        if (GameInfo.kidMode) {
+            rescaleForPotPlants(this.DOMImage);
+            this.DOMImage.setAttribute("src", enemyPics.dead_alt[this.enemy] + "?a=" + Math.random());
+        }
+        else {
+            this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
+        }
         this.deadFlag = true;
-        this.DOMImage.style.animationPlayState = "paused";
-        this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
+        this.DOMImage.style.animationPlayState = "paused"; // stop css...
+        $(this.DOMImage).stop(); // ...and jquery movement
         this.DOMImage.style.pointerEvents = "none";
         if (this.randomiseDrop(85))
             this.drop(new healthPickup(this, 20));
@@ -83,18 +87,21 @@ class Target {
         GameInfo.targeting = true;
     }
     unsetTarget() {
-        GameInfo.targeting = false;
         GameInfo.hitTarget = null;
+        GameInfo.targeting = false;
     }
 }
-function rescalForPotPlants(image) {
+function rescaleForPotPlants(image) {
     let scale = image.style.transform;
     let num = parseFloat(scale.replace("scale(", ""));
     image.style.transform = `scale(${num / 3})`;
+    image.style.left = (parseInt(image.style.left) - 150) + "px";
 }
 class RegEnemy extends Target {
     constructor(enemy, health, position, anim) {
         super(enemy, health, position, anim);
+        this.noRandomMovement = false;
+        this.mover = new MovementGenerator;
     }
     // public draw(position, anim) {
     //     super.draw(position, anim);
@@ -103,9 +110,10 @@ class RegEnemy extends Target {
         super.die();
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
+        clearInterval(this.moveRoller);
         if (!(this instanceof Extra)) {
             GameInfo.deadCount++;
-            sceneCheck();
+            LevelHandler.sceneCheck();
         }
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
     }
@@ -114,7 +122,8 @@ class RegEnemy extends Target {
             var die = (Math.floor(Math.random() * 7));
             if (die == 6) {
                 hitWarning();
-                if (GameInfo.riotShieldDeployed == false) {
+                $(this.DOMImage).stop();
+                if (Player.riotShieldDeployed == false) {
                     Player.damageCheck(this, damage);
                 }
                 else {
@@ -125,11 +134,82 @@ class RegEnemy extends Target {
             }
         }
     }
+    moveRoll() {
+        var die = (Math.floor(Math.random() * 7));
+        if (die > 3) {
+            this.calculateMove();
+        }
+    }
+    calculateMove() {
+        let lateralDestination = this.mover.lateralDestination(this.DOMImage);
+        let distance = this.mover.distance(this.DOMImage, lateralDestination);
+        let direction = this.mover.direction(this.DOMImage, lateralDestination);
+        let speed = this.mover.speed(distance);
+        this.DOMImage.src = enemyPics[direction][this.enemy];
+        let _this = this;
+        this.mover.moveLateral(lateralDestination, speed, this.DOMImage, () => _this.redraw(_this));
+        //    this.mover.moveForward(this.mover.calcDimentions(this.DOMImage), speed, this.DOMImage);
+    }
     inflictDamage(damage, attackFrequency) {
         if (!damage)
             return;
-        var firingEnemy = this;
-        this.attackRoller = setInterval(function () { firingEnemy.hitRoll(damage); }, attackFrequency);
+        var _this = this;
+        attackFrequency += RandomNumberGen.randomNumBetween(-500, 500);
+        this.attackRoller = setInterval(function () { _this.hitRoll(damage); }, attackFrequency);
+    }
+    beginInflictDamage() {
+        this.inflictDamage(this.damageNumber, this.attackFrequency);
+    }
+    beginMoveLateral(moveFrequency) {
+        if (this.noRandomMovement) {
+            return;
+        }
+        var _this = this;
+        moveFrequency += RandomNumberGen.randomNumBetween(-500, 500);
+        this.moveRoller = setInterval(function () { _this.moveRoll(); }, moveFrequency);
+    }
+}
+class MovementGenerator {
+    leftLimit(img) {
+        return window.outerWidth - parseInt($(img).css('width'));
+    }
+    leftPosition(img) {
+        return parseInt($(img).css('left'));
+    }
+    distance(img, destination) {
+        let leftNum = this.leftPosition(img);
+        return Math.abs(destination - leftNum);
+    }
+    direction(img, destination) {
+        let leftNum = this.leftPosition(img);
+        let direction = leftNum < destination ? 'right' : 'left';
+        return direction;
+    }
+    calcDimentions(img) {
+        let scale = RandomNumberGen.randomNumBetween(0.5, 2.5);
+        //    let rect = img.getBoundingClientRect();
+        //    let currentScale = width / img.clientWidth;
+        let width = img.naturalWidth;
+        let height = img.naturalHeight;
+        let newWidth = width * scale;
+        let newHeight = height * scale;
+        return { width: newWidth, height: newHeight };
+    }
+    lateralDestination(img) {
+        let leftLimit = this.leftLimit(img);
+        let destination = RandomNumberGen.randomNumBetween(0, leftLimit);
+        return destination;
+    }
+    speed(distance) {
+        let speed = distance * 2; //RandomNumberGen.randomNumBetween(quickest, slowest);
+        return speed;
+    }
+    moveForward(dimentions, speed, image) {
+        $(image).animate({ width: dimentions.width + 'px' }, { queue: false, duration: speed });
+        $(image).animate({ height: dimentions.height + 'px' }, { queue: false, duration: speed });
+    }
+    moveLateral(distance, speed, image, callback) {
+        $(image).animate({ left: distance + 'px' }, { duration: speed, complete: callback });
     }
 }
 class Troop extends RegEnemy {
@@ -138,7 +218,6 @@ class Troop extends RegEnemy {
         this.damageNumber = 10;
         this.attackFrequency = 2000;
         this.carriedWeapon = GameInfo.allGuns.Pistol;
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     deadSound() {
         ded2.play();
@@ -155,7 +234,6 @@ class ShotGun_Troop extends RegEnemy {
         this.damageNumber = 20;
         this.attackFrequency = 2000;
         this.carriedWeapon = GameInfo.allGuns.Shotgun;
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     deadSound() {
         ded.play();
@@ -177,7 +255,6 @@ class ChainGGuy extends RegEnemy {
             this.attackFrequency;
         }
         this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
     }
     deadSound() {
         ded.play();
@@ -193,7 +270,16 @@ class Imp extends RegEnemy {
         super("Imp", health, position, anim);
         this.damageNumber = 15;
         this.attackFrequency = 2000;
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
+    }
+    deadSound() {
+        ded2.play();
+    }
+}
+class SectorPatrol extends RegEnemy {
+    constructor(health, position, anim) {
+        super("Imp", health, position, anim);
+        this.damageNumber = 15;
+        this.attackFrequency = 2000;
     }
     deadSound() {
         ded2.play();
@@ -224,83 +310,6 @@ class Extra extends RegEnemy {
             ded.play();
         }
     }
+    beginInflictDamage() { }
+    beginMoveLateral() { }
 }
-class Player {
-    static damageCheck(damager, damage) {
-        damager.damaging = setTimeout(function () {
-            if (GameInfo.riotShieldDeployed == false) {
-                Player.playerHit(damage);
-            }
-            else
-                Turicochet.play();
-        }, 1000);
-    }
-    static reset() {
-        Player.dead = false;
-        Player.health = 100;
-        Player.weaponCollection = {};
-    }
-    static collectAmmo(ammount, weaponName) {
-        this.weaponCollection[weaponName].ammo += ammount;
-        DOMUpdater.updateAmmoWithClick(Player.weapon.ammo);
-    }
-    static collectWeapon(weapon) {
-        let weaponName = weapon.constructor.name;
-        if (!this.weaponCollection[weaponName]) {
-            this.weaponCollection[weaponName] = weapon;
-            this.selectWeapon(weapon);
-        }
-        else {
-            Player.collectAmmo(gunConfig[weaponName].startingAmmo, weaponName);
-        }
-    }
-    static collectHealth(ammount) {
-        Player.health += ammount;
-        Player.health = Player.health < 120 ? Player.health : 120; // HEALTH CAP AT 120? 
-        DOMUpdater.updateHealthCounter(Player.health);
-    }
-    static selectWeapon(weapon) {
-        weapon.switchTo();
-        Player.weapon = weapon;
-    }
-    static playerHit(damage) {
-        Player.health -= damage;
-        if (Player.health > 0) {
-            DOMUpdater.updateHealthCounter(Player.health);
-            document.body.style.animationName = "hit";
-            Player.hurtSound();
-            setTimeout(function () { document.body.style.removeProperty("animation-name"); }, 1100);
-        }
-        else {
-            Player.playerDeath();
-        }
-    }
-    static playerDeath() {
-        if (Player.dead == true) {
-            return;
-        }
-        Player.dead = true;
-        this.deadSound();
-        fadeOut();
-        //this.weapon = null;
-        document.body.setAttribute("onmousemove", null);
-        stopTimer();
-        Deuscredits.stop();
-        DOMUpdater.updateHealthCounter(0);
-        elements.backImg.style.animationFillMode = "forwards";
-        let div1 = createMessageDiv("sceneMsg", "YOU DIED");
-        slamMessage(div1, elements.finishMsg, 1000);
-        setTimeout(() => {
-            openMenu();
-            clearAllEnemies();
-        }, 2500);
-    }
-    static deadSound() {
-        Turokscream.play();
-    }
-    static hurtSound() {
-        Hlifescream1.play();
-    }
-}
-Player.dead = false;
-Player.weaponCollection = {};
