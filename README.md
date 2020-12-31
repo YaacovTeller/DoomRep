@@ -12,14 +12,16 @@ Controls:
           'a' - all weaopns, otherwise you only start with a pistol, and not all the others are available in-game.
 
 You can still fire with the shield, but upon deploying your weapon defaults to pistol. It's the only weapon you can fire with your free hand!
-You can only switch weapons when your shield is lowered, you've only got two hands, right?
+You can still switch you're slung weapon with shield raised, and it will be drawn when the shield is lowered.
 
 Oncoming damage is indicated by a klaxon;
 Do not be alarmed by the running Tomer in the first screen. He can be removed in the levels.js file ( + "_Tomer").
-At the mo, the second menu button only links to files on my computer.
+The walking shai minigame - walking shais that can be clicked to a stop.
 Music is on, by default.
 
 Normal mode only has ONE stage so far.
+
+Enemies can move with css animation AND jquery. The latter has them turn to face the right direction, but the former does not.
 
 Note...
 the spin-up on the chaingun, it was hard to do.
