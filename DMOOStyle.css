@@ -92,6 +92,9 @@ html, body {
 .pickup_weapon{
     width: 270px;
 }
+.pickup_weapon_pistol{
+    width: 90px;
+}
 .pickup_ammo{
     width: 100px;
 }

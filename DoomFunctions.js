@@ -4,6 +4,13 @@ class RandomNumberGen {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
+class RandomSoundGen {
+    static randomSound(sounds) {
+        let length = sounds.length;
+        let randNum = Math.floor(Math.random() * (length) + 1);
+        sounds[randNum - 1].play();
+    }
+}
 function hitWarning() {
     bizwarn.play();
 }
@@ -13,23 +20,19 @@ function hitWarning() {
 //     elements.riotShield.style.left = `${x - 600}px`;
 //     elements.riotShield.style.top = `${y / 3 - 100}px`;
 // }
-function shieldToggle() {
-    if (Player.riotShieldDeployed == false) {
-        Player.riotShieldDeployed = true;
-        elements.riotShield.style.animationName = "raiseShield";
-        Player.slungWeapon = Player.weapon;
-        if (Player.slungWeapon instanceof MachineGun) {
-            Player.slungWeapon.stopstrafe();
-        }
-        Player.weaponCollection['Pistol'].switchTo();
-        // clearInterval(hurting); // NEEDED?
-        // document.body.setAttribute("onmousemove", "shieldMove(event); Player.weapon.gunMove(event)")
+function raiseShield() {
+    Player.riotShieldDeployed = true;
+    elements.riotShield.style.animationName = "raiseShield";
+    Player.slungWeapon = Player.weapon;
+    if (Player.slungWeapon instanceof MachineGun) {
+        Player.slungWeapon.stopstrafe();
     }
-    else {
-        elements.riotShield.style.animationName = "lowerShield";
-        Player.riotShieldDeployed = false;
-        Player.slungWeapon.switchTo();
-    }
+    Player.weaponCollection['Pistol'].switchTo();
+}
+function lowerShield() {
+    elements.riotShield.style.animationName = "lowerShield";
+    Player.riotShieldDeployed = false;
+    Player.slungWeapon.switchTo();
 }
 function hideElement(elem) {
     elem.style.display = "none";
@@ -146,11 +149,4 @@ function slamMessage(elem, parent, delay) {
         parent.append(elem);
         SGshot.play();
     }, delay);
-}
-function sectionFinish() {
-    LevelHandler.reduceBar(0);
-    stopTimer();
-    GameInfo.gameBegun = false;
-    Deuscredits.stop();
-    genericFinishMessage();
 }

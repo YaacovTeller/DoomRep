@@ -1,8 +1,19 @@
 "use strict";
 /////// MAIN MENU OPEN ////////
 openMenu(); // MOVE?
+function preLevel_scene1() {
+    let scene = new Scene(pics.background.doom2, "width: 100%", () => drawNewEnemies_pre_1(), 0, 0, 0, true);
+    GameInfo.currentLevel.addScene(scene);
+}
+function preLevel_scene2() {
+    let scene = new Scene(pics.background.doom2, "width: 100%", () => drawNewEnemies_pre_2());
+    GameInfo.currentLevel.addScene(scene);
+}
+function preLevel_scene3() {
+    let scene = new Scene(pics.background.doom2, "width: 100%", () => drawNewEnemies_pre_3());
+    GameInfo.currentLevel.addScene(scene);
+}
 function scene1() {
-    // width: 150%; margin-left: -40%;
     let scene = new Scene(pics.background.wide, "width: 160%", () => drawNewEnemies1(), 0, 0, 0, true);
     GameInfo.currentLevel.addScene(scene);
 }

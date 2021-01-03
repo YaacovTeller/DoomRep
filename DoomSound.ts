@@ -8,6 +8,7 @@ var bizwarn = new sound("sound/Hlife/bizwarn.wav")
 
 var ded = new sound("sound/DSDMPAIN.WAV");
 var ded2 = new sound("sound/DSPODTH3.WAV");
+var humanDead = new sound("sound/WOLF3D/Death 1.wav");
 var bossDed = new sound("sound/DSBRSDTH.WAV");
 var Turokscream = new sound("sound/Turok/scream1p.wav")
 var Hlifescream1 = new sound("sound/Hlife/sci_pain1.wav")
@@ -32,7 +33,10 @@ var Bullet5 = new sound("sound/Bullets/bullet_by_09.mp3")
 var Bullet6 = new sound("sound/Bullets/bullet_by_10.mp3")
 var Bullet7 = new sound("sound/Bullets/bullet_by_11.mp3")
 var Bullet8 = new sound("sound/Bullets/bullet_by_12.mp3")
+
 var Turicochet = new sound("sound/Turok/riccht1p_louder.mp3")
+var BloodRicochet_1 = new sound("sound/Blood/RICOCHT1.WAV")
+var BloodRicochet_2 = new sound("sound/Blood/RICOCHT2.WAV")
 
 Avpminigun.sound.setAttribute("loop", "infinite");
 SSamMinigun.sound.setAttribute("loop", "infinite");

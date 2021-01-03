@@ -167,7 +167,7 @@ class Pistol extends regGun {
         this.scrnMargin = gunConfig.Pistol.scrnMargin;
         this.damage = gunConfig.Pistol.damage;
         this.ammo = gunConfig.Pistol.startingAmmo;
-        this.pickupStats = new pickupStats(pics.guns.pistol, gunConfig.Pistol.pickup_ammo_small, gunConfig.Pistol.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
+        this.pickupStats = new pickupStats(pics.pickups.Pistol, gunConfig.Pistol.pickup_ammo_small, gunConfig.Pistol.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     shot(e) {
         if (super.shot(e)) {

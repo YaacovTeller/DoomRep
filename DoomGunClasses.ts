@@ -184,7 +184,7 @@ class Pistol extends regGun {
     public ammo = gunConfig.Pistol.startingAmmo;
     public pickupStats: pickupStats = 
     new pickupStats(
-        pics.guns.pistol, 
+        pics.pickups.Pistol, 
         gunConfig.Pistol.pickup_ammo_small,
         gunConfig.Pistol.pickup_ammo_small,
         pics.pickups.bullets.big,

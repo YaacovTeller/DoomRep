@@ -21,7 +21,10 @@ document.addEventListener('keydown', function (ev) {
         weaponKey('DualNeutron');
     }
     else if (ev.key === " ") {
-        shieldToggle();
+        if (!Player.riotShieldDeployed) {
+            raiseShield();
+        }
+        //  shieldToggle()
     }
     else if (ev.key === "Escape") {
         if (elements.menu.style.display == "none") {
@@ -56,6 +59,11 @@ document.addEventListener('keydown', function (ev) {
     }
     else if (ev.key === "l") {
         LevelHandler.sceneCheck();
+    }
+});
+document.addEventListener('keyup', function (ev) {
+    if (ev.key === " ") {
+        lowerShield();
     }
 });
 function weaponCheck(weapon) {

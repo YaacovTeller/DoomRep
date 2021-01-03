@@ -4,6 +4,7 @@
 class Target {
     constructor(enemy, health, position, anim) {
         this.deadFlag = false;
+        this.firing = false;
         this.health = health;
         this.enemy = enemy;
         this.draw(position, anim);
@@ -95,7 +96,7 @@ function rescaleForPotPlants(image) {
     let scale = image.style.transform;
     let num = parseFloat(scale.replace("scale(", ""));
     image.style.transform = `scale(${num / 3})`;
-    image.style.left = (parseInt(image.style.left) - 150) + "px";
+    image.style.left = image.getBoundingClientRect().left - 200 + "px";
 }
 class RegEnemy extends Target {
     constructor(enemy, health, position, anim) {
@@ -121,14 +122,22 @@ class RegEnemy extends Target {
         if (Player.dead == false) {
             var die = (Math.floor(Math.random() * 7));
             if (die == 6) {
-                hitWarning();
+                this.firing = true;
                 $(this.DOMImage).stop();
+                this.DOMImage.src = enemyPics.firing[this.enemy];
+                let _this = this;
+                setTimeout(() => {
+                    this.redraw(_this);
+                    this.firing = false;
+                }, 1000);
+                hitWarning();
                 if (Player.riotShieldDeployed == false) {
                     Player.damageCheck(this, damage);
                 }
                 else {
                     setTimeout(function () {
-                        Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                        //Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                        RandomSoundGen.randomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
                     }, 1000);
                 }
             }
@@ -136,7 +145,7 @@ class RegEnemy extends Target {
     }
     moveRoll() {
         var die = (Math.floor(Math.random() * 7));
-        if (die > 3) {
+        if (die > 3 && !this.firing) {
             this.calculateMove();
         }
     }
@@ -277,12 +286,17 @@ class Imp extends RegEnemy {
 }
 class SectorPatrol extends RegEnemy {
     constructor(health, position, anim) {
-        super("Imp", health, position, anim);
-        this.damageNumber = 15;
+        super("SectorPatrol", health, position, anim);
+        this.damageNumber = 10;
         this.attackFrequency = 2000;
+        this.carriedWeapon = GameInfo.allGuns.Pistol;
     }
     deadSound() {
-        ded2.play();
+        humanDead.play();
+    }
+    die() {
+        this.drop(new weaponPickup(this, this.carriedWeapon));
+        super.die();
     }
 }
 class Extra extends RegEnemy {

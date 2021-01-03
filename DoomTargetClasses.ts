@@ -7,6 +7,7 @@ abstract class Target {
     public healthUnit: number;
     public DOMImage: HTMLImageElement;
     public deadFlag: boolean = false;
+    public firing: boolean = false;
     public isBoss: boolean;
     protected carriedWeapon: weaponry;
     constructor(enemy, health, position: Position, anim: Array<AnimationInfo>) {
@@ -102,10 +103,10 @@ abstract class Target {
 }
 
 function rescaleForPotPlants(image){ // USED IN KID FRIENDLY MODE, see PictureObjects for alternate death-pics
-    let scale = image.style.transform
-    let num = parseFloat(scale.replace("scale(",""))
-    image.style.transform = `scale(${num/3})`
-    image.style.left = (parseInt(image.style.left) - 150) + "px"
+    let scale = image.style.transform;
+    let num = parseFloat(scale.replace("scale(",""));
+    image.style.transform = `scale(${num/3})`;
+    image.style.left = image.getBoundingClientRect().left - 200 + "px";
 }
 
 abstract class RegEnemy extends Target {
@@ -140,14 +141,22 @@ abstract class RegEnemy extends Target {
         if (Player.dead == false) {
             var die = (Math.floor(Math.random() * 7))
             if (die == 6) {
-                hitWarning();
+                this.firing = true;
                 $(this.DOMImage).stop();
+                this.DOMImage.src = enemyPics.firing[this.enemy];
+                let _this = this;
+                setTimeout(()=>{
+                    this.redraw(_this);
+                    this.firing = false;
+                }, 1000);
+                hitWarning();
                 if (Player.riotShieldDeployed == false) {
                     Player.damageCheck(this, damage);
                 }
                 else {
                     setTimeout(function () {
-                        Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                        //Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
+                        RandomSoundGen.randomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
                     }, 1000);
                 }
             }
@@ -155,7 +164,7 @@ abstract class RegEnemy extends Target {
     }
     private moveRoll(){
         var die = (Math.floor(Math.random() * 7))
-        if (die > 3) {
+        if (die > 3 && !this.firing) {
             this.calculateMove();
         }
     }
@@ -308,13 +317,18 @@ class Imp extends RegEnemy {
 }
 
 class SectorPatrol extends RegEnemy {
-    public damageNumber = 15;
+    public damageNumber = 10;
     public attackFrequency = 2000;
+    public carriedWeapon = GameInfo.allGuns.Pistol;
     constructor(health, position, anim?) {
-        super("Imp", health, position, anim)
+        super("SectorPatrol", health, position, anim)
     }
     public deadSound() {
-        ded2.play()
+        humanDead.play()
+    }
+    public die(){
+        this.drop(new weaponPickup(this, this.carriedWeapon));
+        super.die();
     }
 }
 

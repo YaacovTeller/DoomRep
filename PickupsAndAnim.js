@@ -120,6 +120,7 @@ class weaponPickup extends Pickup {
         this.cssClass = "pickup_weapon";
         this.weapon = weapon;
         this.image = this.weapon.pickupStats.gunImage;
+        this.cssClass = this.weapon instanceof Pistol ? "pickup_weapon_pistol" : "pickup_weapon";
     }
     grab() {
         Player.collectWeapon(this.weapon);

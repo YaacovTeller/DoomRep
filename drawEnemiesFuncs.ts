@@ -1,3 +1,28 @@
+function drawNewEnemies_pre_1(){
+    GameInfo.enemyArray.push(
+        new SectorPatrol   (20, new Position(30,45)),
+        new SectorPatrol   (20, new Position(50,50)),
+    )
+    LevelHandler.startAllRolls(GameInfo.moverollFrequency);
+}
+function drawNewEnemies_pre_2(){
+    GameInfo.enemyArray.push(
+        new SectorPatrol   (20, new Position(60,45)),
+        new SectorPatrol   (20, new Position(70,50)),
+        new SectorPatrol   (20, new Position(30,60)),
+    )
+    LevelHandler.startAllRolls(GameInfo.moverollFrequency);
+}
+function drawNewEnemies_pre_3(){
+    GameInfo.enemyArray.push(
+        new SectorPatrol   (20, new Position(10,65)),
+        new SectorPatrol   (20, new Position(50,40)),
+        new SectorPatrol   (20, new Position(0,50)),
+        new SectorPatrol   (20, new Position(20,45)),
+    )
+    LevelHandler.startAllRolls(GameInfo.moverollFrequency);
+}
+
 function drawNewEnemies1(){
     GameInfo.enemyArray.push(
         new Troop   (30, new Position(0,30, 0.6), [new AnimationInfo("topTo_60",'3s'), new AnimationInfo("scaleTo_1",'3s'), ]), //new AnimationInfo("leftTo_10",'2s')

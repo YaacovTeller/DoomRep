@@ -6,7 +6,8 @@ class Player {
                 Player.playerHit(damage);
             }
             else
-                Turicochet.play();
+                RandomSoundGen.randomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
+            //Turicochet.play();
         }, 1000);
     }
     static reset() {
