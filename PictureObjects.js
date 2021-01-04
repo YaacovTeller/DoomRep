@@ -62,6 +62,7 @@ const enemyPics = {
     ChainGuy: "assets/enemies/ChainGuy/ChainGuy_fwd.gif",
     TroopLeft: "assets/enemies/Troop/Troop_left_g.gif",
     TroopLeft_Tomer: "assets/enemies/Troop/TroopLeft_Tomer.gif",
+    barrel: "assets/Barrel_0.PNG",
     left: {
         SectorPatrol: "assets/enemies/SectorPatrol/blue_left.gif",
         Troop: "assets/enemies/Troop/Troop_left_g.gif",
@@ -82,6 +83,7 @@ const enemyPics = {
         ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_Hurt.png",
         Imp: "assets/enemies/Imp/Imp_Hurt.png",
         ChainGuy: "assets/enemies/ChainGuy/ChainGuy_Hurt.png",
+        barrel: "assets/Barrel_hurt.PNG",
     },
     dead: {
         SectorPatrol: "assets/enemies/SectorPatrol/blue_die.gif",
@@ -91,6 +93,7 @@ const enemyPics = {
         ChainGuy: "assets/enemies/ChainGuy/ChainGuy_DeadEd.gif",
         TroopLeft: "assets/enemies/Troop/TroopLeft_Dead.gif",
         TroopLeft_Tomer: "assets/enemies/Troop/TroopLeft_Tomer_Dead.gif",
+        barrel: "assets/Barrel_explode.gif",
     },
     firing: {
         SectorPatrol: "assets/enemies/SectorPatrol/blue_fire.gif",
@@ -114,19 +117,20 @@ const enemyPics = {
 const elements = {
     blood: document.getElementById("blood"),
     oneshot: document.getElementById("shot"),
+    riotShield: document.getElementById("riotShield"),
+    weaponDiv: document.getElementById("weapon"),
+    weaponImg: document.getElementById("weaponImg"),
+    progressCounter: document.getElementById("progressCounter"),
     Bar: document.getElementById("BossBar1"),
     backImg: document.getElementById("BackImg1"),
     menuImage: document.getElementById("menuImage"),
+    killCounter: document.getElementById("DCount"),
     ammoCount: document.getElementById("ammo"),
     ammoType: document.getElementById("ammoType"),
     health: document.getElementById("health"),
     menu: document.getElementById("menu"),
     muteLabel: document.getElementById('muteLabel'),
-    riotShield: document.getElementById("riotShield"),
-    weaponDiv: document.getElementById("weapon"),
-    weaponImg: document.getElementById("weaponImg"),
-    killCounter: document.getElementById("DCount"),
-    finishMsg: document.getElementById("fin"),
     targetBackdrop: document.getElementById("targetBackdrop"),
+    finishMsg: document.getElementById("fin"),
     credits: document.getElementById("CreditScreen")
 };

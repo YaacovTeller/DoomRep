@@ -12,6 +12,13 @@ var humanDead = new sound("sound/WOLF3D/Death 1.wav");
 var bossDed = new sound("sound/DSBRSDTH.WAV");
 var Turokscream = new sound("sound/Turok/scream1p.wav");
 var Hlifescream1 = new sound("sound/Hlife/sci_pain1.wav");
+var explosion = new sound("sound/Doom_new/DSBAREXP.WAV");
+var collectPowerup = new sound("sound/Doom_new/DSGETPOW.WAV");
+var collectItem = new sound("sound/Doom_new/DSITEMUP.WAV");
+var keenDth = new sound("sound/Doom_new/DSKEENDT.WAV");
+var DoomguyPain = new sound("sound/Doom_new/DSPLPAIN.WAV");
+var ImpShout_1 = new sound("sound/Doom_new/Imp_shout.WAV");
+var ImpShout_2 = new sound("sound/Doom_new/DSPOSACT.WAV");
 var Deuscredits = new sound("sound/DeusCredits.mp3"); // error
 var UTcredits = new sound("sound/UT_menu.mp3");
 // AvP has diff .wav format??

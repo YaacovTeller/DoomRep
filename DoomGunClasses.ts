@@ -169,7 +169,9 @@ abstract class regGun extends weaponry {
             }
             else {
                 GameInfo.hitTarget.loseHealth(this.damage);
-                return true;
+                if (!(GameInfo.hitTarget instanceof Item)){
+                    return true;
+                }
             }
         }
     }

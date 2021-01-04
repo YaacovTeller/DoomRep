@@ -21,6 +21,7 @@ function drawNewEnemies_pre_3(){
         new SectorPatrol   (20, new Position(0,50)),
         new SectorPatrol   (20, new Position(20,45)),
     )
+    new Item ("barrel", 40, new Position(52,25))
     LevelHandler.startAllRolls(GameInfo.moverollFrequency);
 }
 

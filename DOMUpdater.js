@@ -12,6 +12,14 @@ class DOMUpdater {
         this.blipAnim(elements.ammoCount);
         click2.play();
     }
+    static setProgressCounter(num) {
+        if (num) {
+            elements.progressCounter.parentElement.style.display = 'block';
+        }
+        else {
+            elements.progressCounter.parentElement.style.display = 'none';
+        }
+    }
     static updateHealthCounter(health) {
         this.updateCounter(elements.health, health);
         this.colorChange(elements.health, 'red', health, 40);
@@ -31,7 +39,7 @@ class DOMUpdater {
         elements.weaponDiv.style.top = `${window.outerHeight - gunMargin}px`;
     }
     static blipAnim(elem) {
-        let fontSize = parseInt($(elem).css('fontSize'));
+        let fontSize = 60; //parseInt($(elem).css('fontSize'));
         $(elem).animate({ fontSize: (fontSize + 10) + 'px' }, 150);
         $(elem).animate({ fontSize: (fontSize) + 'px' }, 150);
     }

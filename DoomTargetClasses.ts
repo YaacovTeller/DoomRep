@@ -22,7 +22,7 @@ abstract class Target {
         img.onmouseover = () => this.setAsTarget();
         img.onmouseleave = () => this.unsetTarget();
         img.setAttribute('src', enemyPics[this.enemy]);
-        img.style.borderRadius = "55px" // reduce the hitbox?
+       // img.style.borderRadius = "55px" // reduce the hitbox?
         img.style.left = position.x +"%";
         img.style.top = position.y +"%";
         img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y/50*position.y/50})` // Attempt auto-size based on position
@@ -91,7 +91,6 @@ abstract class Target {
 
     abstract deadSound()
 
-    // The machine gun damage function
     public setAsTarget() {
         GameInfo.hitTarget = this;
         GameInfo.targeting = true;
@@ -356,3 +355,15 @@ class Extra extends RegEnemy {
     public beginMoveLateral(){}
 }
 
+class Item extends Target {
+    constructor(item, health, position: Position, anim?) {
+        super(item, health, position, anim)
+    }
+    public die() {
+        killAllEnemies();
+        super.die();
+    }
+    deadSound(){
+        explosion.play()
+    }
+}

@@ -102,7 +102,8 @@ class SceneGenerator{
     }
     public static sceneLoop() {
         let scene = new Scene(SceneGenerator.randomBackground(),"width: 100%", ()=>SceneGenerator.drawNewEnemiesGeneric())
-        GameInfo.currentLevel.addScene(scene)
+        GameInfo.currentLevel.addScene(scene);
+        elements.progressCounter.innerText = "" + (GameInfo.currentLevel.sceneArray.length)
     }
 }
 

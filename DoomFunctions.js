@@ -80,6 +80,7 @@ function restart(num) {
     Player.reset();
     GameInfo.reset();
     GameInfo.gameMode = num;
+    DOMUpdater.setProgressCounter(GameInfo.gameMode);
     DOMUpdater.clearTargets();
     DOMUpdater.updateKillCounter(0);
     DOMUpdater.updateHealthCounter(Player.health);

@@ -31,12 +31,14 @@
         <div id="targetBackdrop">
             <!-- EVERYTHING happens within this area -->
         </div>
+
         <div class="hudBox DCountBox">
-            <div id="DCount"></div>
+            <div id="DCount" class="inline"></div>
+            <div class="inline">Stage: <span class="inline" id="progressCounter"></span></div>
         </div>
 
         <div id="ammoBox" class="hudBox">
-                <img id="ammoType" />
+            <img id="ammoType" />
             <div id="ammo"></div>
         </div>
         <div class="hudBox healthBox">
@@ -74,7 +76,7 @@
                                 <input type="checkbox" onchange="kidMode(this.checked)">
                                 <span class="slider round"></span>
                             </label>
-                            <span>Kid mode</span>
+                            <span>Child friendly</span>
                         </div>
                         <div class="switchDiv">
                             <label class="switch">
