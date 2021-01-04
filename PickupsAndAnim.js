@@ -20,6 +20,7 @@ class AnimationInfo {
 }
 class Pickup {
     constructor(source) {
+        this.collectNoise = collectItem;
         this.source = source;
     }
     draw() {
@@ -45,6 +46,7 @@ class Pickup {
         $(this.DOMImage).fadeOut(500, function () { $(this).remove(); });
     }
     grab() {
+        this.collectNoise.play();
         this.blipAnim();
         setTimeout(() => { hideElement(this.DOMImage); }, 400);
     }
@@ -84,6 +86,7 @@ class healthPickup extends Pickup {
     constructor(source, ammount) {
         super(source);
         this.image = pics.pickups.health.small;
+        this.collectNoise = collectPowerup;
         this.ammount = ammount;
         //  this.image = ammount <= 50 ? pics.pickups.health.small : pics.pickups.health.big;
         if (ammount >= 50) {

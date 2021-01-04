@@ -32,6 +32,7 @@ class Pickup {
     protected source: Target
     protected image: string;
     protected DOMImage: HTMLElement;
+    protected collectNoise = collectItem;
     protected cssClass: string
     constructor(source: Target) {
         this.source = source;
@@ -60,6 +61,7 @@ class Pickup {
     }
 
     protected grab(){
+        this.collectNoise.play();
         this.blipAnim();
         setTimeout(() => { hideElement(this.DOMImage); }, 400); 
     }
@@ -99,6 +101,7 @@ class Pickup {
 class healthPickup extends Pickup{
     protected image = pics.pickups.health.small;
     public ammount: number
+    protected collectNoise = collectPowerup;
     constructor(source: Target, ammount: number) {
         super(source);
         this.ammount = ammount;

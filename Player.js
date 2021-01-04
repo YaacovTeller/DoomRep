@@ -77,10 +77,12 @@ class Player {
         }, 2500);
     }
     static deadSound() {
-        Turokscream.play();
+        keenDth.play();
+        //  Turokscream.play();
     }
     static hurtSound() {
-        Hlifescream1.play();
+        DoomguyPain.play();
+        //  Hlifescream1.play();
     }
 }
 Player.dead = false;
