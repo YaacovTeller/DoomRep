@@ -4,6 +4,9 @@ class GameInfo {
         this.deadCount = 0;
         this.deadExtraCount = 0;
         this.enemiesCleared = false;
+        this.levelArray = [];
+        this.currentLevel = null;
+        this.currentScene = null;
         // this.currentLevel = {};
         this.gameBegun = true;
     }

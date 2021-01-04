@@ -15,6 +15,7 @@ function drawNewEnemies_pre_2(){
 }
 function drawNewEnemies_pre_3(){
     GameInfo.enemyArray.push(
+        new Extra("SectorPatrol", 10, new Position(50,25,0.2)),
         new SectorPatrol   (20, new Position(10,65)),
         new SectorPatrol   (20, new Position(50,40)),
         new SectorPatrol   (20, new Position(0,50)),

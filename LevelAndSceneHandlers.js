@@ -4,10 +4,20 @@ var levelFuncArray = [
     [scene1, scene2, scene3, scene4, scene5, finalLev]
 ];
 class Level {
-    constructor(sceneFuncs) {
+    constructor(sceneFuncs, startingWeapons) {
         this.sceneArray = new Array();
         this.sceneFuncs = new Array();
+        this.startingWeapons = new Array();
         this.sceneFuncs = sceneFuncs;
+        this.startingWeapons = startingWeapons;
+    }
+    prepLevel() {
+        startTimer();
+        for (let wep of this.startingWeapons) {
+            Player.collectWeapon(wep);
+        }
+        DOMUpdater.gunTobaseOfScreen(Player.weapon.scrnMargin);
+        // Player.collectWeapon(new ChainSaw);
     }
     moreScenes() {
         return this.sceneFuncs.length != this.sceneArray.length; // Allow for 'sectionFin' scene?
@@ -90,39 +100,34 @@ class SceneGenerator {
 }
 class LevelHandler {
     static beginGame() {
-        startTimer();
-        Player.collectWeapon(new ChainSaw);
-        // Player.collectWeapon(new Pistol);
+        this.nextLevel();
         if (GameInfo.music == true) {
             Deuscredits.play();
         }
-        DOMUpdater.gunTobaseOfScreen(Player.weapon.scrnMargin);
-        if (GameInfo.gameMode == 0) {
-            GameInfo.addLevel(new Level(levelFuncArray[0])); // Add first level, FIX?
-            //     GameInfo.addLevel(new Level([scene1, scene2, scene3, scene4, scene5, finalLev, sectionFinish]));
-        }
-        else {
-            GameInfo.addLevel(new Level([SceneGenerator.sceneLoop]));
-        }
-        this.sceneCheck();
     }
-    static sceneCheck(NextLevel) {
+    static sceneCheck() {
         if (this.checkAllDead()) {
-            if (GameInfo.currentLevel.moreScenes()) {
-                GameInfo.currentLevel.playNextScene(); // or default
+            if (GameInfo.gameMode == 1) {
+                GameInfo.currentLevel.playNextScene();
             }
             else {
-                if (NextLevel) {
-                    clearScreenMessages();
-                    GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length])); // Add next level ?
-                    this.sceneCheck();
-                    startTimer();
+                if (GameInfo.currentLevel.moreScenes()) {
+                    GameInfo.currentLevel.playNextScene(); // or default
                 }
                 else {
                     this.sectionFinish();
                 }
             }
         }
+    }
+    static nextLevel() {
+        clearScreenMessages();
+        let wepArray = GameInfo.levelArray.length == 0 ? [GameInfo.allGuns.chainsaw] : []; // starting weapon ?
+        GameInfo.gameMode == 0 ?
+            GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length], wepArray)) :
+            GameInfo.addLevel(new Level([SceneGenerator.sceneLoop], [GameInfo.allGuns.chainsaw, GameInfo.allGuns.Pistol])); // Add next level ?
+        GameInfo.currentLevel.prepLevel();
+        this.sceneCheck();
     }
     static checkAllDead() {
         for (let enemy of GameInfo.enemyArray) {
@@ -142,7 +147,7 @@ class LevelHandler {
         setTimeout(() => {
             LevelHandler.fadeOutClear(0);
             elements.finishMsg.onclick = () => {
-                LevelHandler.sceneCheck(true); // NEXT LEVEL, FIX?
+                LevelHandler.nextLevel(); // NEXT LEVEL, FIX?
                 delete elements.finishMsg.onclick;
             };
         }, 3000);
