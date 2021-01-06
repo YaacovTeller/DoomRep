@@ -44,10 +44,10 @@ function showElement(elem: HTMLElement){
     elem.style.display = "block";
 }
 
-function killAllEnemies(){
+function killAllEnemies(gib?){
     for (let enemy of GameInfo.enemyArray){
-        if (!enemy) continue
-        enemy.die();
+        if (!enemy || enemy.deadFlag == true) continue
+        enemy.die(gib);
     }
 }
 

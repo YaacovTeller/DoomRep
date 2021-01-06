@@ -40,11 +40,11 @@ function hideElement(elem) {
 function showElement(elem) {
     elem.style.display = "block";
 }
-function killAllEnemies() {
+function killAllEnemies(gib) {
     for (let enemy of GameInfo.enemyArray) {
-        if (!enemy)
+        if (!enemy || enemy.deadFlag == true)
             continue;
-        enemy.die();
+        enemy.die(gib);
     }
 }
 function clearAllEnemies() {

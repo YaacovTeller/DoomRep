@@ -57,7 +57,7 @@ document.addEventListener('keydown', function (ev) {
         GameInfo.invincible = GameInfo.invincible == true ? false : true;
     }
     else if (ev.key === "k") {
-        killAllEnemies(); // single scene
+        killAllEnemies(true); // single scene
     }
     else if (ev.key === "l") {
         LevelHandler.sceneCheck();

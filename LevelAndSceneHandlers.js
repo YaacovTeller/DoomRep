@@ -53,40 +53,51 @@ class SceneGenerator {
         let numOfEnemies = RandomNumberGen.randomNumBetween(4, 10);
         let enemyNumber = RandomNumberGen.randomNumBetween(0, 3);
         let mixedEnemies = RandomNumberGen.randomNumBetween(0, 1);
+        let barrel = RandomNumberGen.randomNumBetween(0, 2);
         GameInfo.enemyArray = [];
         for (let i = 0; i < numOfEnemies; i++) {
             this.enemySelector(enemyNumber, mixedEnemies);
         }
+        if (barrel == 2) {
+            this.itemSelector("barrel");
+        }
         LevelHandler.startAllRolls(GameInfo.moverollFrequency);
+    }
+    static itemSelector(item) {
+        new Item(item, 40, this.positionSelector());
+    }
+    static positionSelector() {
+        let x = RandomNumberGen.randomNumBetween(5, 85);
+        let y = RandomNumberGen.randomNumBetween(35, 65);
+        return new Position(x, y);
     }
     static enemySelector(enemyNumber, mixedEnemies) {
         enemyNumber = mixedEnemies ? RandomNumberGen.randomNumBetween(0, 4) : enemyNumber;
-        if (GameInfo.currentLevel.sceneArray.length < 2 && enemyNumber == 4) { // prevent chainguy rush
+        if (GameInfo.currentLevel.sceneArray.length < 2 && enemyNumber == 4) { // hack to prevent chainguy rush
             enemyNumber--;
         }
         let enemy;
         let health;
-        let x = RandomNumberGen.randomNumBetween(5, 85);
-        let y = RandomNumberGen.randomNumBetween(35, 65);
+        let position = this.positionSelector();
         if (enemyNumber == 0) {
             health = 15;
-            enemy = new SectorPatrol(health, new Position(x, y));
+            enemy = new SectorPatrol(health, position);
         }
         if (enemyNumber == 1) {
             health = 20;
-            enemy = new Troop(health, new Position(x, y));
+            enemy = new Troop(health, position);
         }
         if (enemyNumber == 2) {
             health = 30;
-            enemy = new Imp(health, new Position(x, y));
+            enemy = new Imp(health, position);
         }
         if (enemyNumber == 3) {
             health = 30;
-            enemy = new ShotGun_Troop(health, new Position(x, y));
+            enemy = new ShotGun_Troop(health, position);
         }
         if (enemyNumber == 4) {
             health = 120;
-            enemy = new ChainGGuy(health, new Position(x, y));
+            enemy = new ChainGGuy(health, position);
         }
         GameInfo.enemyArray.push(enemy);
     }
@@ -151,7 +162,7 @@ class LevelHandler {
                 LevelHandler.nextLevel(); // NEXT LEVEL, FIX?
                 delete elements.finishMsg.onclick;
             };
-        }, 3000);
+        }, 4000);
     }
     static fadeOutClear(time) {
         setTimeout(() => {

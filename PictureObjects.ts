@@ -93,8 +93,20 @@ const enemyPics = {
         ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_Dead.gif",
         Imp: "assets/enemies/Imp/Imp_Dead.gif",
         ChainGuy: "assets/enemies/ChainGuy/ChainGuy_DeadEd.gif",
-        TroopLeft: "assets/enemies/Troop/TroopLeft_Dead.gif",
-        TroopLeft_Tomer: "assets/enemies/Troop/TroopLeft_Tomer_Dead.gif",
+
+        TroopLeft: "assets/enemies/Troop/Troop_Dead.gif",
+        TroopLeft_Tomer: "assets/enemies/Troop/Troop_Dead.gif",
+        barrel: "assets/Barrel_explode.gif",
+    },
+    explode: {
+        SectorPatrol: "assets/enemies/Troop/Troop_explode.gif",//"assets/enemies/SectorPatrol/blue_die.gif",
+        Troop: "assets/enemies/Troop/Troop_explode.gif",
+        ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_explode.gif",
+        Imp: "assets/enemies/Imp/Imp_explode.gif",
+        ChainGuy: "assets/enemies/ChainGuy/ChainGuy_explode.gif",
+
+        TroopLeft: "assets/enemies/Troop/Troop_explode.gif",
+        TroopLeft_Tomer: "assets/enemies/Troop/Troop_explode.gif",
         barrel: "assets/Barrel_explode.gif",
     },
     firing: {

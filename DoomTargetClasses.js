@@ -66,14 +66,18 @@ class Target {
             setTimeout(() => _this.redraw(_this), 200);
         }
     }
-    die() {
+    die(gib) {
+        let pic;
         if (GameInfo.kidMode) {
+            pic = enemyPics.dead_alt[this.enemy];
             rescaleForPotPlants(this.DOMImage);
-            this.DOMImage.setAttribute("src", enemyPics.dead_alt[this.enemy] + "?a=" + Math.random());
         }
-        else {
-            this.DOMImage.setAttribute("src", enemyPics.dead[this.enemy] + "?a=" + Math.random());
+        else if (gib) {
+            pic = enemyPics.explode[this.enemy];
         }
+        else
+            pic = enemyPics.dead[this.enemy];
+        this.DOMImage.setAttribute("src", pic + "?a=" + Math.random());
         this.deadFlag = true;
         this.DOMImage.style.animationPlayState = "paused"; // stop css...
         $(this.DOMImage).stop(); // ...and jquery movement
@@ -106,8 +110,8 @@ class RegEnemy extends Target {
     // public draw(position, anim) {
     //     super.draw(position, anim);
     // }
-    die() {
-        super.die();
+    die(gib) {
+        super.die(gib);
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         clearInterval(this.moveRoller);
@@ -230,10 +234,10 @@ class Troop extends RegEnemy {
     deadSound() {
         ded2.play();
     }
-    die() {
+    die(gib) {
         if (this.randomiseDrop(40))
             this.drop(new weaponPickup(this, GameInfo.allGuns.DukeMgun)); //this.carriedWeapon
-        super.die();
+        super.die(gib);
     }
 }
 class ShotGun_Troop extends RegEnemy {
@@ -246,10 +250,10 @@ class ShotGun_Troop extends RegEnemy {
     deadSound() {
         ded.play();
     }
-    die() {
+    die(gib) {
         if (this.randomiseDrop(40))
             this.drop(new weaponPickup(this, this.carriedWeapon));
-        super.die();
+        super.die(gib);
     }
 }
 class ChainGGuy extends RegEnemy {
@@ -267,10 +271,10 @@ class ChainGGuy extends RegEnemy {
     deadSound() {
         ded.play();
     }
-    die() {
+    die(gib) {
         this.drop(new weaponPickup(this, this.carriedWeapon));
         this.drop(new healthPickup(this, 50));
-        super.die();
+        super.die(gib);
     }
 }
 class Imp extends RegEnemy {
@@ -293,9 +297,9 @@ class SectorPatrol extends RegEnemy {
     deadSound() {
         humanDead.play();
     }
-    die() {
+    die(gib) {
         this.drop(new weaponPickup(this, this.carriedWeapon));
-        super.die();
+        super.die(gib);
     }
 }
 class Extra extends RegEnemy {
@@ -307,10 +311,10 @@ class Extra extends RegEnemy {
         //    this.DOMImage.classList.remove("infiniteAlternateReverse");
         this.DOMImage.classList.add('fillModeForwards', 'extraTarget');
     }
-    die() {
+    die(gib) {
         this.drop(new healthPickup(this, 50));
         GameInfo.deadExtraCount++;
-        super.die();
+        super.die(gib);
     }
     deadSound() {
         if (this.enemy.includes("Troop")) {
@@ -331,7 +335,7 @@ class Item extends Target {
         super(item, health, position, anim);
     }
     die() {
-        killAllEnemies();
+        killAllEnemies(true);
         super.die();
     }
     deadSound() {
