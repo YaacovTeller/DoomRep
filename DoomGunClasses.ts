@@ -29,7 +29,7 @@ const gunConfig = {
         pickup_ammo_small: 20,
         pickup_ammo_big: 50,
         startingAmmo : 50,
-        damage : 15,
+        damage : 20,
         scrnMargin : 370,
         gunHeight : 480,
     },
@@ -37,7 +37,7 @@ const gunConfig = {
         pickup_ammo_small: 15,
         pickup_ammo_big: 30,
         startingAmmo : 36,
-        damage : 12,
+        damage : 15,
         scrnMargin : 250,
         gunHeight : 360,
         firing : {

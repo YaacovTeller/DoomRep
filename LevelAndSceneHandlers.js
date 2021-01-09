@@ -1,7 +1,10 @@
 "use strict";
 var levelFuncArray = [
-    [preLevel_scene1, preLevel_scene2, preLevel_scene3],
-    [scene1, scene2, scene3, scene4, scene5, finalLev]
+    //  [level_2_6]
+    //  [level_1_4],
+    [level_1_1, level_1_2, level_1_3, level_1_4],
+    [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
+    [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
 ];
 class Level {
     constructor(sceneFuncs, startingWeapons) {
@@ -53,18 +56,18 @@ class SceneGenerator {
         let numOfEnemies = RandomNumberGen.randomNumBetween(4, 10);
         let enemyNumber = RandomNumberGen.randomNumBetween(0, 3);
         let mixedEnemies = RandomNumberGen.randomNumBetween(0, 1);
-        let barrel = RandomNumberGen.randomNumBetween(0, 2);
+        let insertBarrel = RandomNumberGen.randomNumBetween(0, 2);
         GameInfo.enemyArray = [];
         for (let i = 0; i < numOfEnemies; i++) {
             this.enemySelector(enemyNumber, mixedEnemies);
         }
-        if (barrel == 2) {
+        if (insertBarrel == 2) {
             this.itemSelector("barrel");
         }
-        LevelHandler.startAllRolls(GameInfo.moverollFrequency);
+        LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow); // HITLIMIT , MOVE!
     }
     static itemSelector(item) {
-        new Item(item, 40, this.positionSelector());
+        new Item(item, this.positionSelector(), 40);
     }
     static positionSelector() {
         let x = RandomNumberGen.randomNumBetween(5, 85);
@@ -76,28 +79,23 @@ class SceneGenerator {
         if (GameInfo.currentLevel.sceneArray.length < 2 && enemyNumber == 4) { // hack to prevent chainguy rush
             enemyNumber--;
         }
+        let ישעיה_שמחה;
         let enemy;
-        let health;
         let position = this.positionSelector();
         if (enemyNumber == 0) {
-            health = 15;
-            enemy = new SectorPatrol(health, position);
+            enemy = new SectorPatrol(position);
         }
         if (enemyNumber == 1) {
-            health = 20;
-            enemy = new Troop(health, position);
+            enemy = new Troop(position);
         }
         if (enemyNumber == 2) {
-            health = 30;
-            enemy = new Imp(health, position);
+            enemy = new Imp(position);
         }
         if (enemyNumber == 3) {
-            health = 30;
-            enemy = new ShotGun_Troop(health, position);
+            enemy = new ShotGun_Troop(position);
         }
         if (enemyNumber == 4) {
-            health = 120;
-            enemy = new ChainGGuy(health, position);
+            enemy = new ChainGGuy(position);
         }
         GameInfo.enemyArray.push(enemy);
     }
@@ -113,9 +111,6 @@ class SceneGenerator {
 class LevelHandler {
     static beginGame() {
         this.nextLevel();
-        if (GameInfo.music == true) {
-            Deuscredits.play();
-        }
     }
     static sceneCheck() {
         if (this.checkAllDead()) {
@@ -124,7 +119,7 @@ class LevelHandler {
             }
             else {
                 if (GameInfo.currentLevel.moreScenes()) {
-                    GameInfo.currentLevel.playNextScene(); // or default
+                    GameInfo.currentLevel.playNextScene();
                 }
                 else {
                     this.sectionFinish();
@@ -133,11 +128,28 @@ class LevelHandler {
         }
     }
     static nextLevel() {
+        if (GameInfo.music == true) {
+            Deuscredits.play();
+        }
         clearScreenMessages();
         let wepArray = GameInfo.levelArray.length == 0 ? [GameInfo.allGuns.chainsaw] : []; // starting weapon ?
-        GameInfo.gameMode == 0 ?
-            GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length], wepArray)) :
-            GameInfo.addLevel(new Level([SceneGenerator.sceneLoop], [GameInfo.allGuns.chainsaw, GameInfo.allGuns.Pistol])); // Add next level ?
+        if (GameInfo.gameMode == 0) {
+            if (GameInfo.levelArray.length < levelFuncArray.length) {
+                GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length], wepArray));
+            }
+            else {
+                let div1 = createMessageDiv("sceneMsg", "A WINNER IS YOU");
+                elements.finishMsg.onclick = null;
+                slamMessage(div1, elements.finishMsg, 1000);
+                setTimeout(() => {
+                    openMenu();
+                }, 4000);
+                return;
+            }
+        }
+        else if (GameInfo.gameMode == 1) {
+            GameInfo.addLevel(new Level([SceneGenerator.sceneLoop], [GameInfo.allGuns.chainsaw, GameInfo.allGuns.Pistol]));
+        }
         GameInfo.currentLevel.prepLevel();
         this.sceneCheck();
     }
@@ -160,9 +172,9 @@ class LevelHandler {
             LevelHandler.fadeOutClear(0);
             elements.finishMsg.onclick = () => {
                 LevelHandler.nextLevel(); // NEXT LEVEL, FIX?
-                delete elements.finishMsg.onclick;
+                elements.finishMsg.onclick = null;
             };
-        }, 4000);
+        }, 6000);
     }
     static fadeOutClear(time) {
         setTimeout(() => {
@@ -188,18 +200,19 @@ class LevelHandler {
         let health = (currentHealth / GameInfo.bossTotalHealth) * 100;
         $(elements.Bar).animate({ width: health + "%" }, 120);
     }
-    static startAllRolls(frequency) {
+    static startAllRolls(frequency, hitLimit) {
         for (let enemy of GameInfo.enemyArray) {
-            enemy.beginInflictDamage();
+            enemy.beginInflictDamage(hitLimit);
             enemy.beginMoveLateral(frequency);
+            enemy.health = enemy.health ? enemy.health : enemy.baseHealth;
         }
     }
-    static startAllMovementRolls() {
+    static startAllAttackRolls(hitLimit) {
         for (let enemy of GameInfo.enemyArray) {
-            enemy.beginInflictDamage();
+            enemy.beginInflictDamage(hitLimit);
         }
     }
-    static startAllAttackRolls(frequency) {
+    static startAllMovementRolls(frequency) {
         for (let enemy of GameInfo.enemyArray) {
             enemy.beginMoveLateral(frequency);
         }
@@ -212,12 +225,12 @@ class LevelHandler {
             GameInfo.enemyArray[i].beginMoveLateral(frequency);
         }
     }
-    static startSelectAttackRolls(exceptions) {
+    static startSelectAttackRolls(exceptions, hitLimit) {
         for (let i in GameInfo.enemyArray) {
             if (exceptions.includes(parseInt(i))) {
                 continue;
             }
-            GameInfo.enemyArray[i].beginInflictDamage();
+            GameInfo.enemyArray[i].beginInflictDamage(hitLimit);
         }
     }
 }

@@ -53,6 +53,7 @@ document.addEventListener('keydown', function (ev) {
     }
     else if (ev.key === "g") {
         GameInfo.invincible = GameInfo.invincible == true ? false : true;
+        elements.invincible.innerText = GameInfo.invincible == true ? "INVULNERABLE" : "";
     }
     else if (ev.key === "k") {
         killAllEnemies(true); // single scene

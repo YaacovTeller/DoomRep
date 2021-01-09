@@ -7,7 +7,6 @@ class GameInfo {
         this.levelArray = [];
         this.currentLevel = null;
         this.currentScene = null;
-        // this.currentLevel = {};
         this.gameBegun = true;
     }
     static addLevel(level) {

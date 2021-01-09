@@ -27,6 +27,7 @@ class GameInfo {
         Minigun: new Minigun,
         DualNeutron: new DualNeutron,
     };
+
     public static reset() {
         this.deadCount = 0;
         this.deadExtraCount = 0;
@@ -34,9 +35,9 @@ class GameInfo {
         this.levelArray = [];
         this.currentLevel = null;
         this.currentScene = null;
-       // this.currentLevel = {};
         this.gameBegun = true;
     }
+
     public static addLevel(level: Level){
         this.levelArray.push(level)
         this.currentLevel = level;

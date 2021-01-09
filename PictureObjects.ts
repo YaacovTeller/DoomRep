@@ -65,6 +65,9 @@ const enemyPics = {
     TroopLeft_Tomer: "assets/enemies/Troop/TroopLeft_Tomer.gif",
     barrel: "assets/Barrel_0.PNG",
 
+    forward:{
+        SectorPatrol: "assets/enemies/SectorPatrol/blue_fwd.gif",
+    },
     left: {
         SectorPatrol: "assets/enemies/SectorPatrol/blue_left.gif",
         Troop: "assets/enemies/Troop/Troop_left_g.gif",
@@ -151,5 +154,6 @@ const elements = {
     targetBackdrop: document.getElementById("targetBackdrop"),
 
     finishMsg: document.getElementById("fin"),
-    credits: document.getElementById("CreditScreen")
+    credits: document.getElementById("CreditScreen"),
+    invincible: document.getElementById("invincible")
 }

@@ -141,6 +141,10 @@ function createMessageDiv(className, msg){
 function clearScreenMessages(){
     elements.finishMsg.innerHTML = "";
 }
+function resetBossBar(){
+    showElement(elements.Bar);
+    elements.Bar.style.width = `100%`;
+}
 
 function genericFinishMessage(){
     clearScreenMessages();

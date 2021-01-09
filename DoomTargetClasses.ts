@@ -10,8 +10,8 @@ abstract class Target {
     public firing: boolean = false;
     public isBoss: boolean;
     protected carriedWeapon: weaponry;
-    constructor(enemy, health, position: Position, anim: Array<AnimationInfo>) {
-        this.health = health;
+    constructor(enemy, position: Position, health:number, anim: Array<AnimationInfo>) {
+        if (health) {this.health = health}
         this.enemy = enemy;
         this.draw(position, anim);
     }
@@ -117,13 +117,13 @@ abstract class RegEnemy extends Target {
     public attackFrequency: number;
     public moveRoller;
     public noRandomMovement: boolean = false;
+    public baseHealth: number;
     public attackRoller;
     public damaging;
-    public isBoss: boolean;
     public mover = new MovementGenerator;
 
-    constructor(enemy, health, position, anim) {
-        super(enemy, health, position, anim)
+    constructor(enemy, position, health, anim) {
+        super(enemy, position, health, anim)
     }
 
     // public draw(position, anim) {
@@ -140,10 +140,10 @@ abstract class RegEnemy extends Target {
         } 
         DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
     }
-    private hitRoll(damage) {
+    private hitRoll(damage, hitLimit) {
         if (Player.dead == false) {
-            var die = (Math.floor(Math.random() * 7))
-            if (die == 6) {
+            var die = RandomNumberGen.randomNumBetween(1,6)
+            if (die >= hitLimit) {
                 this.firing = true;
                 $(this.DOMImage).stop();
                 this.DOMImage.src = enemyPics.firing[this.enemy];
@@ -165,6 +165,20 @@ abstract class RegEnemy extends Target {
             }
         }
     }
+    public moveForward() {
+        let width = this.DOMImage.getBoundingClientRect().width;
+        let height = this.DOMImage.getBoundingClientRect().height;
+        let pic = this.DOMImage;
+        let time = 2000;
+        this.mover.moveForward({width: width*2,height: height*2}, time, pic)
+        let _this = this;
+        if (enemyPics.forward[this.enemy]){
+            setTimeout(() => {
+                pic.src = enemyPics.forward[_this.enemy];
+            }, time);
+        }
+    }
+
     private moveRoll(){
         var die = (Math.floor(Math.random() * 7))
         if (die > 3 && !this.firing) {
@@ -182,16 +196,12 @@ abstract class RegEnemy extends Target {
         this.mover.moveLateral(lateralDestination, speed, this.DOMImage,()=>_this.redraw(_this) );
     //    this.mover.moveForward(this.mover.calcDimentions(this.DOMImage), speed, this.DOMImage);
     }
-    protected inflictDamage(damage, attackFrequency) {
-        if (!damage) return;
+    public beginInflictDamage(hitLimit) {
         var _this = this;
-        attackFrequency += RandomNumberGen.randomNumBetween(-500,500);
-        this.attackRoller = setInterval(function(){_this.hitRoll(damage)}, attackFrequency);
+        let attackFrequency = this.attackFrequency+ RandomNumberGen.randomNumBetween(-500,500);
+        this.attackRoller = setInterval(function(){_this.hitRoll(_this.damageNumber, hitLimit)}, attackFrequency);
     }
 
-    public beginInflictDamage(){
-        this.inflictDamage(this.damageNumber, this.attackFrequency);
-    }
     public beginMoveLateral(moveFrequency){
         if (this.noRandomMovement){ return }
         var _this = this;
@@ -200,65 +210,14 @@ abstract class RegEnemy extends Target {
     }
 }
 
-class MovementGenerator {
-    private leftLimit(img){
-        return window.outerWidth - parseInt($(img).css('width'));
-    }
-    private leftPosition(img){
-        return parseInt($(img).css('left'));
-    }
-
-    public distance(img, destination){
-        let leftNum = this.leftPosition(img);
-        return Math.abs(destination - leftNum)
-    }
-
-    public direction(img, destination){
-        let leftNum = this.leftPosition(img);
-        let direction = leftNum < destination ? 'right': 'left';
-        return direction;
-    }
-
-    public calcDimentions(img: HTMLImageElement){
-        let scale = RandomNumberGen.randomNumBetween(0.5, 2.5)
-        //    let rect = img.getBoundingClientRect();
-        //    let currentScale = width / img.clientWidth;
-        let width = img.naturalWidth;
-        let height = img.naturalHeight;
-        let newWidth =  width * scale;
-        let newHeight =  height * scale;
-        return {width: newWidth, height: newHeight};
-    }
-
-    public lateralDestination(img){
-        let leftLimit = this.leftLimit(img);
-        let destination = RandomNumberGen.randomNumBetween(0, leftLimit);
-        return destination;
-    }
-
-    public speed(distance){
-        let speed = distance * 2 //RandomNumberGen.randomNumBetween(quickest, slowest);
-        return speed;
-    }
-
-    public moveForward(dimentions, speed, image){
-
-        $(image).animate({width: dimentions.width+'px'},{ queue: false, duration: speed });
-        $(image).animate({height: dimentions.height+'px'},{ queue: false, duration: speed });
-    }
-
-    public moveLateral(distance, speed, image, callback){
-        $(image).animate({left: distance+'px'},{ duration: speed, complete: callback});
-    }
-}
-
 class Troop extends RegEnemy {
+    public baseHealth = 30;
     public damageNumber = 10;
     public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Pistol;
 
-    constructor(health, position, anim?) {
-        super("Troop", health, position, anim)
+    constructor(position, health?, anim?) {
+        super("Troop", position, health, anim)
     }
     public deadSound() {
         ded2.play()
@@ -270,12 +229,13 @@ class Troop extends RegEnemy {
 }
 
 class ShotGun_Troop extends RegEnemy {
+    public baseHealth = 30;
     public damageNumber = 20;
     public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Shotgun;
 
-    constructor(health, position, anim?) {
-        super("ShotGun_Troop", health, position, anim)
+    constructor(position, health?, anim?) {
+        super("ShotGun_Troop", position, health, anim)
     }
     public deadSound() {
         ded.play()
@@ -286,17 +246,15 @@ class ShotGun_Troop extends RegEnemy {
     }
 }
 class ChainGGuy extends RegEnemy {
+    public baseHealth = 120;
     public damageNumber = 30;
-    public attackFrequency = 1000;
+    public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Minigun;
 
-    constructor(health, position, anim?, isBoss?) {
-        super("ChainGuy", health, position, anim)
+    constructor(position, health?, anim?, isBoss?) {
+        super("ChainGuy", position, health, anim)
         this.isBoss = isBoss;
-        if (this.isBoss){
-            this.attackFrequency
-        }
-        this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
+      //  this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
     }
     public deadSound() {
         ded.play()
@@ -309,10 +267,11 @@ class ChainGGuy extends RegEnemy {
 }
 
 class Imp extends RegEnemy {
+    public baseHealth = 30;
     public damageNumber = 15;
     public attackFrequency = 2000;
-    constructor(health, position, anim?) {
-        super("Imp", health, position, anim)
+    constructor(position, health?, anim?) {
+        super("Imp", position, health, anim)
     }
     public deadSound() {
         ded2.play()
@@ -320,11 +279,14 @@ class Imp extends RegEnemy {
 }
 
 class SectorPatrol extends RegEnemy {
+    public baseHealth = 20;
     public damageNumber = 10;
     public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Pistol;
-    constructor(health, position, anim?) {
-        super("SectorPatrol", health, position, anim)
+    constructor(position, health?, anim?, isBoss?) {
+        super("SectorPatrol", position, health, anim)
+        this.isBoss = isBoss;
+    //    this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
     }
     public deadSound() {
         humanDead.play()
@@ -336,8 +298,9 @@ class SectorPatrol extends RegEnemy {
 }
 
 class Extra extends RegEnemy {
-    constructor(enemy, health, position, anim?) {
-        super(enemy, health, position, anim)
+    public baseHealth = 15;
+    constructor(enemy, position, health?, anim?) {
+        super(enemy, position, health, anim)
     }
     public draw(position, anim) {
         super.draw(position, anim)
@@ -360,8 +323,8 @@ class Extra extends RegEnemy {
 }
 
 class Item extends Target {
-    constructor(item, health, position: Position, anim?) {
-        super(item, health, position, anim)
+    constructor(item, position: Position, health?, anim?) {
+        super(item, position, health, anim)
     }
     public die() {
         killAllEnemies(true);

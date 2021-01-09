@@ -62,6 +62,9 @@ class Player {
         stopTimer();
         $(elements.weaponDiv).animate({ top: '130%' }, 3000);
         document.body.setAttribute("onmousemove", null);
+        if (this.weapon instanceof MachineGun || this.weapon instanceof ChainSaw) {
+            this.weapon.stopstrafe();
+        }
         this.weapon = null;
         Deuscredits.stop();
         DOMUpdater.updateHealthCounter(0);
