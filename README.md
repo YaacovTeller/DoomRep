@@ -9,7 +9,9 @@ Controls:
           6 - Chaingun, spin-up;
           7 - DuelNeutron from Apogee's BlakeStone;
           SPACE - Shields from oncoming damage;
+          // CHEATS //
           'a' - all weaopns, otherwise you only start with a pistol, and not all the others are available in-game.
+          'g' - toggles god mode
 
 You can still fire with the shield, but upon deploying your weapon defaults to pistol. It's the only weapon you can fire with your free hand!
 You can still switch you're slung weapon with shield raised, and it will be drawn when the shield is lowered.
@@ -19,13 +21,13 @@ Do not be alarmed by the running Tomer in the first screen. He can be removed in
 The walking shai minigame - walking shais that can be clicked to a stop.
 Music is on, by default.
 
-Normal mode only has ONE stage so far.
+Normal mode only has THREE stages, so far.
 
 Enemies can move with css animation AND jquery. The latter has them turn to face the right direction, but the former does not.
 
 Note...
 the spin-up on the chaingun, it was hard to do.
-the animation frames on the duke machinegun(6). It's better than the original, trust me.
+the animation frames on the duke machinegun(4). It's better than the original, trust me.
 the changing ammo icons.
 the ricochets off raised shield.
 the credits.
