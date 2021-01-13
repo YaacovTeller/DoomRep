@@ -40,7 +40,7 @@ class Pickup {
         img.onmouseleave = () => this.unsetTarget();
         elements.targetBackdrop.appendChild(img);
         this.throw(left, top, img);
-        Pickup.array.push(this);
+        GameInfo.pickupArray.push(this);
     }
     undraw() {
         $(this.DOMImage).fadeOut(500, function () { $(this).remove(); });
@@ -81,7 +81,6 @@ class Pickup {
         });
     }
 }
-Pickup.array = [];
 class healthPickup extends Pickup {
     constructor(source, ammount) {
         super(source);

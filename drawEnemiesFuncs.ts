@@ -29,7 +29,9 @@ function drawNewEnemies_1_3(){
         new SectorPatrol   (new Position(0,50)),
         new SectorPatrol   (new Position(20,45)),
     )
-    new Item ("barrel", new Position(52,25), 40)
+    GameInfo.itemArray.push(
+        new Item ("barrel", new Position(52,25), 40)
+    )
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
 }
 
@@ -197,7 +199,9 @@ function drawNewEnemies_3_1(){
          new ChainGGuy   (new Position(50,50)),
          new ChainGGuy   (new Position(45,45)),
      )
-     new Item ("barrel", new Position(52,25), 40)
+     GameInfo.itemArray.push(
+        new Item ("barrel", new Position(52,25), 40)
+     )
      LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
  }
 

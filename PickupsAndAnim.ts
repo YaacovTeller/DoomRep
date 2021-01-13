@@ -28,7 +28,6 @@ class AnimationInfo{
 }
 
 class Pickup {
-    public static array: Array<Pickup> = [];
     protected source: Target
     protected image: string;
     protected DOMImage: HTMLElement;
@@ -54,7 +53,7 @@ class Pickup {
         img.onmouseleave = () => this.unsetTarget();
         elements.targetBackdrop.appendChild(img);
         this.throw(left, top, img);
-        Pickup.array.push(this);
+        GameInfo.pickupArray.push(this);
     }
     public undraw(){
         $(this.DOMImage).fadeOut(500, function() { $(this).remove(); })

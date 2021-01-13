@@ -6,6 +6,9 @@ class GameInfo {
 
     public static AvailableEnemies: Array<string> = new Array();
     public static enemyArray: Array<RegEnemy> = new Array();
+    public static pickupArray: Array<Pickup> = new Array();
+    public static itemArray: Array<Item> = new Array();
+
     public static levelArray: Array<Level> = new Array();
     public static currentLevel: Level
     public static currentScene: Scene;

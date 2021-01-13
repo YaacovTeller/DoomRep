@@ -47,6 +47,7 @@ class DOMUpdater {
         this.clearTargets();
         setTimeout(() => {
             this.clearPickups();
+            this.clearItems();
         }, 1000);
     }
     static clearTargets() {
@@ -57,9 +58,15 @@ class DOMUpdater {
         GameInfo.enemyArray = [];
     }
     static clearPickups() {
-        for (let item of Pickup.array) {
+        for (let item of GameInfo.pickupArray) {
             item.undraw();
         }
-        Pickup.array = [];
+        GameInfo.pickupArray = [];
+    }
+    static clearItems() {
+        for (let item of GameInfo.itemArray) {
+            item.undraw();
+        }
+        GameInfo.itemArray = [];
     }
 }

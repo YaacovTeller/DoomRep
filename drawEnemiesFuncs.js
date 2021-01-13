@@ -16,7 +16,7 @@ function drawNewEnemies_1_2() {
 }
 function drawNewEnemies_1_3() {
     GameInfo.enemyArray.push(new Extra("SectorPatrol", new Position(50, 25, 0.2)), new SectorPatrol(new Position(10, 65)), new SectorPatrol(new Position(50, 40)), new SectorPatrol(new Position(0, 50)), new SectorPatrol(new Position(20, 45)));
-    new Item("barrel", new Position(52, 25), 40);
+    GameInfo.itemArray.push(new Item("barrel", new Position(52, 25), 40));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
 }
 function drawNewEnemies_1_4() {
@@ -90,7 +90,7 @@ function drawNewEnemies_3_5() {
 }
 function drawNewEnemies_3_6() {
     GameInfo.enemyArray.push(new ChainGGuy(new Position(5, 45)), new ChainGGuy(new Position(47, 27)), new ChainGGuy(new Position(60, 50)), new ChainGGuy(new Position(65, 45)), new ChainGGuy(new Position(50, 50)), new ChainGGuy(new Position(45, 45)));
-    new Item("barrel", new Position(52, 25), 40);
+    GameInfo.itemArray.push(new Item("barrel", new Position(52, 25), 40));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_3_7() {

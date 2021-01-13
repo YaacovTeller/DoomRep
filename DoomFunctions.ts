@@ -13,7 +13,8 @@ class RandomSoundGen {
 }
 
 function hitWarning() {//THIS needs work
-    bizwarn.play()
+  //  bizwarn.play()
+  buzwarn.play();
 }
 
 // function shieldMove(e) {
@@ -101,6 +102,14 @@ function creditsMenu() {
     UTcredits.play();
     showElement(elements.credits);
 }
+
+function switchSound(value){
+    if (value == true){
+        toggle.play();
+    }
+    else toggle2.play();
+}
+
 function kidMode(value){
     if (value == true){
         GameInfo.kidMode = true;

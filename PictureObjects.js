@@ -125,6 +125,7 @@ const enemyPics = {
         ChainGuy: "assets/moneyBag.png",
         TroopLeft: "assets/moneyBag.png",
         TroopLeft_Tomer: "assets/moneyBag.png",
+        barrel: "assets/Barrel_explode.gif",
     }
 };
 const elements = {

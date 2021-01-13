@@ -12,7 +12,8 @@ class RandomSoundGen {
     }
 }
 function hitWarning() {
-    bizwarn.play();
+    //  bizwarn.play()
+    buzwarn.play();
 }
 // function shieldMove(e) {
 //     var x = e.pageX;
@@ -93,6 +94,13 @@ function creditsMenu() {
     hideElement(elements.menuImage);
     UTcredits.play();
     showElement(elements.credits);
+}
+function switchSound(value) {
+    if (value == true) {
+        toggle.play();
+    }
+    else
+        toggle2.play();
 }
 function kidMode(value) {
     if (value == true) {

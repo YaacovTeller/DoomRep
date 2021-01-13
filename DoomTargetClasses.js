@@ -72,7 +72,6 @@ class Target {
         let pic;
         if (GameInfo.kidMode) {
             pic = enemyPics.dead_alt[this.enemy];
-            rescaleForPotPlants(this.DOMImage);
         }
         else if (gib) {
             pic = enemyPics.explode[this.enemy];
@@ -96,12 +95,6 @@ class Target {
         GameInfo.hitTarget = null;
         GameInfo.targeting = false;
     }
-}
-function rescaleForPotPlants(image) {
-    let scale = image.style.transform;
-    let num = parseFloat(scale.replace("scale(", ""));
-    image.style.transform = `scale(${num / 3})`;
-    image.style.left = image.getBoundingClientRect().left - 200 + "px";
 }
 class RegEnemy extends Target {
     constructor(enemy, position, health, anim) {
@@ -132,6 +125,7 @@ class RegEnemy extends Target {
                 this.DOMImage.src = enemyPics.firing[this.enemy];
                 let _this = this;
                 setTimeout(() => {
+                    this.attackSound();
                     this.redraw(_this);
                     this.firing = false;
                 }, 1000);
@@ -200,7 +194,13 @@ class Troop extends RegEnemy {
         this.carriedWeapon = GameInfo.allGuns.Pistol;
     }
     deadSound() {
-        ded2.play();
+        RandomSoundGen.randomSound(troopDeaths);
+    }
+    attackSound() {
+        Pshot.play();
+    }
+    activeSound() {
+        RandomSoundGen.randomSound(troopShouts);
     }
     die(gib) {
         if (this.randomiseDrop(40))
@@ -217,7 +217,13 @@ class ShotGun_Troop extends RegEnemy {
         this.carriedWeapon = GameInfo.allGuns.Shotgun;
     }
     deadSound() {
-        ded.play();
+        RandomSoundGen.randomSound(troopDeaths);
+    }
+    attackSound() {
+        SGshot.play();
+    }
+    activeSound() {
+        RandomSoundGen.randomSound(troopShouts);
     }
     die(gib) {
         if (this.randomiseDrop(40))
@@ -236,7 +242,13 @@ class ChainGGuy extends RegEnemy {
         //  this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
     }
     deadSound() {
-        ded.play();
+        RandomSoundGen.randomSound(troopDeaths);
+    }
+    attackSound() {
+        Avpminigun.play();
+    }
+    activeSound() {
+        RandomSoundGen.randomSound(troopShouts);
     }
     die(gib) {
         this.drop(new weaponPickup(this, this.carriedWeapon));
@@ -252,7 +264,13 @@ class Imp extends RegEnemy {
         this.attackFrequency = 2000;
     }
     deadSound() {
-        ded2.play();
+        RandomSoundGen.randomSound(ImpDeaths);
+    }
+    attackSound() {
+        Imp_Attack.play();
+    }
+    activeSound() {
+        RandomSoundGen.randomSound(ImpShouts);
     }
 }
 class SectorPatrol extends RegEnemy {
@@ -263,10 +281,15 @@ class SectorPatrol extends RegEnemy {
         this.attackFrequency = 2000;
         this.carriedWeapon = GameInfo.allGuns.Pistol;
         this.isBoss = isBoss;
-        //    this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
     }
     deadSound() {
         humanDead.play();
+    }
+    attackSound() {
+        Pshot.play();
+    }
+    activeSound() {
+        RandomSoundGen.randomSound(troopShouts);
     }
     die(gib) {
         this.drop(new weaponPickup(this, this.carriedWeapon));
@@ -280,7 +303,6 @@ class Extra extends RegEnemy {
     }
     draw(position, anim) {
         super.draw(position, anim);
-        //    this.DOMImage.classList.remove("infiniteAlternateReverse");
         this.DOMImage.classList.add('fillModeForwards', 'extraTarget');
     }
     die(gib) {
@@ -290,17 +312,23 @@ class Extra extends RegEnemy {
     }
     deadSound() {
         if (this.enemy.includes("Troop")) {
-            ded2.play();
+            RandomSoundGen.randomSound(troopDeaths);
         }
         else if (this.enemy == "ShotGun_Troop") {
-            ded.play();
+            RandomSoundGen.randomSound(troopDeaths);
         }
         else if (this.enemy == "Imp") {
-            ded.play();
+            RandomSoundGen.randomSound(ImpDeaths);
         }
     }
+    attackSound() { }
+    ;
+    activeSound() { }
+    ;
     beginInflictDamage() { }
+    ;
     beginMoveLateral() { }
+    ;
 }
 class Item extends Target {
     constructor(item, position, health, anim) {

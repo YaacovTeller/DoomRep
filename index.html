@@ -74,14 +74,14 @@
                     <div class="menuItem">
                         <div class="switchDiv">   
                             <label class="switch">
-                                <input type="checkbox" onchange="kidMode(this.checked)">
+                                <input type="checkbox" onchange="kidMode(this.checked); switchSound(this.checked)">
                                 <span class="slider round"></span>
                             </label>
                             <span>Child friendly</span>
                         </div>
                         <div class="switchDiv">
                             <label class="switch">
-                                <input checked type="checkbox" onchange="muteMusic(this.checked)">
+                                <input checked type="checkbox" onchange="muteMusic(this.checked); switchSound(this.checked)">
                                 <span class="slider round"></span>
                             </label>
                             <span id="muteLabel">Music on</span>

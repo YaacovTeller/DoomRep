@@ -1,6 +1,6 @@
 var levelFuncArray = [
     //  [level_2_6]
-  //  [level_1_4],
+   // [level_1_3],
     [level_1_1, level_1_2, level_1_3, level_1_4],
     [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
     [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
@@ -221,29 +221,33 @@ class LevelHandler {
             enemy.beginInflictDamage(hitLimit);
             enemy.beginMoveLateral(frequency);
 
+            if (RandomNumberGen.randomNumBetween(0,1) == 1){
+                enemy.activeSound();
+            }
+
             enemy.health = enemy.health ? enemy.health : enemy.baseHealth;
         }
     }
-    public static startAllAttackRolls(hitLimit) {
-        for (let enemy of GameInfo.enemyArray) {
-            enemy.beginInflictDamage(hitLimit);
-        }
-    }
-    public static startAllMovementRolls(frequency) {
-        for (let enemy of GameInfo.enemyArray) {
-            enemy.beginMoveLateral(frequency);
-        }
-    }
-    public static startSelectMovementRolls(frequency, exceptions: Array<number>) {
-        for (let i in GameInfo.enemyArray) {
-            if (exceptions.includes(parseInt(i))) { continue; }
-            GameInfo.enemyArray[i].beginMoveLateral(frequency);
-        }
-    }
-    public static startSelectAttackRolls(exceptions: Array<number>, hitLimit) {
-        for (let i in GameInfo.enemyArray) {
-            if (exceptions.includes(parseInt(i))) { continue; }
-            GameInfo.enemyArray[i].beginInflictDamage(hitLimit);
-        }
-    }
+    // public static startAllAttackRolls(hitLimit) {
+    //     for (let enemy of GameInfo.enemyArray) {
+    //         enemy.beginInflictDamage(hitLimit);
+    //     }
+    // }
+    // public static startAllMovementRolls(frequency) {
+    //     for (let enemy of GameInfo.enemyArray) {
+    //         enemy.beginMoveLateral(frequency);
+    //     }
+    // }
+    // public static startSelectMovementRolls(frequency, exceptions: Array<number>) {
+    //     for (let i in GameInfo.enemyArray) {
+    //         if (exceptions.includes(parseInt(i))) { continue; }
+    //         GameInfo.enemyArray[i].beginMoveLateral(frequency);
+    //     }
+    // }
+    // public static startSelectAttackRolls(exceptions: Array<number>, hitLimit) {
+    //     for (let i in GameInfo.enemyArray) {
+    //         if (exceptions.includes(parseInt(i))) { continue; }
+    //         GameInfo.enemyArray[i].beginInflictDamage(hitLimit);
+    //     }
+    // }
 }

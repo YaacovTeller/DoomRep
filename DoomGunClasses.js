@@ -3,8 +3,8 @@ const gunMoveEvent = "Player.weapon.gunLower(event);";
 const MgunShotEvent = "Player.weapon.MGunShotDisplay(event);";
 const gunConfig = {
     Pistol: {
-        pickup_ammo_small: 12,
-        startingAmmo: 26,
+        pickup_ammo_small: 6,
+        startingAmmo: 12,
         damage: 20,
         scrnMargin: 280,
         gunHeight: 390,
@@ -18,15 +18,15 @@ const gunConfig = {
         gunHeight: 350,
     },
     DukeMgun: {
-        pickup_ammo_small: 20,
-        pickup_ammo_big: 50,
-        startingAmmo: 80,
+        pickup_ammo_small: 18,
+        pickup_ammo_big: 40,
+        startingAmmo: 40,
         damage: 10,
         scrnMargin: 280,
         gunHeight: 390,
     },
     Minigun: {
-        pickup_ammo_small: 20,
+        pickup_ammo_small: 25,
         pickup_ammo_big: 50,
         startingAmmo: 50,
         damage: 20,
@@ -82,6 +82,9 @@ class weaponry {
         elements.weaponImg.setAttribute("src", this.gunImage);
         Player.weapon = this;
         DOMUpdater.updateAmmoCounter(this.ammo);
+        if (!(this instanceof ChainSaw)) {
+            SawIdle.stop();
+        }
     }
     ;
     // public static gunTobaseOfScreen(){
@@ -120,9 +123,7 @@ class weaponry {
         elements.weaponDiv.style.top = weaponry.cY;
     }
     ricochet(sounds) {
-        let length = sounds.length;
-        let randNum = Math.floor(Math.random() * (length) + 1);
-        sounds[randNum - 1].play();
+        RandomSoundGen.randomSound(sounds);
     }
     pickupShot() {
         if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
@@ -260,6 +261,7 @@ class MachineGun extends weaponry {
 class ChainSaw extends MachineGun {
     constructor() {
         super(...arguments);
+        this.chainsawReach = gunConfig.ChainSaw.reach; // target height
         this.firingSound = Saw;
         this.gunImage = pics.guns.chainsaw;
         this.gunImage_firing = pics.guns.chainsaw_firing;
@@ -268,38 +270,55 @@ class ChainSaw extends MachineGun {
         this.damage = gunConfig.ChainSaw.damage;
         this.pickupStats = new pickupStats(pics.pickups.ChainSaw, "", "", "", "");
     }
-    static chainsawDistanceCheck(hitImage) {
-        if (hitImage.src.includes("ChainGuy")) { // change (can't chainsaw the boss?)
-            return true;
-        }
-        else if (hitImage.getBoundingClientRect().height > this.chainsawReach) {
+    chainsawDistanceCheck(hitImage) {
+        if (hitImage.getBoundingClientRect().height > this.chainsawReach) {
             return true; // height/clientHeight/offsetHeight properties wont give real height
         }
         else
             return false;
     }
+    chainsawHitCheck() {
+        return (GameInfo.targeting == true && this.chainsawDistanceCheck(GameInfo.hitTarget.DOMImage));
+    }
     strafe() {
         if (this.pickupShot())
             return;
+        document.addEventListener('mouseleave', e => {
+            this.stopstrafe();
+        });
         this.firing = true;
         this.gunHeight = gunConfig.ChainSaw.firing.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin;
-        if (GameInfo.targeting == true && ChainSaw.chainsawDistanceCheck(GameInfo.hitTarget.DOMImage)) {
+        if (this.chainsawHitCheck()) {
             GameInfo.hitTarget.loseHealth(this.damage);
-            let _this = this;
-            MachineGun.hittingInterval = (setInterval(function () { GameInfo.hitTarget.loseHealth(_this.damage); }, 200));
         }
+        let _this = this;
+        MachineGun.hittingInterval = (setInterval(() => {
+            if (this.chainsawHitCheck())
+                GameInfo.hitTarget.loseHealth(_this.damage);
+        }, 200));
+        this.switchSounds();
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
-        this.firingSound.play();
         elements.weaponDiv.style.left = weaponry.cX;
         elements.weaponDiv.style.top = weaponry.cY;
+    }
+    switchSounds() {
+        if (this.firing) {
+            SawIdle.stop();
+            this.firingSound.play();
+        }
+        else {
+            SawIdle.play();
+            this.firingSound.stop();
+        }
     }
     stopstrafe() {
         this.gunHeight = gunConfig.ChainSaw.gunHeight;
         this.scrnMargin = gunConfig.ChainSaw.scrnMargin;
         clearInterval(MachineGun.hittingInterval);
         elements.weaponImg.setAttribute("src", this.gunImage);
-        this.firingSound.stop();
+        this.firing = false;
+        this.switchSounds();
         document.body.setAttribute("onmousemove", gunMoveEvent);
     }
     switchTo() {
@@ -307,10 +326,16 @@ class ChainSaw extends MachineGun {
         DOMUpdater.updateAmmoCounter(`N/A`);
         elements.ammoType.removeAttribute("src");
         SawUp.play();
+        let _this = this;
+        setTimeout(() => {
+            if (Player.weapon == _this) {
+                debugger;
+                _this.switchSounds();
+            }
+        }, 2000);
         setMouseAttributes_MachineGun();
     }
 }
-ChainSaw.chainsawReach = gunConfig.ChainSaw.reach; // target height
 class Minigun extends MachineGun {
     constructor() {
         super(...arguments);
@@ -417,6 +442,8 @@ class DualNeutron extends MachineGun {
         this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DualNuetron.pickup_ammo_big, gunConfig.DualNuetron.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     strafe() {
+        if (this.pickupShot())
+            return;
         this.gunHeight = gunConfig.DualNuetron.firing.gunHeight;
         this.scrnMargin = gunConfig.DualNuetron.firing.scrnMargin;
         if (this.ammo <= 0) {

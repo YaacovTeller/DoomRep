@@ -3,22 +3,42 @@ var Pshot = new sound("sound/DSPISTOL.WAV");
 var SGshot = new sound("sound/DSSHOTGN.WAV");
 var SawUp = new sound("sound/DSSAWUP.WAV");
 var Saw = new sound("sound/DSSAWFUL.WAV");
+var SawIdle = new sound("sound/DSSAWIDL.WAV");
+var toggle = new sound("sound/DSSWTCHN.WAV");
+var toggle2 = new sound("sound/DSSWTCHN.WAV");
 var click = new sound("sound/Turok/insct1ap.wav");
 var click2 = new sound("sound/Turok/load2p.wav");
 var bizwarn = new sound("sound/Hlife/bizwarn.wav");
-var ded = new sound("sound/DSDMPAIN.WAV");
-var ded2 = new sound("sound/DSPODTH3.WAV");
+var buzwarn = new sound("sound/Hlife/buzwarn.wav");
+var demonPain = new sound("sound/Doom_Pinky/DSDMPAIN.WAV"); // UNUSED
 var humanDead = new sound("sound/WOLF3D/Death 1.wav");
-var bossDed = new sound("sound/DSBRSDTH.WAV");
+var bossDed = new sound("sound/DSBRSDTH.WAV"); // UNUSED
 var Turokscream = new sound("sound/Turok/scream1p.wav");
 var Hlifescream1 = new sound("sound/Hlife/sci_pain1.wav");
-var explosion = new sound("sound/Doom_new/DSBAREXP.WAV");
-var collectPowerup = new sound("sound/Doom_new/DSGETPOW.WAV");
-var collectItem = new sound("sound/Doom_new/DSITEMUP.WAV");
-var keenDth = new sound("sound/Doom_new/DSKEENDT.WAV");
-var DoomguyPain = new sound("sound/Doom_new/DSPLPAIN.WAV");
-var ImpShout_1 = new sound("sound/Doom_new/Imp_shout.WAV");
-var ImpShout_2 = new sound("sound/Doom_new/DSPOSACT.WAV");
+var explosion = new sound("sound/Doom_misc/DSBAREXP.WAV");
+var collectPowerup = new sound("sound/Doom_misc/DSGETPOW.WAV");
+var collectItem = new sound("sound/Doom_misc/DSITEMUP.WAV");
+var keenDth = new sound("sound/Doom_misc/DSKEENDT.WAV");
+var DoomguyPain = new sound("sound/Doom_misc/DSPLPAIN.WAV");
+var Imp_Shout_1 = new sound("sound/Doom_Imp/DSBGSIT1.WAV");
+var Imp_Shout_2 = new sound("sound/Doom_Imp/DSBGSIT2.WAV");
+var Imp_Pain = new sound("sound/Doom_Zombies/DSPOPAIN.WAV");
+var Imp_Idle = new sound("sound/Doom_Imp/DSBGACT.WAV");
+var Imp_Death_1 = new sound("sound/Doom_Imp/DSBGDTH1.WAV");
+var Imp_Death_2 = new sound("sound/Doom_Imp/DSBGDTH2.WAV");
+var Imp_Attack = new sound("sound/Doom_Imp/DSCLAW.WAV");
+var Troop_Shout_1 = new sound("sound/Doom_Zombies/DSPOSIT1.WAV");
+var Troop_Shout_2 = new sound("sound/Doom_Zombies/DSPOSIT2.WAV");
+var Troop_Shout_3 = new sound("sound/Doom_Zombies/DSPOSIT3.WAV");
+var Troop_Pain = new sound("sound/Doom_Zombies/DSPOPAIN.WAV");
+var Troop_Idle = new sound("sound/Doom_Zombies/DSPOSACT.WAV");
+var Troop_Death_1 = new sound("sound/Doom_Zombies/DSPODTH1.WAV");
+var Troop_Death_2 = new sound("sound/Doom_Zombies/DSPODTH2.WAV");
+var Troop_Death_3 = new sound("sound/Doom_Zombies/DSPODTH3.WAV");
+var troopShouts = [Troop_Shout_1, Troop_Shout_2, Troop_Shout_3];
+var troopDeaths = [Troop_Death_1, Troop_Death_2, Troop_Death_3];
+var ImpShouts = [Imp_Shout_1, Imp_Shout_2];
+var ImpDeaths = [Imp_Death_1, Imp_Death_2];
 var Deuscredits = new sound("sound/DeusCredits.mp3"); // error
 var UTcredits = new sound("sound/UT_menu.mp3");
 // AvP has diff .wav format??
@@ -34,7 +54,7 @@ var SSamMinigun = new sound("sound/SSam/Fire.wav"); //Too slow! Use for DN
 var Bullet1 = new sound("sound/Bullets/bullet_by_01.mp3");
 var Bullet2 = new sound("sound/Bullets/bullet_by_02.mp3");
 var Bullet3 = new sound("sound/Bullets/bullet_by_03.mp3");
-var Bullet4 = new sound("sound/Bullets/bullet_by_08.mp3");
+//var Bullet4 = new sound("sound/Bullets/bullet_by_08.mp3") odd?
 var Bullet5 = new sound("sound/Bullets/bullet_by_09.mp3");
 var Bullet6 = new sound("sound/Bullets/bullet_by_10.mp3");
 var Bullet7 = new sound("sound/Bullets/bullet_by_11.mp3");
@@ -49,3 +69,4 @@ TurokRotate.sound.setAttribute("loop", "infinite");
 TurokMinigun.sound.setAttribute("loop", "infinite");
 Saw.sound.setAttribute("loop", "infinite");
 MGun.sound.setAttribute("loop", "infinite");
+SawIdle.sound.setAttribute("loop", "infinite");
