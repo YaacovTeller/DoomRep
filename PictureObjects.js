@@ -93,6 +93,7 @@ const enemyPics = {
         Troop: "assets/enemies/Troop/Troop_Dead.gif",
         ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_Dead.gif",
         Imp: "assets/enemies/Imp/Imp_Dead.gif",
+        Imp_alt: "assets/enemies/Imp/Imp_newCollapse.gif",
         ChainGuy: "assets/enemies/ChainGuy/ChainGuy_DeadEd.gif",
         TroopLeft: "assets/enemies/Troop/Troop_Dead.gif",
         TroopLeft_Tomer: "assets/enemies/Troop/Troop_Dead.gif",

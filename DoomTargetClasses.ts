@@ -80,8 +80,12 @@ abstract class Target {
         else if (gib) {
             pic = enemyPics.explode[this.enemy];
         }
-        else pic = enemyPics.dead[this.enemy];
-
+        else {
+            pic = enemyPics.dead[this.enemy];
+            if (this instanceof Imp && RandomNumberGen.randomNumBetween(0,3) == 3){ // FIX, alt deaths need a proper system
+                pic = enemyPics.dead[this.enemy + '_alt'];
+            }
+        } 
         this.DOMImage.setAttribute("src", pic + "?a=" + Math.random());
         this.deadFlag = true;
         this.DOMImage.style.animationPlayState = "paused"; // stop css...
