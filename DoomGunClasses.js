@@ -170,7 +170,7 @@ class Pistol extends regGun {
         this.scrnMargin = gunConfig.Pistol.scrnMargin;
         this.damage = gunConfig.Pistol.damage;
         this.ammo = gunConfig.Pistol.startingAmmo;
-        this.pickupStats = new pickupStats(pics.pickups.Pistol, gunConfig.Pistol.pickup_ammo_small, gunConfig.Pistol.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
+        this.pickupStats = new pickupStats(pics.pickups.Pistol, gunConfig.Pistol.pickup_ammo_small, gunConfig.Pistol.pickup_ammo_small, pics.pickups.bullets.small, pics.pickups.bullets.small);
     }
     shot(e) {
         if (super.shot(e)) {
@@ -329,7 +329,6 @@ class ChainSaw extends MachineGun {
         let _this = this;
         setTimeout(() => {
             if (Player.weapon == _this) {
-                debugger;
                 _this.switchSounds();
             }
         }, 2000);
@@ -346,7 +345,8 @@ class Minigun extends MachineGun {
         this.damage = gunConfig.Minigun.damage;
         this.ammo = gunConfig.Minigun.startingAmmo;
         this.firingSound = Avpminigun;
-        this.pickupStats = new pickupStats(pics.pickups.Minigun, gunConfig.Minigun.pickup_ammo_big, gunConfig.Minigun.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
+        this.pickupStats = new pickupStats(pics.pickups.Minigun, gunConfig.Minigun.pickup_ammo_big, gunConfig.Minigun.pickup_ammo_big, pics.pickups.bullets.big, pics.pickups.bullets.big // FIX? need small chaingun pickup
+        );
     }
     spinUp() {
         elements.weaponImg.setAttribute("src", pics.guns.minigun_spinup);
@@ -406,7 +406,8 @@ class DukeMgun extends MachineGun {
         this.damage = gunConfig.DukeMgun.damage;
         this.ammo = gunConfig.DukeMgun.startingAmmo;
         this.firingSound = MGun;
-        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DukeMgun.pickup_ammo_big, gunConfig.DukeMgun.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
+        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DukeMgun.pickup_ammo_big, gunConfig.DukeMgun.pickup_ammo_big, pics.pickups.bullets.big, pics.pickups.bullets.big // FIX? need small bullets pickup
+        );
     }
     strafe() {
         if (this.pickupShot())

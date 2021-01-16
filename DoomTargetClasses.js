@@ -245,7 +245,7 @@ class ChainGGuy extends RegEnemy {
         RandomSoundGen.randomSound(troopDeaths);
     }
     attackSound() {
-        Avpminigun.play();
+        Avpminigun2.play();
     }
     activeSound() {
         RandomSoundGen.randomSound(troopShouts);
@@ -283,13 +283,13 @@ class SectorPatrol extends RegEnemy {
         this.isBoss = isBoss;
     }
     deadSound() {
-        humanDead.play();
+        RandomSoundGen.randomSound(patrolDeaths);
     }
     attackSound() {
         Pshot.play();
     }
     activeSound() {
-        RandomSoundGen.randomSound(troopShouts);
+        RandomSoundGen.randomSound(patrolShouts);
     }
     die(gib) {
         this.drop(new weaponPickup(this, this.carriedWeapon));

@@ -1,7 +1,7 @@
 "use strict";
 var levelFuncArray = [
     //  [level_2_6]
-    // [level_1_3],
+    //  [level_1_4],
     [level_1_1, level_1_2, level_1_3, level_1_4],
     [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
     [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
@@ -40,7 +40,7 @@ class Scene {
         this.enemyFunc = enemyFunc;
         fadeOutDelay = fadeOutDelay != null ? fadeOutDelay : 500;
         fadeInDelay = fadeInDelay != null ? fadeInDelay : 1700;
-        enemiesDelay = enemiesDelay != null ? enemiesDelay : 3000;
+        enemiesDelay = enemiesDelay != null ? enemiesDelay : 2500;
         this.genericScene(background, attributes, enemyFunc, fadeOutDelay, fadeInDelay, enemiesDelay, noFadeOut);
     }
     genericScene(background, attributes, enemyFunc, fadeOutDelay, fadeInDelay, enemiesDelay, noFadeOut) {
@@ -74,9 +74,12 @@ class SceneGenerator {
         let y = RandomNumberGen.randomNumBetween(35, 65);
         return new Position(x, y);
     }
+    static isFirstSceneCheck() {
+        return GameInfo.currentLevel.sceneArray.length < 1;
+    }
     static enemySelector(enemyNumber, mixedEnemies) {
         enemyNumber = mixedEnemies ? RandomNumberGen.randomNumBetween(0, 4) : enemyNumber;
-        if (GameInfo.currentLevel.sceneArray.length < 2 && enemyNumber == 4) { // hack to prevent chainguy rush
+        if (SceneGenerator.isFirstSceneCheck() && enemyNumber == 4) { // hack to prevent chainguy rush
             enemyNumber--;
         }
         let ישעיה_שמחה;
@@ -103,7 +106,13 @@ class SceneGenerator {
         return pics.background['doom' + RandomNumberGen.randomNumBetween(1, 6)];
     }
     static sceneLoop() {
-        let scene = new Scene(SceneGenerator.randomBackground(), "width: 100%", () => SceneGenerator.drawNewEnemiesGeneric());
+        let scene;
+        if (SceneGenerator.isFirstSceneCheck()) {
+            scene = new Scene(SceneGenerator.randomBackground(), "width: 100%", () => SceneGenerator.drawNewEnemiesGeneric(), 0, 0, 0);
+        }
+        else {
+            scene = new Scene(SceneGenerator.randomBackground(), "width: 100%", () => SceneGenerator.drawNewEnemiesGeneric());
+        }
         GameInfo.currentLevel.addScene(scene);
         elements.progressCounter.innerText = "" + (GameInfo.currentLevel.sceneArray.length);
     }
@@ -138,7 +147,7 @@ class LevelHandler {
                 GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length], wepArray));
             }
             else {
-                let div1 = createMessageDiv("sceneMsg", "A WINNER IS YOU");
+                let div1 = createMessageDiv("sceneMsg", "A WINNER IS YOU"); // ENDGAME needs a place
                 elements.finishMsg.onclick = null;
                 slamMessage(div1, elements.finishMsg, 1000);
                 setTimeout(() => {
@@ -168,8 +177,8 @@ class LevelHandler {
         GameInfo.gameBegun = false;
         Deuscredits.stop();
         genericFinishMessage();
+        LevelHandler.fadeOutClear(1000);
         setTimeout(() => {
-            LevelHandler.fadeOutClear(0);
             elements.finishMsg.onclick = () => {
                 LevelHandler.nextLevel(); // NEXT LEVEL, FIX?
                 elements.finishMsg.onclick = null;

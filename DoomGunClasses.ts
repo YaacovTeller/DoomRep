@@ -190,7 +190,7 @@ class Pistol extends regGun {
         pics.pickups.Pistol, 
         gunConfig.Pistol.pickup_ammo_small,
         gunConfig.Pistol.pickup_ammo_small,
-        pics.pickups.bullets.big,
+        pics.pickups.bullets.small,
         pics.pickups.bullets.small
         );
     
@@ -373,7 +373,6 @@ class ChainSaw extends MachineGun {
         let _this = this;
         setTimeout(()=>{
             if (Player.weapon == _this){
-                debugger
                 _this.switchSounds();
             }
         },2000)
@@ -396,9 +395,9 @@ class Minigun extends MachineGun {
     new pickupStats(
         pics.pickups.Minigun, 
         gunConfig.Minigun.pickup_ammo_big,
-        gunConfig.Minigun.pickup_ammo_small,
+        gunConfig.Minigun.pickup_ammo_big,
         pics.pickups.bullets.big,
-        pics.pickups.bullets.small
+        pics.pickups.bullets.big // FIX? need small chaingun pickup
         );
 
  
@@ -460,9 +459,9 @@ class DukeMgun extends MachineGun {
     new pickupStats(
         pics.pickups.DukeMgun, 
         gunConfig.DukeMgun.pickup_ammo_big,
-        gunConfig.DukeMgun.pickup_ammo_small,
+        gunConfig.DukeMgun.pickup_ammo_big,
         pics.pickups.bullets.big,
-        pics.pickups.bullets.small
+        pics.pickups.bullets.big // FIX? need small bullets pickup
         );
     
     public strafe() {

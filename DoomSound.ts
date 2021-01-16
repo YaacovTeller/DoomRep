@@ -41,9 +41,16 @@ var Troop_Death_1 = new sound("sound/Doom_Zombies/DSPODTH1.WAV")
 var Troop_Death_2 = new sound("sound/Doom_Zombies/DSPODTH2.WAV")
 var Troop_Death_3 = new sound("sound/Doom_Zombies/DSPODTH3.WAV")
 
+var Patrol_Shout_1 = new sound("sound/BLAKESTONE/Halt.wav")
+var Patrol_Shout_2 = new sound("sound/BLAKESTONE/intruder.wav")
+var Patrol_Death_1 = new sound("sound/BLAKESTONE/SPdeath.wav")
+var Patrol_Death_2 = new sound("sound/BLAKESTONE/SciDeath.wav")
+
+var patrolShouts = [Patrol_Shout_1, Patrol_Shout_2];
+var patrolDeaths = [Patrol_Death_1, Patrol_Death_2, humanDead]; // use from WOLF??
 var troopShouts = [Troop_Shout_1, Troop_Shout_2, Troop_Shout_3];
 var troopDeaths = [Troop_Death_1, Troop_Death_2, Troop_Death_3];
-var ImpShouts = [Imp_Shout_1, Imp_Shout_2];
+var ImpShouts = [Imp_Shout_1, Imp_Shout_2, Imp_Idle]; // use idle??
 var ImpDeaths = [Imp_Death_1, Imp_Death_2];
 
 var Deuscredits = new sound("sound/DeusCredits.mp3")// error
@@ -51,6 +58,7 @@ var UTcredits = new sound("sound/UT_menu.mp3")
 // AvP has diff .wav format??
 var AvpGun = new sound("sound/AvP/pistol_fire_01.wav")
 var Avpminigun = new sound("sound/minigun_shoot_loop_01.mp3")
+var Avpminigun2 = new sound("sound/minigun_shoot_loop_01.mp3")
 // 
 var MGun = new sound("sound/MachineGun.mp3");
 var TurokRotate = new sound("sound/Turok/gatlin1p.wav")//End gap
@@ -72,11 +80,12 @@ var Turicochet = new sound("sound/Turok/riccht1p_louder.mp3")
 var BloodRicochet_1 = new sound("sound/Blood/RICOCHT1.WAV")
 var BloodRicochet_2 = new sound("sound/Blood/RICOCHT2.WAV")
 
-Avpminigun.sound.setAttribute("loop", "infinite");
-SSamMinigun.sound.setAttribute("loop", "infinite");
+Avpminigun.sound.setAttribute("loop", "infinite"); //CHAINGUN
+SSamMinigun.sound.setAttribute("loop", "infinite"); //DUALNEUTRON
 SSamRotate.sound.setAttribute("loop", "infinite");
-TurokRotate.sound.setAttribute("loop", "infinite");
+//TurokRotate.sound.setAttribute("loop", "infinite");
 TurokMinigun.sound.setAttribute("loop", "infinite");
+
 Saw.sound.setAttribute("loop", "infinite");
-MGun.sound.setAttribute("loop", "infinite");
+MGun.sound.setAttribute("loop", "infinite"); //DukeMgun
 SawIdle.sound.setAttribute("loop", "infinite");

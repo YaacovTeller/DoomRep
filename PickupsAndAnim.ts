@@ -130,7 +130,12 @@ class ammoPickup extends Pickup{
         this.weapon = weapon;
         this.image = this.weapon.pickupStats.ammoImages[size];
         this.ammount = this.weapon.pickupStats.ammoAmmounts[size];
-        this.cssClass = size == 'big' ? "pickup_ammo" : "pickup_ammo_small";
+        if (weapon instanceof Pistol){
+            this.cssClass = "pickup_ammo_small"; // FIX!! need proper solution for ammo width classes
+        }
+        else{
+            this.cssClass = size == 'big' ? "pickup_ammo" : "pickup_ammo_small";
+        }
     }
     public grab(){
         Player.collectAmmo(this.ammount, this.weapon.constructor.name)
