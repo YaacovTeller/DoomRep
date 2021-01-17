@@ -67,7 +67,7 @@ class SceneGenerator {
         LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow); // HITLIMIT , MOVE!
     }
     static itemSelector(item) {
-        new Item(item, this.positionSelector(), 40);
+        GameInfo.itemArray.push(new Item(item, this.positionSelector(), 40));
     }
     static positionSelector() {
         let x = RandomNumberGen.randomNumBetween(5, 85);
@@ -147,7 +147,12 @@ class LevelHandler {
                 GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length], wepArray));
             }
             else {
-                let div1 = createMessageDiv("sceneMsg", "A WINNER IS YOU"); // ENDGAME needs a place
+                let str = "A WINNER IS YOU";
+                if (GameInfo.invincible == true) {
+                    let div2 = createMessageDiv("sceneMsg", "(you did cheat though...)");
+                    slamMessage(div2, elements.finishMsg, 2500);
+                }
+                let div1 = createMessageDiv("sceneMsg", str); // ENDGAME needs a place
                 elements.finishMsg.onclick = null;
                 slamMessage(div1, elements.finishMsg, 1000);
                 setTimeout(() => {
