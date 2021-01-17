@@ -94,7 +94,7 @@ html, body {
 .pickup_weapon_pistol{
     width: 90px;
 }
-.pickup_ammo{
+/* .pickup_ammo{
     width: 100px;
 }
 .pickup_ammo_small{
@@ -105,7 +105,7 @@ html, body {
 }
 .pickup_health_big{
     width: 60px;
-}
+} */
 
 .undraggable{
     user-select: none;

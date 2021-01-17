@@ -87,15 +87,13 @@ class healthPickup extends Pickup {
         this.image = pics.pickups.health.small;
         this.collectNoise = collectPowerup;
         this.ammount = ammount;
-        //  this.image = ammount <= 50 ? pics.pickups.health.small : pics.pickups.health.big;
-        if (ammount >= 50) {
-            this.image = pics.pickups.health.big;
-            this.cssClass = "pickup_health_big";
-        }
-        else {
-            this.image = pics.pickups.health.small;
-            this.cssClass = "pickup_health_small";
-        }
+        this.image = ammount <= 50 ? pics.pickups.health.small : pics.pickups.health.big;
+        // if (ammount >= 50){
+        //     this.image = pics.pickups.health.big;
+        // }
+        // else {
+        //     this.image = pics.pickups.health.small;
+        // }
     }
     grab() {
         Player.collectHealth(this.ammount);
@@ -105,16 +103,9 @@ class healthPickup extends Pickup {
 class ammoPickup extends Pickup {
     constructor(source, weapon, size) {
         super(source);
-        this.cssClass = "pickup_ammo";
         this.weapon = weapon;
         this.image = this.weapon.pickupStats.ammoImages[size];
         this.ammount = this.weapon.pickupStats.ammoAmmounts[size];
-        if (weapon instanceof Pistol) {
-            this.cssClass = "pickup_ammo_small"; // FIX!! need proper solution for ammo width classes
-        }
-        else {
-            this.cssClass = size == 'big' ? "pickup_ammo" : "pickup_ammo_small";
-        }
     }
     grab() {
         Player.collectAmmo(this.ammount, this.weapon.constructor.name);
