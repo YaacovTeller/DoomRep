@@ -16,7 +16,7 @@ html, body {
     font-family: Arial, Helvetica, sans-serif;
 }
 .menuImage{
-    z-index: 3;
+    z-index: 23;
     opacity: 1.0;
     width: 145%;
     margin-left: -40%;
@@ -62,7 +62,7 @@ html, body {
     border-radius: 5px;
     box-shadow: 3px 3px 10px 1px black;
     display: none;
-    z-index: 5;
+    z-index: 25;
 }
 
 .target {
@@ -70,13 +70,11 @@ html, body {
     position: absolute;
     height: 300px;
 }
-.extraTarget {
-    z-index: 0;
-}
+
 .weapon{
     width: fit-content;
     position: absolute;
-    z-index: 1;
+    z-index: 21;
 }
 .weaponImg{
     user-select: none;
@@ -88,12 +86,12 @@ html, body {
 .pickup{
     position: absolute;
 }
-.pickup_weapon{
+/* .pickup_weapon{
     width: 270px;
 }
 .pickup_weapon_pistol{
     width: 90px;
-}
+} */
 /* .pickup_ammo{
     width: 100px;
 }
@@ -122,7 +120,7 @@ html, body {
     user-select: none;
     position: absolute;
     pointer-events: none;
-    z-index: 1;
+    z-index: 21;
     transform: scale(2);
     left: -10%;
     top: 110%;
@@ -142,7 +140,7 @@ html, body {
     float: left;
     bottom: 0px;
     font-size: 100px;
-    z-index: 1;
+    z-index: 21;
     width: 290px;
 }
 .DCountBox{
@@ -154,7 +152,7 @@ html, body {
     box-shadow: 5px 5px 15px 5px black;
     background-color: darkgray;
     border-radius: 25px;
-    z-index: 2;
+    z-index: 22;
     padding: 9px;
     position: fixed;
     font-size: 60px;
@@ -198,7 +196,7 @@ html, body {
 #CreditScreen{
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 21;
     left: 0;
     top: 0;
     width: 100%;
@@ -225,7 +223,7 @@ html, body {
 .modal {
     display: none;
     position: fixed;
-    z-index: 4;
+    z-index: 24;
     left: 0;
     top: 0;
     width: 100%;
