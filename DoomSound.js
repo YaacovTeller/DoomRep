@@ -8,6 +8,7 @@ var toggle = new sound("sound/DSSWTCHN.WAV");
 var toggle2 = new sound("sound/DSSWTCHN.WAV");
 var click = new sound("sound/Turok/insct1ap.wav");
 var click2 = new sound("sound/Turok/load2p.wav");
+var ammoClick = new sound("sound/WOLF3D/Ammo.wav");
 var bizwarn = new sound("sound/Hlife/bizwarn.wav");
 var buzwarn = new sound("sound/Hlife/buzwarn.wav");
 var demonPain = new sound("sound/Doom_Pinky/DSDMPAIN.WAV"); // UNUSED

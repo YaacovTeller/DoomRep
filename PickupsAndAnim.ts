@@ -32,7 +32,6 @@ class Pickup {
     protected image: string;
     protected DOMImage: HTMLElement;
     protected collectNoise = collectItem;
-    protected cssClass: string
     constructor(source: Target) {
         this.source = source;
     }
@@ -41,7 +40,6 @@ class Pickup {
         this.DOMImage = img;
         img.setAttribute('src', this.image);
         img.classList.add('pickup','undraggable');
-        img.classList.add(this.cssClass);
         let sourceWidth = this.source.DOMImage.getBoundingClientRect().width;
         let left = this.source.DOMImage.getBoundingClientRect().left + sourceWidth/2; // MID
         let top = this.source.DOMImage.getBoundingClientRect().bottom - 100;
@@ -113,6 +111,9 @@ class healthPickup extends Pickup{
         // }
     }
     public grab() {
+        if (Player.health >=120) {
+            return;
+        }
         Player.collectHealth(this.ammount);
         super.grab();
     }
@@ -136,13 +137,12 @@ class ammoPickup extends Pickup{
 
 class weaponPickup extends Pickup{
     public weapon: weaponry
-    protected cssClass = "pickup_weapon"
     protected image;
+    protected collectNoise = ammoClick;
     constructor(source: Target, weapon:weaponry){
         super(source);
         this.weapon = weapon;
         this.image = this.weapon.pickupStats.gunImage;
-        this.cssClass = this.weapon instanceof Pistol ? "pickup_weapon_pistol" : "pickup_weapon";
     }
     public grab(){
         Player.collectWeapon(this.weapon)
