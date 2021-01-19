@@ -1,7 +1,7 @@
 "use strict";
 var levelFuncArray = [
     //  [level_2_6]
-    //  [level_1_4],
+    // [level_1_3],
     [level_1_1, level_1_2, level_1_3, level_1_4],
     [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
     [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
@@ -208,7 +208,29 @@ class LevelHandler {
     static generateEnemiesDelay(time, enemyFunc) {
         setTimeout(() => {
             enemyFunc();
+            debugger;
+            this.setZindexes(); // FIX? oddly placed
         }, time);
+    }
+    static setZindexes() {
+        let domElems = this.getAllSprites();
+        for (let item of domElems) {
+            item.style.zIndex = this.getScaleStringTimesTen(item);
+        }
+    }
+    static getAllSprites() {
+        let domElems = [];
+        let enemyDomElems = GameInfo.enemyArray.map(x => x.DOMImage);
+        let itemDomElems = GameInfo.itemArray.map(x => x.DOMImage);
+        domElems = domElems.concat(itemDomElems);
+        domElems = domElems.concat(enemyDomElems);
+        return domElems;
+    }
+    static getScaleStringTimesTen(item) {
+        let trans = item.style.transform.replace("scale(", "");
+        let scale = parseFloat(trans);
+        scale *= 10;
+        return Math.round(scale).toString();
     }
     static reduceBar(currentHealth) {
         let health = (currentHealth / GameInfo.bossTotalHealth) * 100;
