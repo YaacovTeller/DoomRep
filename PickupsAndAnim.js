@@ -86,13 +86,7 @@ class healthPickup extends Pickup {
         this.image = pics.pickups.health.small;
         this.collectNoise = collectPowerup;
         this.ammount = ammount;
-        this.image = ammount <= 50 ? pics.pickups.health.small : pics.pickups.health.big;
-        // if (ammount >= 50){
-        //     this.image = pics.pickups.health.big;
-        // }
-        // else {
-        //     this.image = pics.pickups.health.small;
-        // }
+        this.image = ammount < 50 ? pics.pickups.health.small : pics.pickups.health.big;
     }
     grab() {
         if (Player.health >= 120) {

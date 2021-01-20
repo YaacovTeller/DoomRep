@@ -15,13 +15,17 @@ abstract class Target {
         this.enemy = enemy;
         this.draw(position, anim);
     }
+    protected setImageSrc(img){
+        this.DOMImage.src = img + "?a=" + Math.random();
+    }
     
     protected draw(position, anim?){
         var img:HTMLImageElement = document.createElement("img");
+        this.DOMImage = img;
         img.classList.add("target", "undraggable","fillModeForwards")
         img.onmouseover = () => this.setAsTarget();
         img.onmouseleave = () => this.unsetTarget();
-        img.setAttribute('src', enemyPics[this.enemy]);
+        this.setImageSrc(enemyPics[this.enemy]);
        // img.style.borderRadius = "55px" // reduce the hitbox?
         img.style.left = position.x +"%";
         img.style.top = position.y +"%";
@@ -34,7 +38,6 @@ abstract class Target {
             img.style.animation = arr.join(", ");
         }
         elements.targetBackdrop.appendChild(img);
-        this.DOMImage = img;
     }
     protected randomiseDrop(num){
         let roll = Math.floor(Math.random() * 100);
@@ -53,7 +56,7 @@ abstract class Target {
 
     public redraw(_this) {
         if (_this.deadFlag == false) {
-            _this.DOMImage.setAttribute("src", enemyPics[_this.enemy]);
+            _this.setImageSrc(enemyPics[_this.enemy]);
         }
     }
     public undraw(){
@@ -62,7 +65,7 @@ abstract class Target {
     
     public loseHealth(damage) {
         this.health -= damage;
-        this.DOMImage.setAttribute("src", enemyPics.hurt[this.enemy]);
+        this.setImageSrc(enemyPics.hurt[this.enemy]);
         let _this = this;
         if (this.isBoss) {
             LevelHandler.reduceBar(this.health);
@@ -86,7 +89,7 @@ abstract class Target {
                 pic = enemyPics.dead[this.enemy + '_alt'];
             }
         } 
-        this.DOMImage.setAttribute("src", pic + "?a=" + Math.random());
+        this.setImageSrc(pic);
         this.deadFlag = true;
         this.DOMImage.style.animationPlayState = "paused"; // stop css...
         $(this.DOMImage).stop(); // ...and jquery movement
@@ -143,7 +146,7 @@ abstract class RegEnemy extends Target {
             if (die >= hitLimit) {
                 this.firing = true;
                 $(this.DOMImage).stop();
-                this.DOMImage.src = enemyPics.firing[this.enemy];
+                this.setImageSrc(enemyPics.firing[this.enemy])
                 let _this = this;
                 setTimeout(()=>{
                     this.attackSound()
@@ -157,7 +160,7 @@ abstract class RegEnemy extends Target {
                 else {
                     setTimeout(function () {
                         //Turicochet.play(); /* riotShield.style.animation = "shieldhit 0.5s"; */
-                        RandomSoundGen.randomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
+                        RandomSoundGen.playRandomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
                     }, 1000);
                 }
             }
@@ -189,7 +192,7 @@ abstract class RegEnemy extends Target {
         let distance:number = this.mover.distance(this.DOMImage, lateralDestination);
         let direction:string = this.mover.direction(this.DOMImage, lateralDestination);
         let speed:number = this.mover.speed(distance);
-        this.DOMImage.src = enemyPics[direction][this.enemy]
+        this.setImageSrc(enemyPics[direction][this.enemy]);
         let _this = this;
         this.mover.moveLateral(lateralDestination, speed, this.DOMImage,()=>_this.redraw(_this) );
     //    this.mover.moveForward(this.mover.calcDimentions(this.DOMImage), speed, this.DOMImage);
@@ -218,13 +221,13 @@ class Troop extends RegEnemy {
         super("Troop", position, health, anim)
     }
     public deadSound() {
-        RandomSoundGen.randomSound(troopDeaths);
+        RandomSoundGen.playRandomSound(troopDeaths);
     }
     public attackSound(){
         Pshot.play()
     }
     public activeSound(){
-        RandomSoundGen.randomSound(troopShouts);
+        RandomSoundGen.playRandomSound(troopShouts);
     }
     public die(gib?){
         if (this.randomiseDrop(40))this.drop(new weaponPickup(this, GameInfo.allGuns.DukeMgun));//this.carriedWeapon
@@ -242,13 +245,13 @@ class ShotGun_Troop extends RegEnemy {
         super("ShotGun_Troop", position, health, anim)
     }
     public deadSound() {
-        RandomSoundGen.randomSound(troopDeaths)
+        RandomSoundGen.playRandomSound(troopDeaths)
     }
     public attackSound(){
         SGshot.play()
     }
     public activeSound(){
-        RandomSoundGen.randomSound(troopShouts);
+        RandomSoundGen.playRandomSound(troopShouts);
     }
     public die(gib?){
         if (this.randomiseDrop(40))this.drop(new weaponPickup(this, this.carriedWeapon));
@@ -268,13 +271,13 @@ class ChainGGuy extends RegEnemy {
       //  this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
     }
     public deadSound() {
-        RandomSoundGen.randomSound(troopDeaths)
+        RandomSoundGen.playRandomSound(troopDeaths)
     }
     public attackSound(){
         Avpminigun2.play()
     }
     public activeSound(){
-        RandomSoundGen.randomSound(troopShouts);
+        RandomSoundGen.playRandomSound(troopShouts);
     }
     public die(gib?){
         this.drop(new weaponPickup(this, this.carriedWeapon));
@@ -291,13 +294,13 @@ class Imp extends RegEnemy {
         super("Imp", position, health, anim)
     }
     public deadSound() {
-        RandomSoundGen.randomSound(ImpDeaths)
+        RandomSoundGen.playRandomSound(ImpDeaths)
     }
     public attackSound(){
         Imp_Attack.play()
     }
     public activeSound(){
-        RandomSoundGen.randomSound(ImpShouts);
+        RandomSoundGen.playRandomSound(ImpShouts);
     }
 }
 
@@ -311,13 +314,13 @@ class SectorPatrol extends RegEnemy {
         this.isBoss = isBoss;
     }
     public deadSound() {
-        RandomSoundGen.randomSound(patrolDeaths);
+        RandomSoundGen.playRandomSound(patrolDeaths);
     }
     public attackSound(){
         Pshot.play()
     }
     public activeSound(){
-        RandomSoundGen.randomSound(patrolShouts);
+        RandomSoundGen.playRandomSound(patrolShouts);
     }
     public die(gib?){
         this.drop(new weaponPickup(this, this.carriedWeapon));
@@ -325,7 +328,7 @@ class SectorPatrol extends RegEnemy {
     }
 }
 
-class Extra extends RegEnemy {
+class Extra extends RegEnemy { // FIX _ REMOVE !! 
     public baseHealth = 15;
     constructor(enemy, position, health?, anim?) {
         super(enemy, position, health, anim)
@@ -341,9 +344,9 @@ class Extra extends RegEnemy {
 
     }
     public deadSound() {
-         if (this.enemy.includes("Troop")) { RandomSoundGen.randomSound(troopDeaths) }
-         else if (this.enemy == "ShotGun_Troop") { RandomSoundGen.randomSound(troopDeaths) }
-         else if (this.enemy == "Imp") { RandomSoundGen.randomSound(ImpDeaths) }
+         if (this.enemy.includes("Troop")) { RandomSoundGen.playRandomSound(troopDeaths) }
+         else if (this.enemy == "ShotGun_Troop") { RandomSoundGen.playRandomSound(troopDeaths) }
+         else if (this.enemy == "Imp") { RandomSoundGen.playRandomSound(ImpDeaths) }
     }
     public attackSound(){};
     public activeSound(){};

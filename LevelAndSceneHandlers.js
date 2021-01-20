@@ -1,16 +1,23 @@
 "use strict";
 var levelFuncArray = [
-    //  [level_2_6]
+    //  [level_2_6],
     // [level_1_3],
     [level_1_1, level_1_2, level_1_3, level_1_4],
     [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
     [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
 ];
+var gameMode;
+(function (gameMode) {
+    gameMode[gameMode["campaign"] = 0] = "campaign";
+    gameMode[gameMode["continuous"] = 1] = "continuous";
+})(gameMode || (gameMode = {}));
 class Level {
-    constructor(sceneFuncs, startingWeapons) {
+    constructor(sceneFuncs, musicArray, startingWeapons) {
         this.sceneArray = new Array();
         this.sceneFuncs = new Array();
+        this.musicArray = new Array();
         this.startingWeapons = new Array();
+        this.musicArray = musicArray;
         this.sceneFuncs = sceneFuncs;
         this.startingWeapons = startingWeapons;
     }
@@ -20,7 +27,7 @@ class Level {
             Player.collectWeapon(wep);
         }
         DOMUpdater.gunTobaseOfScreen(Player.weapon.scrnMargin);
-        // Player.collectWeapon(new ChainSaw);
+        startGameMusic(this.musicArray);
     }
     moreScenes() {
         return this.sceneFuncs.length != this.sceneArray.length; // Allow for 'sectionFin' scene?
@@ -123,7 +130,7 @@ class LevelHandler {
     }
     static sceneCheck() {
         if (this.checkAllDead()) {
-            if (GameInfo.gameMode == 1) {
+            if (GameInfo.gameMode == gameMode.continuous) {
                 GameInfo.currentLevel.playNextScene();
             }
             else {
@@ -136,34 +143,53 @@ class LevelHandler {
             }
         }
     }
-    static nextLevel() {
-        if (GameInfo.music == true) {
-            Deuscredits.play();
+    static deathMssg() {
+        let div1 = createMessageDiv("sceneMsg", "YOU DIED");
+        slamMessage(div1, elements.finishMsg, 1000);
+    }
+    static winGame() {
+        this.winMssg();
+        setTimeout(() => {
+            openMenu();
+        }, 4000);
+    }
+    static winMssg() {
+        let str = "A WINNER IS YOU";
+        if (GameInfo.invincible == true) {
+            let div2 = createMessageDiv("sceneMsg", "(you did cheat though...)");
+            slamMessage(div2, elements.finishMsg, 2500);
         }
+        let div1 = createMessageDiv("sceneMsg", str); // ENDGAME needs a place
+        elements.finishMsg.onclick = null;
+        slamMessage(div1, elements.finishMsg, 1000);
+    }
+    static nextLevel() {
         clearScreenMessages();
-        let wepArray = GameInfo.levelArray.length == 0 ? [GameInfo.allGuns.chainsaw] : []; // starting weapon ?
-        if (GameInfo.gameMode == 0) {
+        let levelFunc;
+        let wepArray = [];
+        let musicArray = [];
+        if (GameInfo.levelArray.length == 0) {
+            wepArray = [GameInfo.allGuns.chainsaw]; // starting weapon ?
+            musicArray = BlakeMusic;
+        }
+        else {
+            musicArray = DoomMusic;
+        }
+        if (GameInfo.gameMode == gameMode.campaign) {
             if (GameInfo.levelArray.length < levelFuncArray.length) {
-                GameInfo.addLevel(new Level(levelFuncArray[GameInfo.levelArray.length], wepArray));
+                levelFunc = levelFuncArray[GameInfo.levelArray.length];
             }
             else {
-                let str = "A WINNER IS YOU";
-                if (GameInfo.invincible == true) {
-                    let div2 = createMessageDiv("sceneMsg", "(you did cheat though...)");
-                    slamMessage(div2, elements.finishMsg, 2500);
-                }
-                let div1 = createMessageDiv("sceneMsg", str); // ENDGAME needs a place
-                elements.finishMsg.onclick = null;
-                slamMessage(div1, elements.finishMsg, 1000);
-                setTimeout(() => {
-                    openMenu();
-                }, 4000);
+                this.winGame(); // badly placed?
                 return;
             }
         }
-        else if (GameInfo.gameMode == 1) {
-            GameInfo.addLevel(new Level([SceneGenerator.sceneLoop], [GameInfo.allGuns.chainsaw, GameInfo.allGuns.Pistol]));
+        else if (GameInfo.gameMode == gameMode.continuous) {
+            musicArray = DoomMusic;
+            levelFunc = [SceneGenerator.sceneLoop];
+            wepArray = [GameInfo.allGuns.chainsaw, GameInfo.allGuns.Pistol];
         }
+        GameInfo.addLevel(new Level(levelFunc, musicArray, wepArray));
         GameInfo.currentLevel.prepLevel();
         this.sceneCheck();
     }
@@ -180,7 +206,7 @@ class LevelHandler {
         stopTimer();
         GameInfo.hitTarget = null; // FIX?
         GameInfo.gameBegun = false;
-        Deuscredits.stop();
+        stopGameMusic();
         genericFinishMessage();
         LevelHandler.fadeOutClear(1000);
         setTimeout(() => {
@@ -208,7 +234,6 @@ class LevelHandler {
     static generateEnemiesDelay(time, enemyFunc) {
         setTimeout(() => {
             enemyFunc();
-            debugger;
             this.setZindexes(); // FIX? oddly placed
         }, time);
     }
@@ -219,12 +244,11 @@ class LevelHandler {
         }
     }
     static getAllSprites() {
-        let domElems = [];
+        let allDomElems = [];
         let enemyDomElems = GameInfo.enemyArray.map(x => x.DOMImage);
         let itemDomElems = GameInfo.itemArray.map(x => x.DOMImage);
-        domElems = domElems.concat(itemDomElems);
-        domElems = domElems.concat(enemyDomElems);
-        return domElems;
+        allDomElems = allDomElems.concat(enemyDomElems, itemDomElems);
+        return allDomElems;
     }
     static getScaleStringTimesTen(item) {
         let trans = item.style.transform.replace("scale(", "");

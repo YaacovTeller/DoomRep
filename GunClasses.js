@@ -123,7 +123,7 @@ class weaponry {
         elements.weaponDiv.style.top = weaponry.cY;
     }
     ricochet(sounds) {
-        RandomSoundGen.randomSound(sounds);
+        RandomSoundGen.playRandomSound(sounds);
     }
     pickupShot() {
         if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup) {
@@ -209,7 +209,9 @@ class Shotgun extends regGun {
 class MachineGun extends weaponry {
     strafe() {
         document.addEventListener('mouseleave', e => {
-            this.stopstrafe();
+            if (this.firing) {
+                this.stopstrafe();
+            }
         });
         document.body.setAttribute("onmousemove", gunMoveEvent);
         this.firing = true;
@@ -284,7 +286,9 @@ class ChainSaw extends MachineGun {
         if (this.pickupShot())
             return;
         document.addEventListener('mouseleave', e => {
-            this.stopstrafe();
+            if (this.firing) {
+                this.stopstrafe();
+            }
         });
         this.firing = true;
         this.gunHeight = gunConfig.ChainSaw.firing.gunHeight;

@@ -143,7 +143,7 @@ abstract class weaponry {
         elements.weaponDiv.style.top = weaponry.cY;
     }
     protected ricochet(sounds) {
-        RandomSoundGen.randomSound(sounds);
+        RandomSoundGen.playRandomSound(sounds);
     }
     protected pickupShot(){
         if (GameInfo.targeting == false && GameInfo.hitTarget instanceof Pickup){ return true }
@@ -248,7 +248,9 @@ abstract class MachineGun extends weaponry {
     public firing: boolean
     public strafe() {
         document.addEventListener('mouseleave', e => { //avoid getting stuck on strafe mode
-            this.stopstrafe()
+            if (this.firing){
+                this.stopstrafe()
+            }
         });
         document.body.setAttribute("onmousemove", gunMoveEvent)
         this.firing = true;
@@ -326,7 +328,9 @@ class ChainSaw extends MachineGun {
         if (this.pickupShot()) return;
 
         document.addEventListener('mouseleave', e => { //avoid getting stuck on strafe mode
-            this.stopstrafe()
+            if (this.firing){
+                this.stopstrafe()
+            }
         });
 
         this.firing = true;

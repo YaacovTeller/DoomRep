@@ -6,7 +6,7 @@ class Player {
                 Player.playerHit(damage);
             }
             else
-                RandomSoundGen.randomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
+                RandomSoundGen.playRandomSound([Turicochet, BloodRicochet_1, BloodRicochet_2]);
             //Turicochet.play();
         }, 1000);
     }
@@ -66,12 +66,12 @@ class Player {
             this.weapon.stopstrafe();
         }
         this.weapon = null;
-        Deuscredits.stop();
+        GameInfo.currentLevel = null;
+        stopGameMusic();
+        DOMUpdater.stopMiscSound();
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
-        let div1 = createMessageDiv("sceneMsg", "YOU DIED");
-        slamMessage(div1, elements.finishMsg, 1000);
-        GameInfo.currentLevel = null;
+        LevelHandler.deathMssg();
         DOMUpdater.timedClearAllImages(); // DRY?
         setTimeout(() => {
             openMenu();

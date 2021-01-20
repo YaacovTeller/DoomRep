@@ -102,13 +102,7 @@ class healthPickup extends Pickup{
     constructor(source: Target, ammount: number) {
         super(source);
         this.ammount = ammount;
-        this.image = ammount <= 50 ? pics.pickups.health.small : pics.pickups.health.big;
-        // if (ammount >= 50){
-        //     this.image = pics.pickups.health.big;
-        // }
-        // else {
-        //     this.image = pics.pickups.health.small;
-        // }
+        this.image = ammount < 50 ? pics.pickups.health.small : pics.pickups.health.big;
     }
     public grab() {
         if (Player.health >=120) {
