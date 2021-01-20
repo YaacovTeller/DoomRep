@@ -1,6 +1,6 @@
 class GameInfo {
     public static moverollFrequency: number = 2000;
-    public static gameMode: number;
+    public static gameMode: gameMode;
     public static invincible: boolean = false;
     public static kidMode: boolean = false;
 
@@ -19,7 +19,8 @@ class GameInfo {
     public static deadCount: number;
     public static deadExtraCount: number;
     public static enemiesCleared: boolean = false;
-    public static music: boolean = true;
+    public static music: any;
+    public static mute: boolean = false;
     public static gameBegun: boolean = false;
 
     public static allGuns = {
@@ -39,6 +40,11 @@ class GameInfo {
         this.currentLevel = null;
         this.currentScene = null;
         this.gameBegun = true;
+        this.music = null;
+    }
+
+    public static setMusic(array){
+        this.music = RandomSoundGen.getRandomSound(array);
     }
 
     public static addLevel(level: Level){

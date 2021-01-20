@@ -8,6 +8,10 @@ class GameInfo {
         this.currentLevel = null;
         this.currentScene = null;
         this.gameBegun = true;
+        this.music = null;
+    }
+    static setMusic(array) {
+        this.music = RandomSoundGen.getRandomSound(array);
     }
     static addLevel(level) {
         this.levelArray.push(level);
@@ -25,7 +29,7 @@ GameInfo.levelArray = new Array();
 GameInfo.hitTarget = null;
 GameInfo.targeting = false;
 GameInfo.enemiesCleared = false;
-GameInfo.music = true;
+GameInfo.mute = false;
 GameInfo.gameBegun = false;
 GameInfo.allGuns = {
     chainsaw: new ChainSaw,

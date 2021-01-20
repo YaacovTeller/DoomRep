@@ -5,10 +5,14 @@ class RandomNumberGen {
     }
 }
 class RandomSoundGen {
-    static randomSound(sounds) {
+    static getRandomSound(sounds) {
         let length = sounds.length;
         let randNum = Math.floor(Math.random() * (length) + 1);
-        sounds[randNum - 1].play();
+        return sounds[randNum - 1];
+    }
+    static playRandomSound(sounds) {
+        let sound = this.getRandomSound(sounds);
+        sound.play();
     }
 }
 function hitWarning() {
@@ -58,6 +62,8 @@ function clearAllEnemies() {
     }
 }
 function openMenu() {
+    DOMUpdater.stopMiscSound();
+    stopGameMusic();
     showElement(elements.menuImage);
     showElement(elements.menu);
     stopTimer();
@@ -67,6 +73,7 @@ function closeMenu() {
     hideElement(elements.menu);
     if (GameInfo.gameBegun == true) {
         startTimer();
+        startGameMusic();
     }
 }
 function startingAmmo() {
@@ -80,16 +87,29 @@ function restart(num) {
     clearTimer();
     Player.reset();
     GameInfo.reset();
-    GameInfo.gameMode = num;
+    GameInfo.gameMode = num == 0 ? gameMode.campaign : gameMode.continuous;
     DOMUpdater.setProgressCounter(GameInfo.gameMode);
     DOMUpdater.clearTargets();
     DOMUpdater.updateKillCounter(0);
     DOMUpdater.updateHealthCounter(Player.health);
     LevelHandler.beginGame();
 }
+function startGameMusic(musicArray) {
+    if (!GameInfo.music) {
+        GameInfo.setMusic(musicArray);
+    }
+    if (GameInfo.mute == false) {
+        GameInfo.music.play();
+    }
+}
+function stopGameMusic() {
+    if (GameInfo.music) {
+        GameInfo.music.stop();
+    }
+}
 function creditsMenu() {
     clearScreenMessages();
-    Deuscredits.stop();
+    stopGameMusic();
     hideElement(elements.menu);
     hideElement(elements.menuImage);
     UTcredits.play();
@@ -112,13 +132,12 @@ function kidMode(value) {
 function muteMusic(value) {
     if (value == false) {
         elements.muteLabel.innerText = "Music off";
-        GameInfo.music = false;
-        Deuscredits.stop();
+        GameInfo.mute = true;
+        stopGameMusic();
     }
     else if (value == true) {
         elements.muteLabel.innerText = "Music on";
-        GameInfo.music = true;
-        Deuscredits.play();
+        GameInfo.mute = false;
     }
 }
 //JAKE-FADING has been made obselete!
