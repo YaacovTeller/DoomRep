@@ -1,4 +1,7 @@
 class DOMUpdater {
+    public static stopMiscSound(){
+        SawIdle.stop();
+    }
     public static updateKillCounter(totalCount) {
         this.updateCounter(elements.killCounter, "Kills:" + totalCount);
     }
@@ -11,8 +14,8 @@ class DOMUpdater {
         this.blipAnim(elements.ammoCount);
         click2.play();
     }
-    public static setProgressCounter(num){
-        if (num){
+    public static setProgressCounter(mode){
+        if (mode == gameMode.continuous){
             elements.progressCounter.parentElement.style.display = 'block'
         }
         else{
