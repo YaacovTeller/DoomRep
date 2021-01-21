@@ -91,6 +91,7 @@ function restart(num) {
     hideElement(elements.Bar);
     showElement(elements.riotShield);
     clearTimer();
+    closeMenu();
     Player.reset();
     GameInfo.reset();
     GameInfo.gameMode = num == 0 ? gameMode.campaign : gameMode.continuous;

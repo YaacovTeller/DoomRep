@@ -119,10 +119,11 @@ const enemyPics = {
         TroopLeft_Tomer: "assets/enemies/Troop/TroopLeft_Tomer_Dead.gif",
     },
     dead_alt: {
-        SectorPatrol: "assets/potplant.png",
+        SectorPatrol: "assets/pickups/DeusSoda1.png",
         Troop: "assets/potplant.png",
         ShotGun_Troop: "assets/potplant.png",
-        Imp: "assets/pickups/DeusSoda.png",
+        //Imp: "assets/pickups/DeusSoda.png",
+        Imp: "assets/box.png",
         ChainGuy: "assets/moneyBag.png",
         TroopLeft: "assets/moneyBag.png",
         TroopLeft_Tomer: "assets/moneyBag.png",

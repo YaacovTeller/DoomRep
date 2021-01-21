@@ -1,6 +1,6 @@
 //TheQuickAndTheDead
 // parent class, handles drawing and damaging.
-abstract class Target {
+abstract class Target implements Iundrawable{
     public num: number;
     public enemy: string;
     public health: number;
@@ -96,7 +96,9 @@ abstract class Target {
         
         this.DOMImage.style.pointerEvents = "none";
         if (this.randomiseDrop(85))this.drop(new healthPickup(this, 20));
-        this.deadSound();
+        if(!GameInfo.kidMode){
+            this.deadSound();
+        }
     }
     abstract deadSound()
 

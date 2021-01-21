@@ -92,7 +92,9 @@ class Target {
         this.DOMImage.style.pointerEvents = "none";
         if (this.randomiseDrop(85))
             this.drop(new healthPickup(this, 20));
-        this.deadSound();
+        if (!GameInfo.kidMode) {
+            this.deadSound();
+        }
     }
     setAsTarget() {
         GameInfo.hitTarget = this;

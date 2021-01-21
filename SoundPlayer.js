@@ -11,6 +11,13 @@ function sound(src) {
     //   this.sound.setAttribute("loop", "infinite");  For a sort of macabre doom-rap experience
     //hideElement(this.sound);
     document.body.appendChild(this.sound);
+    this.setVolume = function (vol) {
+        this.sound.volume = vol;
+    };
+    this.playHalfVolume = function () {
+        this.setVolume(0.5);
+        this.sound.play();
+    };
     this.play = function () {
         this.sound.play();
     };

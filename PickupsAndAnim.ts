@@ -27,7 +27,7 @@ class AnimationInfo{
     }
 }
 
-class Pickup {
+class Pickup implements Iundrawable{
     protected source: Target
     protected image: string;
     protected DOMImage: HTMLElement;
@@ -129,7 +129,7 @@ class ammoPickup extends Pickup{
     }
 }
 
-class weaponPickup extends Pickup{
+class weaponPickup extends Pickup {
     public weapon: weaponry
     protected image;
     protected collectNoise = ammoClick;
@@ -144,3 +144,6 @@ class weaponPickup extends Pickup{
     }
 }
 
+interface Iundrawable{
+    undraw() 
+}

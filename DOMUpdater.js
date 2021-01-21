@@ -48,28 +48,28 @@ class DOMUpdater {
     }
     static timedClearAllImages() {
         this.clearTargets();
+        this.clearItems();
         setTimeout(() => {
             this.clearPickups();
-            this.clearItems();
         }, 1000);
     }
     static clearTargets() {
-        for (let enemy of GameInfo.enemyArray) {
-            enemy.undraw();
-            clearInterval(enemy.attackRoller);
-        }
-        GameInfo.enemyArray = [];
+        this.clearGeneric(GameInfo.enemyArray);
     }
     static clearPickups() {
-        for (let item of GameInfo.pickupArray) {
-            item.undraw();
-        }
-        GameInfo.pickupArray = [];
+        this.clearGeneric(GameInfo.pickupArray);
     }
     static clearItems() {
-        for (let item of GameInfo.itemArray) {
+        this.clearGeneric(GameInfo.itemArray);
+    }
+    static clearGeneric(array) {
+        for (let item of array) {
             item.undraw();
+            if (item instanceof RegEnemy) {
+                clearInterval(item.attackRoller);
+            }
         }
-        GameInfo.itemArray = [];
+        array.length = 0;
+        //array = []; // does not affect the orig array!
     }
 }
