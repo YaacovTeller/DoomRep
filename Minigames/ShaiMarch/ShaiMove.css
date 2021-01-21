@@ -10,6 +10,9 @@
 .buttonStyle{
     position: absolute;
     padding: 10px;
+    font-size: 24px;
+    margin: 15px;
+    border-radius: 5px;
 }     
 
 .walker {

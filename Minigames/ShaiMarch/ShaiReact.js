@@ -15,11 +15,12 @@
 //     }
 // }
 var clang = new sound("ShaiPics/clang.WAV");
-var pop = new sound("ShaiPics/Pop.WAV");
+var pling = new sound("ShaiPics/Pling.WAV");
 var squeek = new sound("ShaiPics/squeek.WAV");
 var squeek2 = new sound("ShaiPics/squeek2.mp3");
 var woof = new sound("ShaiPics/woof.mp3");
 var beep = new sound("ShaiPics/beep.mp3");
+var laugh = new sound("../../sound/SFX_EVIL_LAUGH_1.wav");
 //HAND
 /*
 function handMove(e) {
@@ -71,5 +72,6 @@ function reverse() {
         slai.setAttribute("src", "ShaiPics/ShaiSmall.gif" + "?a=" + Math.random());
         slai.style.pointerEvents = "initial";
     }
+    laugh.play();
     window.alert("You would halt the marching Shais?? Try and stop the moonwalking Shais!!");
 }
