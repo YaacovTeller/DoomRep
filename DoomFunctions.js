@@ -95,7 +95,8 @@ function restart(num) {
     LevelHandler.beginGame();
 }
 function startGameMusic(musicArray) {
-    if (!GameInfo.music) {
+    // if (!GameInfo.music){
+    if (musicArray) {
         GameInfo.setMusic(musicArray);
     }
     if (GameInfo.mute == false) {

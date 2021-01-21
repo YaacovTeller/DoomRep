@@ -61,7 +61,7 @@ var Demons = new sound("sound/Music/DOOM/112_The_Demons_From_Adrian's_Pen.ogg");
 var Untitled = new sound("sound/Music/DOOM/118_Untitled.ogg");
 var Donna = new sound("sound/Music/DOOM/119_Donna_to_the_Rescue.ogg");
 var Spider = new sound("sound/Music/DOOM/121_Facing_the_Spider.ogg");
-var DoomMusic = [DoomsGate, Secrets, Demons, Untitled, Donna, Spider];
+var DoomMusic = [DoomsGate, Secrets, Untitled, Donna, Spider];
 // AvP has diff .wav format??
 var AvpGun = new sound("sound/AvP/pistol_fire_01.wav");
 var Avpminigun = new sound("sound/minigun_shoot_loop_01.mp3");

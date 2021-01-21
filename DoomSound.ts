@@ -68,12 +68,12 @@ var BlakeMusic = [AliensOfGold,DarkHall,Jungle,RacShuffle];
 var Intermission = new sound("sound/Music/DOOM/113_Intermission_From_DOOM.ogg")
 var DoomsGate = new sound("sound/Music/DOOM/102_At_Doom's_Gate.ogg")
 var Secrets = new sound("sound/Music/DOOM/110_Hiding_the_Secrets.ogg")
-var Demons = new sound("sound/Music/DOOM/112_The_Demons_From_Adrian's_Pen.ogg")
+var Demons = new sound("sound/Music/DOOM/112_The_Demons_From_Adrian's_Pen.ogg") // slow start
 var Untitled = new sound("sound/Music/DOOM/118_Untitled.ogg")
 var Donna = new sound("sound/Music/DOOM/119_Donna_to_the_Rescue.ogg")
 var Spider = new sound("sound/Music/DOOM/121_Facing_the_Spider.ogg")
 
-var DoomMusic = [DoomsGate,Secrets,Demons,Untitled,Donna,Spider];
+var DoomMusic = [DoomsGate,Secrets,Untitled,Donna,Spider];
 
 // AvP has diff .wav format??
 var AvpGun = new sound("sound/AvP/pistol_fire_01.wav")

@@ -26,6 +26,7 @@ class Level {
             Player.collectWeapon(wep);
         }
         DOMUpdater.gunTobaseOfScreen(Player.weapon.scrnMargin);
+        
         startGameMusic(this.musicArray);
     }
     public moreScenes(){
@@ -221,10 +222,12 @@ class LevelHandler {
         GameInfo.hitTarget = null // FIX?
         GameInfo.gameBegun = false;
         stopGameMusic();
+        Intermission.play();
         genericFinishMessage();
         LevelHandler.fadeOutClear(1000);
         setTimeout(() => {
             elements.finishMsg.onclick = ()=>{
+                Intermission.stop();
                 LevelHandler.nextLevel(); // NEXT LEVEL, FIX?
                 elements.finishMsg.onclick = null;
             } 
