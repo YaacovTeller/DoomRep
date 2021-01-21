@@ -138,9 +138,9 @@ function drawNewEnemies_3_1(){
          new ShotGun_Troop  (new Position(47,27,0.4)),
          new ShotGun_Troop  (new Position(60,50)),
          new ShotGun_Troop  (new Position(65,45)),
-         new Troop         (new Position(70,30,0.5)),
+         new Troop          (new Position(70,30,0.5)),
          new Troop          (new Position(70,45)),
-         new Extra("ShotGun_Troop", new Position(15,18,0.1))
+         new Extra("ShotGun_Troop", new Position(80,30,0.3))
      )
      LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
  }

@@ -49,7 +49,7 @@ function showElement(elem: HTMLElement){
     elem.style.display = "block";
 }
 
-function killAllEnemies(gib?){
+function killAllEnemies(gib?:boolean){
     for (let enemy of GameInfo.enemyArray){
         if (!enemy || enemy.deadFlag == true) continue
         enemy.die(gib);

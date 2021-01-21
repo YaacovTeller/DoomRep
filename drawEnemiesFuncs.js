@@ -69,7 +69,7 @@ function drawNewEnemies_2_6() {
     resetBossBar();
 }
 function drawNewEnemies_3_1() {
-    GameInfo.enemyArray.push(new ChainGGuy(new Position(5, 45)), new ShotGun_Troop(new Position(47, 27, 0.4)), new ShotGun_Troop(new Position(60, 50)), new ShotGun_Troop(new Position(65, 45)), new Troop(new Position(70, 30, 0.5)), new Troop(new Position(70, 45)), new Extra("ShotGun_Troop", new Position(15, 18, 0.1)));
+    GameInfo.enemyArray.push(new ChainGGuy(new Position(5, 45)), new ShotGun_Troop(new Position(47, 27, 0.4)), new ShotGun_Troop(new Position(60, 50)), new ShotGun_Troop(new Position(65, 45)), new Troop(new Position(70, 30, 0.5)), new Troop(new Position(70, 45)), new Extra("ShotGun_Troop", new Position(80, 30, 0.3)));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_3_2() {

@@ -300,6 +300,9 @@ html, body {
     align-items: center;
     width: 105px;
 }
+.switchDiv label{
+    margin-bottom: 4px;
+}
 
 /*Slider checkbox css*/
 .switch {
