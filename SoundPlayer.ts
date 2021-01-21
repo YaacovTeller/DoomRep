@@ -1,6 +1,8 @@
 //SOUNDS - Guns and creatures
 // sound-loader
 function sound(src: string) {
+    let arr = src.split('/');
+    this.title = arr[arr.length-2] + "/" + arr[arr.length-1]
     this.sound = document.createElement("audio");
     this.sound.src = src;
     this.sound.setAttribute("preload", "auto");
