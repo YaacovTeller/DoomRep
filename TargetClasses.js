@@ -340,7 +340,8 @@ class Extra extends RegEnemy {
 class Item extends Target {
     constructor(item, position, health, anim) {
         super(item, position, health, anim);
-        this.blastRadius = 500;
+        this.gibRadius = 450;
+        this.blastRadius = 700;
     }
     die() {
         // killAllEnemies(true);
@@ -354,7 +355,12 @@ class Item extends Target {
                 continue;
             let enemyLeft = enemy.DOMImage.getBoundingClientRect().left;
             if (this.checkDistance(barrelLeft, enemyLeft) < this.blastRadius) {
-                enemy.die(gib);
+                if (this.checkDistance(barrelLeft, enemyLeft) < this.gibRadius) {
+                    enemy.die(gib);
+                }
+                else {
+                    enemy.die();
+                }
             }
         }
     }
