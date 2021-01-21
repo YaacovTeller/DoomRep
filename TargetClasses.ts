@@ -355,7 +355,7 @@ class Extra extends RegEnemy { // FIX _ REMOVE !!
 }
 
 class Item extends Target {
-    private gibRadius:number = 450;
+    private gibRadius:number = 500;
     private blastRadius:number = 700;
     constructor(item, position: Position, health?, anim?) {
         super(item, position, health, anim)

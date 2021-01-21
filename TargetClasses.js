@@ -340,7 +340,7 @@ class Extra extends RegEnemy {
 class Item extends Target {
     constructor(item, position, health, anim) {
         super(item, position, health, anim);
-        this.gibRadius = 450;
+        this.gibRadius = 500;
         this.blastRadius = 700;
     }
     die() {
