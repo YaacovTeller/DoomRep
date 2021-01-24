@@ -39,7 +39,7 @@ class MovementGenerator {
         return speed;
     }
 
-    public moveForward(dimentions, speed, image) {
+    public moveForward(dimentions, speed, image) { // so far unused
 
         $(image).animate({ width: dimentions.width + 'px' }, { queue: false, duration: speed });
         $(image).animate({ height: dimentions.height + 'px' }, { queue: false, duration: speed });

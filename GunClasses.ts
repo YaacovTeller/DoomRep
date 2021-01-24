@@ -6,54 +6,40 @@ const gunConfig = {
         pickup_ammo_small: 6,
         startingAmmo : 12,
         damage : 20,
-        scrnMargin: 280,
-        gunHeight: 390,
+        gunHeight: 284,
     },
     Shotgun: {
         pickup_ammo_small: 4,
         pickup_ammo_big: 8,
         startingAmmo : 8,
-        damage : 30,
-        scrnMargin : 230,
-        gunHeight : 350,
+        damage : 40,
+        gunHeight: 210,
     },
     DukeMgun: {
         pickup_ammo_small: 18,
         pickup_ammo_big: 40,
         startingAmmo : 40,
         damage : 10,
-        scrnMargin : 280,
-        gunHeight : 390,
+        gunHeight: 343,
     },
     Minigun: {
         pickup_ammo_small: 25,
         pickup_ammo_big: 50,
         startingAmmo : 50,
         damage : 20,
-        scrnMargin : 370,
-        gunHeight : 480,
+        gunHeight: 487,
     },
-    DualNuetron: {
+    DualNeutron: {
         pickup_ammo_small: 15,
         pickup_ammo_big: 30,
         startingAmmo : 36,
         damage : 15,
-        scrnMargin : 250,
-        gunHeight : 360,
-        firing : {
-            scrnMargin : 300,
-            gunHeight : 390,
-        }
+        gunHeight: 406,
     },
     ChainSaw: {
         damage : 10,
         reach: 240,
-        scrnMargin: 280,
-        gunHeight: 390,
-        firing : {
-            scrnMargin : 210,
-            gunHeight : 220,
-        }
+        gunHeight: 312,
     }
 }
 class pickupStats {
@@ -72,15 +58,18 @@ class pickupStats {
         }
     }
 }
+class MousePosition {
+    public static x:number
+    public static y:number
+}
 
 //WEAPON
 abstract class weaponry {
     public scrnMargin: number;
     public gunHeight: number;
     public static gunDefaultY
-    public static cX
-    public static cY;
     public static switching: boolean = false;
+    public reloading: boolean = false;
     public ammo: number;
     public firing: boolean;
     protected gunImage: string;
@@ -93,21 +82,24 @@ abstract class weaponry {
         if (weaponry.switching == false){ //avoid bobs for multiple weapon pickup
             weaponry.switching = true;
             setTimeout(() => { weaponry.switching = false }, 150);
-            $(elements.weaponDiv).animate({top:'150%'}, 150); 
-            $(elements.weaponDiv).animate({top:'90%'}, 150); 
+            this.weaponBob();
         }
-        elements.weaponImg.setAttribute("src", this.gunImage);
         Player.weapon = this;
+        setTimeout(() => {
+            elements.weaponImg.setAttribute("src", this.gunImage);
+        }, 150); 
         DOMUpdater.updateAmmoCounter(this.ammo);
         if (!(this instanceof ChainSaw)){
             SawIdle.stop();
         }
     };
-    
-    // public static gunTobaseOfScreen(){
-    //     this.
-    //     elements.weaponDiv.style.top = `${window.outerHeight - this.scrnMargin}px`; 
-    // }
+    public weaponBob(){
+        $(elements.weaponDiv).animate({top:'150%'}, 150); 
+
+        let gunTop = this.calculateGunTop(MousePosition.y, true)
+
+        $(elements.weaponDiv).animate({top: gunTop }, 150); 
+    }
 
     public static showBlood(e) {
         this.displayScreenElement(e, elements.blood, 10, 10, 100);
@@ -126,22 +118,42 @@ abstract class weaponry {
         setTimeout(() => hideElement(elem), duration);
     }
     // Moves weapon to the mouse location, and keeps it at the base of the screen
-    public gunLower(e) {
-        
-        var Screen: number = window.outerHeight;//screen.height;
-        var x = e.pageX;
-        var y = e.pageY;
-        weaponry.cX = `${x - 44}px`;
+    public gunLower(e) { 
+       // if (this.reloading){ return }
+        let mouseX = MousePosition.x = e.pageX;
+        let mouseY = MousePosition.y = e.pageY;
+        this.calculateAndSetGunPosition(mouseX, mouseY);
+    }
+    public calculateAndSetGunPosition(x, y){
+        let xOffset = 7;
+        let gunLeft = x - elements.weaponImg.width / 2 - xOffset + "px";
+        let gunTop = this.calculateGunTop(y);
+        // this.setGunPosOnePlane("left", gunLeft);
+        // this.setGunPosOnePlane("top", gunTop);
+        this.setGunPosition(gunLeft, gunTop);
+    }
+    protected calculateGunTop(y, bob?) {
+        let screenHeight: number = window.innerHeight; //screen.height;
         // Lowers the weapon when the mouse passes the gun height!
-        if (y > (Screen - this.gunHeight)) {    
-            weaponry.cY = `${y + 110}px`
+        let gunTop;
+        let gunHeight = bob ? gunConfig[this.constructor.name].gunHeight : elements.weaponImg.height;
+        let baseGunPosition = screenHeight - gunHeight
+        if (y < baseGunPosition || this.reloading) {    
+            gunTop = baseGunPosition + "px";
         }
         else {                                  
-            weaponry.cY = `${Screen - this.scrnMargin}px`;
+            gunTop = y + 10 + "px"
         }
-        elements.weaponDiv.style.left = weaponry.cX;
-        elements.weaponDiv.style.top = weaponry.cY;
+        return gunTop;
     }
+    protected setGunPosition(x, y){
+        this.setGunPosOnePlane("left", x);
+        this.setGunPosOnePlane("top", y);
+    }
+    protected setGunPosOnePlane(prop, num){
+        elements.weaponDiv.style[prop] = num;
+    }
+
     protected ricochet(sounds) {
         RandomSoundGen.playRandomSound(sounds);
     }
@@ -156,21 +168,26 @@ abstract class regGun extends weaponry {
         let regGunSounds = new Array(Bullet1, Bullet2, Bullet3);
         super.ricochet(regGunSounds);
     }
+    protected reload(){}
 
     public shot(e) {
         if (this.pickupShot()) return;
-        if (this.ammo <= 0) { click2.play(); return false; }
+        if (this.ammo <= 0) {
+             click2.play(); 
+             return; 
+            }
         else {
             this.ammo--;
             DOMUpdater.updateAmmoCounter(this.ammo)
             this.firingSound.play();
+            this.reload();           // only shotgun?
             if (GameInfo.targeting == false) {
                 this.ricochet();
                 return false;
             }
             else {
                 GameInfo.hitTarget.loseHealth(this.damage);
-                if (!(GameInfo.hitTarget instanceof Item)){
+                if (!(GameInfo.hitTarget instanceof Item)){ // for barrels
                     return true;
                 }
             }
@@ -181,8 +198,6 @@ abstract class regGun extends weaponry {
 class Pistol extends regGun {
     protected firingSound = Pshot;
     protected gunImage = pics.guns.pistol;
-    public gunHeight = gunConfig.Pistol.gunHeight;
-    public scrnMargin = gunConfig.Pistol.scrnMargin;
     public damage = gunConfig.Pistol.damage;
     public ammo = gunConfig.Pistol.startingAmmo;
     public pickupStats: pickupStats = 
@@ -211,8 +226,6 @@ class Pistol extends regGun {
 class Shotgun extends regGun {
     protected firingSound = SGshot;
     protected gunImage = pics.guns.shotgun;
-    public gunHeight = gunConfig.Shotgun.gunHeight;
-    public scrnMargin = gunConfig.Shotgun.scrnMargin;
     public damage = gunConfig.Shotgun.damage;
     public ammo = gunConfig.Shotgun.startingAmmo;
     public pickupStats: pickupStats = 
@@ -225,9 +238,21 @@ class Shotgun extends regGun {
         );
 
     public shot(e) {
-        super.shot(e);
-        weaponry.showShot(e)
+        if (this.reloading) return;
+        if (super.shot(e) === false){
+            weaponry.showShot(e);
+        }
         return true
+    }
+    protected reload(){
+        this.reloading = true;
+        elements.weaponImg.src = pics.guns.reloading.shotgun;
+        this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
+        setTimeout(() => {
+            elements.weaponImg.src = pics.guns.shotgun;
+            this.reloading = false;
+            this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
+        }, 1000);
     }
 
     public switchTo() {
@@ -308,8 +333,6 @@ class ChainSaw extends MachineGun {
     protected firingSound = Saw;
     protected gunImage = pics.guns.chainsaw
     protected gunImage_firing = pics.guns.chainsaw_firing
-    public gunHeight = gunConfig.ChainSaw.gunHeight;
-    public scrnMargin = gunConfig.ChainSaw.scrnMargin;
     public damage = gunConfig.ChainSaw.damage;
     public pickupStats: pickupStats =   new pickupStats( pics.pickups.ChainSaw, "","","","");
 
@@ -334,8 +357,8 @@ class ChainSaw extends MachineGun {
         });
 
         this.firing = true;
-        this.gunHeight = gunConfig.ChainSaw.firing.gunHeight
-        this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin
+     //   this.gunHeight = gunConfig.ChainSaw.firing.gunHeight
+     //   this.scrnMargin = gunConfig.ChainSaw.firing.scrnMargin
         if (this.chainsawHitCheck()) {
             GameInfo.hitTarget.loseHealth(this.damage)
         }
@@ -346,8 +369,7 @@ class ChainSaw extends MachineGun {
         }, 200));
         this.switchSounds();
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
-        elements.weaponDiv.style.left = weaponry.cX;
-        elements.weaponDiv.style.top = weaponry.cY;
+        this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
     }
     public switchSounds(){
         if (this.firing){
@@ -361,8 +383,6 @@ class ChainSaw extends MachineGun {
     }
 
     public stopstrafe() {
-        this.gunHeight = gunConfig.ChainSaw.gunHeight
-        this.scrnMargin = gunConfig.ChainSaw.scrnMargin
         clearInterval(MachineGun.hittingInterval);
         elements.weaponImg.setAttribute("src", this.gunImage);
         this.firing = false;
@@ -390,8 +410,6 @@ class Minigun extends MachineGun {
     private mgspinning;
     protected gunImage = pics.guns.minigun;
     protected gunImage_firing = pics.guns.minigun_firing;
-    public gunHeight = gunConfig.Minigun.gunHeight;
-    public scrnMargin = gunConfig.Minigun.scrnMargin;
     public damage = gunConfig.Minigun.damage;
     public ammo = gunConfig.Minigun.startingAmmo;
     protected firingSound = Avpminigun;
@@ -438,8 +456,6 @@ class Minigun extends MachineGun {
             elements.weaponImg.setAttribute("src", this.gunImage);
         }
         else elements.weaponImg.setAttribute("src", pics.guns.minigun_frame2);
-        // SSamMinigun.stop();
-        // SSamMinigun2.stop();
         this.firingSound.stop();
         SSamRotate.stop();
         document.body.setAttribute("onmousemove", gunMoveEvent)
@@ -454,8 +470,6 @@ class Minigun extends MachineGun {
 class DukeMgun extends MachineGun {
     protected gunImage = pics.guns.dukeMgun;
     protected gunImage_firing = pics.guns.dukeMgun_firing;
-    public gunHeight = gunConfig.DukeMgun.gunHeight;
-    public scrnMargin = gunConfig.DukeMgun.scrnMargin;
     public damage = gunConfig.DukeMgun.damage;
     public ammo = gunConfig.DukeMgun.startingAmmo;
     protected firingSound = MGun;
@@ -477,9 +491,6 @@ class DukeMgun extends MachineGun {
             super.strafe();
         }
     }
-    public stopstrafe() {
-        super.stopstrafe();
-    }
     public switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
@@ -488,26 +499,22 @@ class DukeMgun extends MachineGun {
 }
 
 class DualNeutron extends MachineGun {
-    protected gunImage = pics.guns.dualNuetron;
-    protected gunImage_firing = pics.guns.dualNuetron_firing;
-    public gunHeight = gunConfig.DualNuetron.gunHeight;
-    public scrnMargin = gunConfig.DualNuetron.scrnMargin;
-    public damage = gunConfig.DualNuetron.damage;
-    public ammo = gunConfig.DualNuetron.startingAmmo;
+    protected gunImage = pics.guns.dualNeutron;
+    protected gunImage_firing = pics.guns.dualNeutron_firing;
+    public damage = gunConfig.DualNeutron.damage;
+    public ammo = gunConfig.DualNeutron.startingAmmo;
     protected firingSound = SSamMinigun;
     public pickupStats: pickupStats = 
     new pickupStats(
         pics.pickups.DukeMgun, 
-        gunConfig.DualNuetron.pickup_ammo_big,
-        gunConfig.DualNuetron.pickup_ammo_small,
+        gunConfig.DualNeutron.pickup_ammo_big,
+        gunConfig.DualNeutron.pickup_ammo_small,
         pics.pickups.bullets.big,
         pics.pickups.bullets.small
         );
 
     public strafe() {
         if (this.pickupShot()) return;
-        this.gunHeight = gunConfig.DualNuetron.firing.gunHeight
-        this.scrnMargin = gunConfig.DualNuetron.firing.scrnMargin
         if (this.ammo <= 0) { click2.play(); }
         else {
             this.ammo--;
@@ -516,11 +523,6 @@ class DualNeutron extends MachineGun {
         }
     }
 
-    public stopstrafe() {
-        this.gunHeight = gunConfig.DualNuetron.gunHeight
-        this.scrnMargin = gunConfig.DualNuetron.scrnMargin
-        super.stopstrafe();
-    }
     public switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);

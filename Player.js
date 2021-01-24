@@ -13,6 +13,7 @@ class Player {
     static reset() {
         Player.dead = false;
         Player.health = 100;
+        this.checkAndCutStrafing();
         Player.weaponCollection = {};
     }
     static collectAmmo(ammount, weaponName) {
@@ -38,6 +39,11 @@ class Player {
         weapon.switchTo();
         Player.weapon = weapon;
     }
+    static checkAndCutStrafing() {
+        if (this.weapon instanceof MachineGun || this.weapon instanceof ChainSaw) {
+            this.weapon.stopstrafe();
+        }
+    }
     static playerHit(damage) {
         if (GameInfo.invincible == true)
             return;
@@ -62,9 +68,7 @@ class Player {
         stopTimer();
         $(elements.weaponDiv).animate({ top: '130%' }, 3000);
         document.body.setAttribute("onmousemove", null);
-        if (this.weapon instanceof MachineGun || this.weapon instanceof ChainSaw) {
-            this.weapon.stopstrafe();
-        }
+        this.checkAndCutStrafing();
         this.weapon = null;
         GameInfo.currentLevel = null;
         stopGameMusic();

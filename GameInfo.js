@@ -8,6 +8,9 @@ class GameInfo {
         this.currentLevel = null;
         this.currentScene = null;
         this.gameBegun = true;
+        if (this.music) {
+            this.music.stop();
+        }
         this.music = null;
     }
     static setMusic(array) {

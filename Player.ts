@@ -18,6 +18,7 @@ class Player {
     public static reset() {
         Player.dead = false;
         Player.health = 100;
+        this.checkAndCutStrafing();
         Player.weaponCollection = {};
     }
 
@@ -47,6 +48,11 @@ class Player {
         weapon.switchTo();
         Player.weapon = weapon;
     }
+    private static checkAndCutStrafing(){
+        if (this.weapon instanceof MachineGun || this.weapon instanceof ChainSaw){
+            this.weapon.stopstrafe();
+        }
+    }
 
     public static playerHit(damage) {
         if (GameInfo.invincible == true) return
@@ -68,9 +74,7 @@ class Player {
         stopTimer();
         $(elements.weaponDiv).animate({ top: '130%' }, 3000);
         document.body.setAttribute("onmousemove", null);
-        if (this.weapon instanceof MachineGun || this.weapon instanceof ChainSaw){
-            this.weapon.stopstrafe();
-        }
+        this.checkAndCutStrafing();
         this.weapon = null;
         GameInfo.currentLevel = null;
         

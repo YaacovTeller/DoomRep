@@ -1,24 +1,43 @@
 "use strict";
 //KEY SHORTCUTS
 // Changing weapons
+var weaponOrder;
+(function (weaponOrder) {
+    weaponOrder[weaponOrder["null"] = 0] = "null";
+    weaponOrder[weaponOrder["ChainSaw"] = 1] = "ChainSaw";
+    weaponOrder[weaponOrder["Pistol"] = 2] = "Pistol";
+    weaponOrder[weaponOrder["Shotgun"] = 3] = "Shotgun";
+    weaponOrder[weaponOrder["DukeMgun"] = 4] = "DukeMgun";
+    weaponOrder[weaponOrder["Minigun"] = 5] = "Minigun";
+    weaponOrder[weaponOrder["DualNeutron"] = 6] = "DualNeutron";
+})(weaponOrder || (weaponOrder = {}));
+document.addEventListener("wheel", (event) => {
+    wheelWeapons(event.deltaY);
+});
+function wheelWeapons(deltaY) {
+    let currentWeapon = Player.weapon.constructor.name;
+    let currentNum = weaponOrder[currentWeapon];
+    if (deltaY < 0) {
+        for (let i = currentNum + 1; i <= 9; i++) {
+            checkForWeaponSwitch(i);
+            break;
+        }
+    }
+    else {
+        for (let i = currentNum - 1; i >= 0; i--) {
+            checkForWeaponSwitch(i);
+            break;
+        }
+    }
+}
+function checkForWeaponSwitch(num) {
+    if (Player.weaponCollection[weaponOrder[num]]) {
+        weaponKey(weaponOrder[num]);
+    }
+}
 document.addEventListener('keydown', function (ev) {
-    if (ev.key === "2") {
-        weaponKey('Pistol');
-    }
-    else if (ev.key === "1") {
-        weaponKey('ChainSaw');
-    }
-    else if (ev.key === "3") {
-        weaponKey('Shotgun');
-    }
-    else if (ev.key === "4") {
-        weaponKey('DukeMgun');
-    }
-    else if (ev.key === "6") {
-        weaponKey('Minigun');
-    }
-    else if (ev.key === "7") {
-        weaponKey('DualNeutron');
+    if (weaponOrder[ev.key]) {
+        weaponKey(weaponOrder[ev.key]);
     }
     else if (ev.key === " ") {
         if (!Player.riotShieldDeployed) {

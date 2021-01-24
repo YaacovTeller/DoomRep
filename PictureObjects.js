@@ -1,18 +1,22 @@
 "use strict";
 const pics = {
     guns: {
-        chainsaw: "assets/guns/ChainSaw.gif",
-        chainsaw_firing: "assets/guns/Saw.png",
-        pistol: "assets/guns/pistol_right.png",
-        shotgun: "assets/guns/Ggun2.png",
+        chainsaw: "assets/guns/Saw-2.gif",
+        chainsaw_firing: "assets/guns/Saw-2.png",
+        pistol: "assets/guns/pistol_right-2.png",
+        //     pistol: "assets/shotgunReload_big.gif",
+        shotgun: "assets/guns/Shotgun.png",
         dukeMgun: "assets/guns/DukeMgun.png",
-        dukeMgun_firing: "assets/guns/DukeMgunFire.gif",
-        minigun: "assets/guns/ChainGun150.png",
-        minigun_firing: "assets/guns/ChainGunFiring150_8.gif",
-        minigun_spinup: "assets/guns/ChainGunSpin_Up_150_8.gif",
-        minigun_frame2: "assets/guns/ChainGun150_Alt.png",
-        dualNuetron: "assets/guns/DN.png",
-        dualNuetron_firing: "assets/guns/DN110.gif",
+        dukeMgun_firing: "assets/guns/DukeMgunFire-2.gif",
+        minigun: "assets/guns/ChainGun.png",
+        minigun_firing: "assets/guns/ChainGunFiring.gif",
+        minigun_spinup: "assets/guns/ChainGunSpin_Up.gif",
+        minigun_frame2: "assets/guns/ChainGun_Alt.png",
+        dualNeutron: "assets/guns/DualNeutron.png",
+        dualNeutron_firing: "assets/guns/DualNeutronFiring.gif",
+        reloading: {
+            shotgun: "assets/shotgunReload_big.gif",
+        }
     },
     ammoIcons: {
         bullet: "assets/icons/Slug.png",

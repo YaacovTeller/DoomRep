@@ -75,13 +75,11 @@ html, body {
     width: fit-content;
     position: absolute;
     z-index: 21;
+    pointer-events: none;
 }
 .weaponImg{
     user-select: none;
-    /* position: absolute; */
-    pointer-events: none;
-    transform: scale(3.5);
-    
+    pointer-events: none;    
 }
 .pickup{
     position: absolute;

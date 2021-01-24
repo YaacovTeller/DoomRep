@@ -39,9 +39,6 @@ class DOMUpdater {
             elem.style.color = "black";
         }
     }
-    public static gunTobaseOfScreen(gunMargin){
-        elements.weaponDiv.style.top = `${window.outerHeight - gunMargin}px`; 
-    }
 
     public static blipAnim(elem) {
         let fontSize = 60 //parseInt($(elem).css('fontSize'));

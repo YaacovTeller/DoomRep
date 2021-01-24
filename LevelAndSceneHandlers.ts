@@ -25,8 +25,7 @@ class Level {
         for (let wep of this.startingWeapons){
             Player.collectWeapon(wep);
         }
-        DOMUpdater.gunTobaseOfScreen(Player.weapon.scrnMargin);
-        
+        Player.weapon.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
         startGameMusic(this.musicArray);
     }
     public moreScenes(){

@@ -1,25 +1,47 @@
 //KEY SHORTCUTS
 // Changing weapons
+enum weaponOrder {
+    null,
+    ChainSaw,
+    Pistol,
+    Shotgun,
+    DukeMgun,
+    Minigun,
+    DualNeutron,
+}
+document.addEventListener("wheel", (event) => 
+{
+    wheelWeapons(event.deltaY);
+});
+
+function wheelWeapons(deltaY) {
+    let currentWeapon: string = Player.weapon.constructor.name;
+    let currentNum: number = weaponOrder[currentWeapon];
+    if (deltaY<0){
+        for (let i = currentNum + 1; i <= 9; i++){
+            checkForWeaponSwitch(i);
+            break
+        }
+    }
+    else {
+        for (let i = currentNum - 1; i >= 0; i--){
+            checkForWeaponSwitch(i);
+            break
+        }
+    }
+}
+function checkForWeaponSwitch(num:number) {
+    if(Player.weaponCollection[weaponOrder[num]]){
+        weaponKey(weaponOrder[num]);
+    }
+}
+
 document.addEventListener('keydown', function (ev) {
 
-    if (ev.key === "2") {
-        weaponKey('Pistol');
+    if(weaponOrder[ev.key]){
+        weaponKey(weaponOrder[ev.key]);
     }
-    else if (ev.key === "1") {
-        weaponKey('ChainSaw')
-    }
-    else if (ev.key === "3") {
-        weaponKey('Shotgun')
-    }
-    else if (ev.key === "4") {
-        weaponKey('DukeMgun')
-    }
-    else if (ev.key === "6") {
-        weaponKey('Minigun')
-    }
-    else if (ev.key === "7") {
-        weaponKey('DualNeutron')
-    }
+
     else if (ev.key === " ") {
         if (!Player.riotShieldDeployed){
             raiseShield()
