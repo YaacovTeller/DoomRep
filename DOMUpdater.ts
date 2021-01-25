@@ -7,10 +7,11 @@ class DOMUpdater {
     }
     public static updateAmmoCounter(ammo) {
         this.updateCounter(elements.ammoCount, ammo);
+        let lowAmmoLimit = Player.weapon.pickupStats.ammoAmmounts['big'];
+        this.colorChange(elements.ammoCount, 'red', ammo, lowAmmoLimit);
     }
     public static updateAmmoWithClick(ammo) {
-        this.updateCounter(elements.ammoCount, ammo);
-        this.colorChange(elements.ammoCount, 'red', ammo, 10);
+        this.updateAmmoCounter(ammo);
         this.blipAnim(elements.ammoCount);
         click2.play();
     }

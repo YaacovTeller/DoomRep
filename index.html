@@ -13,7 +13,7 @@
     <title>MicroDoom_redesigned</title>
 </head>
 
-<body style="cursor: url('assets/Crosshairs/crosshair.cur'), crosshair;">
+<body class="crosshairCursor">
     <div style="height: 100%;">
         <div class="container" style="width: 50%; margin-left:20%; margin-top:25px; position:fixed; ">
             <div id="progressSlot" class="progress" style="height:40px; background-color: transparent">
@@ -45,9 +45,9 @@
         <div class="hudBox healthBox">
             <div class="inline">Health: </div><span class="inline" id="health"></span>
         </div>
-        <img id="shot" src="assets/Crosshairs/shot.png"  style="display:none; position:absolute" draggable="false">
-        <img id="blood" src="assets/Blood_10.gif"        style="display:none; position:absolute" draggable="false">
-        <img id="riotShield" src="assets/RiotShield.png" style="display:none; position:absolute" draggable="false">
+        <img id="shot" src="assets/Crosshairs/shot.png"  class="hiddenAbsolute" draggable="false">
+        <img id="blood" src="assets/Blood_10.gif"        class="hiddenAbsolute" draggable="false">
+        <img id="riotShield" src="assets/RiotShield.png" class="hiddenAbsolute" draggable="false">
 
         <div class="hudBox timerBox">
             <div id="timer"></div>
@@ -56,7 +56,7 @@
             <div id="fin" class="finishText centerMessage"></div>
         </div>
 
-        <div id="menu" class="modal">
+        <div id="menu" class="modal hiddenAbsolute">
             <div class="modal-content">
                 <span id="close" class="close" onclick="closeMenu()"> &times; </span>
                 <img src="assets/backgrounds/DOOMTITLE.png" style="position: fixed; height: 120px; margin-left: 100px; " />
@@ -92,7 +92,7 @@
                 </div>
             </div>
         </div>
-        <div id="CreditScreen">
+        <div id="CreditScreen" class="hiddenAbsolute">
             <div id="CreditContainer">
                 <span id="Credits">
                     Y. Teller - Everything<br><br>Except all the art<br>That belongs to:<br>

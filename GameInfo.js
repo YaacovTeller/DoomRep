@@ -1,6 +1,17 @@
 "use strict";
 class GameInfo {
+    static resetAllGuns() {
+        this.allGuns = {
+            chainsaw: new ChainSaw,
+            Pistol: new Pistol,
+            Shotgun: new Shotgun,
+            DukeMgun: new DukeMgun,
+            Minigun: new Minigun,
+            DualNeutron: new DualNeutron,
+        };
+    }
     static reset() {
+        this.resetAllGuns();
         this.deadCount = 0;
         this.deadExtraCount = 0;
         this.enemiesCleared = false;
@@ -35,10 +46,10 @@ GameInfo.enemiesCleared = false;
 GameInfo.mute = false;
 GameInfo.gameBegun = false;
 GameInfo.allGuns = {
-    chainsaw: new ChainSaw,
-    Pistol: new Pistol,
-    Shotgun: new Shotgun,
-    DukeMgun: new DukeMgun,
-    Minigun: new Minigun,
-    DualNeutron: new DualNeutron,
+    chainsaw: null,
+    Pistol: null,
+    Shotgun: null,
+    DukeMgun: null,
+    Minigun: null,
+    DualNeutron: null,
 };

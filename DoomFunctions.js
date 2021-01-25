@@ -15,6 +15,10 @@ class RandomSoundGen {
         sound.play();
     }
 }
+function preloadImage(url) {
+    var img = new Image();
+    img.src = url;
+}
 function hitWarning() {
     //  bizwarn.play()
     buzwarn.play();
@@ -62,6 +66,7 @@ function clearAllEnemies() {
     }
 }
 function openMenu() {
+    document.body.style.cursor = "url('assets/Crosshairs/crosshair.cur')";
     DOMUpdater.stopMiscSound();
     stopGameMusic();
     showElement(elements.menuImage);

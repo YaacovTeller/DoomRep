@@ -3,6 +3,10 @@
     src:  url('./assets/Aldrich-Regular.ttf') format('truetype'),
 }
 
+.crosshairCursor{
+    cursor: url('assets/Crosshairs/crosshair.cur'), crosshair;
+}
+
 html, body {
     /* animation-name: hit; */
     animation-duration: 0.3s;
@@ -84,6 +88,10 @@ html, body {
 .pickup{
     position: absolute;
 }
+.hiddenAbsolute{
+    display: none;
+    position: absolute;
+}
 /* .pickup_weapon{
     width: 270px;
 }
@@ -122,6 +130,9 @@ html, body {
     transform: scale(2);
     left: -10%;
     top: 110%;
+}
+#blood{
+    z-index: 20;
 }
 
 .victory {
@@ -192,8 +203,6 @@ html, body {
     display: inline;
 }
 #CreditScreen{
-    display: none;
-    position: fixed;
     z-index: 21;
     left: 0;
     top: 0;
@@ -219,8 +228,6 @@ html, body {
 }
 /* The menu */
 .modal {
-    display: none;
-    position: fixed;
     z-index: 24;
     left: 0;
     top: 0;

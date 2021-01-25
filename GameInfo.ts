@@ -24,15 +24,27 @@ class GameInfo {
     public static gameBegun: boolean = false;
 
     public static allGuns = {
-        chainsaw: new ChainSaw,
-        Pistol: new Pistol,
-        Shotgun: new Shotgun,
-        DukeMgun: new DukeMgun,
-        Minigun: new Minigun,
-        DualNeutron: new DualNeutron,
+        chainsaw: null,
+        Pistol: null,
+        Shotgun: null,
+        DukeMgun: null,
+        Minigun: null,
+        DualNeutron: null,
     };
 
+    public static resetAllGuns(){
+        this.allGuns = {
+            chainsaw: new ChainSaw,
+            Pistol: new Pistol,
+            Shotgun: new Shotgun,
+            DukeMgun: new DukeMgun,
+            Minigun: new Minigun,
+            DualNeutron: new DualNeutron,
+        };
+    }
+
     public static reset() {
+        this.resetAllGuns()
         this.deadCount = 0;
         this.deadExtraCount = 0;
         this.enemiesCleared = false;

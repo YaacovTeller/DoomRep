@@ -19,6 +19,12 @@ class Player {
         Player.dead = false;
         Player.health = 100;
         this.checkAndCutStrafing();
+        this.wipeArsenal();
+    }
+    public static wipeArsenal(){
+        for (let wep in Player.weaponCollection){
+            Player.weaponCollection[wep].ammo = 0
+        }
         Player.weaponCollection = {};
     }
 

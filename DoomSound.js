@@ -63,7 +63,7 @@ var Donna = new sound("sound/Music/DOOM/119_Donna_to_the_Rescue.ogg");
 var Spider = new sound("sound/Music/DOOM/121_Facing_the_Spider.ogg");
 var DoomMusic = [DoomsGate, Secrets, Untitled, Donna, Spider];
 // AvP has diff .wav format??
-var AvpGun = new sound("sound/AvP/pistol_fire_01.wav");
+//var AvpGun = new sound("sound/AvP/pistol_fire_01.wav")
 var Avpminigun = new sound("sound/minigun_shoot_loop_01.mp3");
 var Avpminigun2 = new sound("sound/minigun_shoot_loop_01.mp3");
 // 
