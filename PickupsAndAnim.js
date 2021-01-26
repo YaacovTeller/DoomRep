@@ -20,6 +20,7 @@ class AnimationInfo {
 }
 class Pickup {
     constructor(source) {
+        this.collected = false;
         this.collectNoise = collectItem;
         this.source = source;
     }
@@ -45,9 +46,14 @@ class Pickup {
         $(this.DOMImage).fadeOut(500, function () { $(this).remove(); });
     }
     grab() {
+        if (this.collected) {
+            return false;
+        }
+        this.collected = true;
         this.collectNoise.play();
         this.blipAnim();
         setTimeout(() => { hideElement(this.DOMImage); }, 400);
+        return true;
     }
     blipAnim() {
         let width = parseInt($(this.DOMImage).css('width'));
@@ -90,10 +96,13 @@ class healthPickup extends Pickup {
     }
     grab() {
         if (Player.health >= 120) {
-            return;
+            return false;
         }
-        Player.collectHealth(this.ammount);
-        super.grab();
+        if (super.grab()) {
+            Player.collectHealth(this.ammount);
+            return true;
+        }
+        ;
     }
 }
 class ammoPickup extends Pickup {
@@ -104,8 +113,11 @@ class ammoPickup extends Pickup {
         this.ammount = this.weapon.pickupStats.ammoAmmounts[size];
     }
     grab() {
-        Player.collectAmmo(this.ammount, this.weapon.constructor.name);
-        super.grab();
+        if (super.grab()) {
+            Player.collectAmmo(this.ammount, this.weapon.constructor.name);
+            return true;
+        }
+        ;
     }
 }
 class weaponPickup extends Pickup {
@@ -116,7 +128,10 @@ class weaponPickup extends Pickup {
         this.image = this.weapon.pickupStats.gunImage;
     }
     grab() {
-        Player.collectWeapon(this.weapon);
-        super.grab();
+        if (super.grab()) {
+            Player.collectWeapon(this.weapon);
+            return true;
+        }
+        ;
     }
 }

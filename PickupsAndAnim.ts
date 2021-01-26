@@ -28,7 +28,8 @@ class AnimationInfo{
 }
 
 class Pickup implements Iundrawable{
-    protected source: Target
+    protected collected: boolean = false;
+    protected source: Target;
     protected image: string;
     protected DOMImage: HTMLElement;
     protected collectNoise = collectItem;
@@ -58,9 +59,14 @@ class Pickup implements Iundrawable{
     }
 
     protected grab(){
+        if (this.collected){
+            return false
+        }
+        this.collected = true;
         this.collectNoise.play();
         this.blipAnim();
         setTimeout(() => { hideElement(this.DOMImage); }, 400); 
+        return true
     }
     protected blipAnim(){
         let width = parseInt($(this.DOMImage).css('width'))
@@ -106,10 +112,12 @@ class healthPickup extends Pickup{
     }
     public grab() {
         if (Player.health >=120) {
-            return;
+            return false;
         }
-        Player.collectHealth(this.ammount);
-        super.grab();
+        if (super.grab()){
+            Player.collectHealth(this.ammount);
+            return true
+        };
     }
 }
 
@@ -124,8 +132,10 @@ class ammoPickup extends Pickup{
         this.ammount = this.weapon.pickupStats.ammoAmmounts[size];
     }
     public grab(){
-        Player.collectAmmo(this.ammount, this.weapon.constructor.name)
-        super.grab();
+        if (super.grab()){
+            Player.collectAmmo(this.ammount, this.weapon.constructor.name)
+            return true
+        };
     }
 }
 
@@ -139,8 +149,10 @@ class weaponPickup extends Pickup {
         this.image = this.weapon.pickupStats.gunImage;
     }
     public grab(){
-        Player.collectWeapon(this.weapon)
-        super.grab();
+        if (super.grab()){
+            Player.collectWeapon(this.weapon)
+            return true
+        };
     }
 }
 
