@@ -14,10 +14,10 @@ const pics = {
         firing: {
             pistol: "assets/guns/pistol_right_firing.png",
             shotgun: "assets/guns/shotgunShot_fast.gif",
-            dukeMgun: "assets/guns/DukeMgunFire-2.gif",
+            dukeMgun: "assets/guns/DukeMgunFire-3.gif",
             dualNeutron: "assets/guns/DualNeutronFiring.gif",
         },
-        dukeMgun: "assets/guns/DukeMgun.png",
+        dukeMgun: "assets/guns/DukeMgun-2.png",
         minigun: "assets/guns/ChainGun.png",
         minigun_firing: "assets/guns/ChainGunFiring.gif",
         minigun_spinup: "assets/guns/ChainGunSpin_Up.gif",
