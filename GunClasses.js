@@ -37,6 +37,7 @@ const gunConfig = {
         gunHeight: 406,
     },
     ChainSaw: {
+        startingAmmo: null,
         damage: 10,
         reach: 240,
         gunHeight: 312,
@@ -70,12 +71,12 @@ class weaponry {
             setTimeout(() => { weaponry.switching = false; }, 150);
             this.weaponBob();
         }
+        DOMUpdater.updateAmmoCounter(this.ammo);
         Player.weapon = this;
         setTimeout(() => {
             elements.weaponImg.setAttribute("src", this.gunImage);
         }, 150);
-        DOMUpdater.updateAmmoCounter(this.ammo);
-        if (!(this instanceof ChainSaw)) {
+        if (!(this instanceof ChainSaw)) { //FIX better way to cut the chainsaw noise?
             SawIdle.stop();
         }
     }
@@ -145,6 +146,20 @@ class weaponry {
             return true;
         }
     }
+    loseAmmo() {
+        this.ammo--;
+        DOMUpdater.updateAmmoCounter(this.ammo);
+    }
+    targetingChecks() {
+        return GameInfo.targeting == true;
+    }
+    checkForFiringShot() {
+        if (this.pickupShot())
+            return false;
+        if (this.noAmmoCheck())
+            return false;
+        return true;
+    }
 }
 weaponry.switching = false;
 class regGun extends weaponry {
@@ -154,33 +169,46 @@ class regGun extends weaponry {
     }
     reload() { }
     setFiringImage() { }
-    shot(e) {
-        if (this.pickupShot())
-            return;
+    noAmmoClick() {
+        click2.play();
+    }
+    noAmmoCheck() {
         if (this.ammo <= 0) {
-            click2.play();
-            return;
+            this.noAmmoClick();
+            return true;
         }
-        else {
+    }
+    switchTo() {
+        super.switchTo();
+        setMouseAttributes_Normal();
+    }
+    shot(e) {
+        if (this.checkForFiringShot()) {
             return this.fireAndAssessTarget();
         }
     }
+    // public shot(e) {
+    //     if (this.pickupShot()) return;
+    //     if (this.noAmmoCheck()) return; 
+    //     else {
+    //         return this.fireAndAssessTarget();
+    //     }
+    // }
     fireAndAssessTarget() {
         this.shotRelease();
-        if (GameInfo.targeting == false) {
+        if (!this.targetingChecks()) {
             this.ricochet();
             return false;
         }
         else {
             GameInfo.hitTarget.loseHealth(this.damage);
-            if (!(GameInfo.hitTarget instanceof Item)) { // for barrels
+            if (!(GameInfo.hitTarget instanceof Item)) { // for barrels, don't show blood
                 return true;
             }
         }
     }
     shotRelease() {
-        this.ammo--;
-        DOMUpdater.updateAmmoCounter(this.ammo);
+        this.loseAmmo();
         this.firingSound.play();
         this.setFiringImage();
         setTimeout(() => {
@@ -216,7 +244,6 @@ class Pistol extends regGun {
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
-        setMouseAttributes_Normal();
     }
 }
 class Shotgun extends regGun {
@@ -252,52 +279,78 @@ class Shotgun extends regGun {
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
-        setMouseAttributes_Normal();
     }
 }
 class MachineGun extends weaponry {
     strafe() {
+        document.body.setAttribute("onmousemove", gunMoveEvent);
+        this.addStrafeMouseLeaveEvent();
+        this.firing = true;
+        this.switchSounds(true);
+        this.spendingBullets();
+        this.firstHit();
+        this.hittingInterval();
+    }
+    noAmmoClick() {
+        click2.play();
+    }
+    noAmmoCheck() {
+        if (this.ammo <= 0) {
+            this.stopstrafe();
+            this.noAmmoClick();
+            return true;
+        }
+    }
+    firstHit() {
+        let _this = this;
+        if (this.targetingChecks()) {
+            GameInfo.hitTarget.loseHealth(_this.damage);
+        }
+    }
+    hittingInterval() {
+        let _this = this;
+        MachineGun.hittingInterval = (setInterval(function () {
+            if (_this.targetingChecks()) {
+                GameInfo.hitTarget.loseHealth(_this.damage);
+            }
+        }, 200));
+    }
+    addStrafeMouseLeaveEvent() {
         document.addEventListener('mouseleave', e => {
             if (this.firing) {
                 this.stopstrafe();
             }
         });
-        document.body.setAttribute("onmousemove", gunMoveEvent);
-        this.firing = true;
-        this.spendingBullets();
-        let _this = this;
-        if (GameInfo.targeting == true) {
-            GameInfo.hitTarget.loseHealth(_this.damage);
-        }
-        MachineGun.hittingInterval = (setInterval(function () {
-            if (GameInfo.targeting == true) {
-                GameInfo.hitTarget.loseHealth(_this.damage);
-            }
-        }, 200));
     }
     spendingBullets() {
         elements.weaponImg.setAttribute("src", this.gunImage_firing);
-        this.firingSound.play();
         let _this = this;
         MachineGun.firingInterval = setInterval(function () {
-            _this.ammo--;
-            DOMUpdater.updateAmmoCounter(_this.ammo);
-            if (_this.ammo <= 0) {
-                _this.stopstrafe();
-                click2.play();
-            }
+            _this.loseAmmo();
+            _this.noAmmoCheck();
         }, 200);
     }
-    stopstrafe() {
-        this.firing = false;
-        this.firingSound.stop();
-        elements.weaponImg.setAttribute("src", this.gunImage);
-        document.body.setAttribute("onmousemove", gunMoveEvent);
+    clearFiringIntervals() {
         clearInterval(MachineGun.hittingInterval);
         clearInterval(MachineGun.firingInterval);
     }
+    stopstrafe() {
+        this.firing = false;
+        elements.weaponImg.setAttribute("src", this.gunImage);
+        document.body.setAttribute("onmousemove", gunMoveEvent);
+        this.clearFiringIntervals();
+        this.switchSounds(false);
+    }
+    switchTo() {
+        super.switchTo();
+        setMouseAttributes_MachineGun();
+    }
+    ;
+    switchSounds(on) {
+        on ? this.firingSound.play() : this.firingSound.stop();
+    }
     MGunShotDisplay(e) {
-        if (GameInfo.targeting == false) {
+        if (!this.targetingChecks()) {
             this.ricochet();
         }
         else /*Bullet4.play()*/
@@ -314,6 +367,7 @@ class ChainSaw extends MachineGun {
         super(...arguments);
         this.chainsawReach = gunConfig.ChainSaw.reach; // target height
         this.firingSound = Saw;
+        this.ammo = gunConfig.ChainSaw.startingAmmo;
         this.gunImage = pics.guns.chainsaw;
         this.gunImage_firing = pics.guns.chainsaw_firing;
         this.damage = gunConfig.ChainSaw.damage;
@@ -326,29 +380,27 @@ class ChainSaw extends MachineGun {
         else
             return false;
     }
-    chainsawHitCheck() {
-        return (GameInfo.targeting == true && this.chainsawDistanceCheck(GameInfo.hitTarget.DOMImage));
-    }
-    strafe() {
-        if (this.pickupShot())
-            return;
-        document.addEventListener('mouseleave', e => {
-            if (this.firing) {
-                this.stopstrafe();
+    targetingChecks() {
+        if (super.targetingChecks()) {
+            if (this.chainsawDistanceCheck(GameInfo.hitTarget.DOMImage)) {
+                return true;
             }
-        });
-        this.firing = true;
-        if (this.chainsawHitCheck()) {
-            GameInfo.hitTarget.loseHealth(this.damage);
         }
-        let _this = this;
-        MachineGun.hittingInterval = (setInterval(() => {
-            if (this.chainsawHitCheck())
-                GameInfo.hitTarget.loseHealth(_this.damage);
-        }, 200));
-        this.switchSounds();
-        elements.weaponImg.setAttribute("src", this.gunImage_firing);
-        this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
+    }
+    loseAmmo() {
+        //DOMUpdater.updateAmmoCounter('N/A')
+    }
+    noAmmoCheck() {
+        return false; // infinite chainsaw ammo?
+    }
+    spendingBullets() { }
+    ;
+    strafe() {
+        if (this.checkForFiringShot()) {
+            super.strafe();
+            elements.weaponImg.setAttribute("src", this.gunImage_firing);
+            this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
+        }
     }
     switchSounds() {
         if (this.firing) {
@@ -360,16 +412,8 @@ class ChainSaw extends MachineGun {
             this.firingSound.stop();
         }
     }
-    stopstrafe() {
-        clearInterval(MachineGun.hittingInterval);
-        elements.weaponImg.setAttribute("src", this.gunImage);
-        this.firing = false;
-        this.switchSounds();
-        document.body.setAttribute("onmousemove", gunMoveEvent);
-    }
     switchTo() {
         super.switchTo();
-        DOMUpdater.updateAmmoCounter(`N/A`);
         elements.ammoType.removeAttribute("src");
         SawUp.play();
         let _this = this;
@@ -378,7 +422,6 @@ class ChainSaw extends MachineGun {
                 _this.switchSounds();
             }
         }, 2000);
-        setMouseAttributes_MachineGun();
     }
 }
 class Minigun extends MachineGun {
@@ -386,6 +429,7 @@ class Minigun extends MachineGun {
         super(...arguments);
         this.gunImage = pics.guns.minigun;
         this.gunImage_firing = pics.guns.minigun_firing;
+        this.ammoIcon = pics.ammoIcons.bullets;
         this.damage = gunConfig.Minigun.damage;
         this.ammo = gunConfig.Minigun.startingAmmo;
         this.firingSound = Avpminigun;
@@ -400,12 +444,7 @@ class Minigun extends MachineGun {
         }, 700);
     }
     strafe() {
-        if (this.pickupShot())
-            return;
-        if (this.ammo <= 0) {
-            click2.play();
-        }
-        else {
+        if (this.checkForFiringShot()) {
             this.spinUp();
             let superStrafe = () => { super.strafe(); };
             this.mgfiring = setTimeout(function () {
@@ -414,12 +453,22 @@ class Minigun extends MachineGun {
             }, 1000);
         }
     }
-    stopstrafe() {
-        clearInterval(MachineGun.hittingInterval);
-        clearInterval(MachineGun.firingInterval);
+    clearFiringIntervals() {
+        super.clearFiringIntervals();
         clearInterval(this.mgfiring);
         clearInterval(this.mgspinning);
+    }
+    stopstrafe() {
+        super.stopstrafe();
         Minigun.spinUpCheck = false;
+        this.randomMinigunFrame();
+    }
+    switchSounds(on) {
+        super.switchSounds(on);
+        if (on)
+            SSamRotate.stop();
+    }
+    randomMinigunFrame() {
         // The minigun sometimes ends on the off-spin!
         let randNum = Math.floor(Math.random() * (2 - 1 + 1) + 1);
         if (randNum == 1) {
@@ -427,14 +476,10 @@ class Minigun extends MachineGun {
         }
         else
             elements.weaponImg.setAttribute("src", pics.guns.minigun_frame2);
-        this.firingSound.stop();
-        SSamRotate.stop();
-        document.body.setAttribute("onmousemove", gunMoveEvent);
     }
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
-        setMouseAttributes_MachineGun();
     }
 }
 Minigun.spinUpCheck = false;
@@ -450,21 +495,14 @@ class DukeMgun extends MachineGun {
         );
     }
     strafe() {
-        if (this.pickupShot())
-            return;
-        if (this.ammo <= 0) {
-            click2.play();
-        }
-        else {
-            this.ammo--;
-            DOMUpdater.updateAmmoCounter(this.ammo);
+        if (this.checkForFiringShot()) {
+            this.loseAmmo();
             super.strafe();
         }
     }
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
-        setMouseAttributes_MachineGun();
     }
 }
 class DualNeutron extends MachineGun {
@@ -479,21 +517,14 @@ class DualNeutron extends MachineGun {
         this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DualNeutron.pickup_ammo_big, gunConfig.DualNeutron.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
     }
     strafe() {
-        if (this.pickupShot())
-            return;
-        if (this.ammo <= 0) {
-            click2.play();
-        }
-        else {
-            this.ammo--;
-            DOMUpdater.updateAmmoCounter(this.ammo);
+        if (this.checkForFiringShot()) {
+            this.loseAmmo();
             super.strafe();
         }
     }
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
-        setMouseAttributes_MachineGun();
     }
 }
 function setMouseAttributes_Normal() {
