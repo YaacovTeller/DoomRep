@@ -6,9 +6,14 @@ class DOMUpdater {
         this.updateCounter(elements.killCounter, "Kills:" + totalCount);
     }
     public static updateAmmoCounter(ammo) {
+        if (ammo != null){
+            let lowAmmoLimit = Player.weapon.pickupStats.ammoAmmounts['big'];
+            this.colorChange(elements.ammoCount, 'red', ammo, lowAmmoLimit);
+        }
+        else {
+            ammo = 'N/A'
+        }
         this.updateCounter(elements.ammoCount, ammo);
-        let lowAmmoLimit = Player.weapon.pickupStats.ammoAmmounts['big'];
-        this.colorChange(elements.ammoCount, 'red', ammo, lowAmmoLimit);
     }
     public static updateAmmoWithClick(ammo) {
         this.updateAmmoCounter(ammo);
