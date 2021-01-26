@@ -1,7 +1,7 @@
 "use strict";
 var levelFuncArray = [
-    //  [level_2_6],
-    // [level_1_3],
+    // [level_2_6],
+    //  [level_1_3],
     [level_1_1, level_1_2, level_1_3, level_1_4],
     [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
     [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
@@ -150,7 +150,8 @@ class LevelHandler {
     static winGame() {
         this.winMssg();
         setTimeout(() => {
-            openMenu();
+            creditsMenu();
+            //openMenu();
         }, 4000);
     }
     static winMssg() {
