@@ -240,6 +240,7 @@ class Pistol extends regGun {
     }
     setFiringImage() {
         elements.weaponImg.src = pics.guns.firing.pistol;
+        this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot; // poor practice
     }
     switchTo() {
         super.switchTo();

@@ -1,5 +1,6 @@
 "use strict";
 var Pshot = new sound("sound/DSPISTOL.WAV");
+var Pshot2 = new sound("sound/DSPISTOL.WAV");
 var SGshot = new sound("sound/DSSHOTGN.WAV");
 var SawUp = new sound("sound/DSSAWUP.WAV");
 var Saw = new sound("sound/DSSAWFUL.WAV");
