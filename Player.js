@@ -69,6 +69,7 @@ class Player {
             return;
         }
         Player.dead = true;
+        LevelHandler.storeEndgame();
         this.deadSound();
         fadeOut();
         stopTimer();
@@ -82,7 +83,6 @@ class Player {
         DOMUpdater.updateHealthCounter(0);
         elements.backImg.style.animationFillMode = "forwards";
         LevelHandler.deathMssg();
-        LevelHandler.storeEndgame();
         DOMUpdater.timedClearAllImages(); // DRY?
         setTimeout(() => {
             openMenu();

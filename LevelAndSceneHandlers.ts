@@ -185,14 +185,26 @@ class LevelHandler {
         gameInfo['invincible'] = GameInfo.invincible;
         
         let microDoom = getFromLocal();
-        if (microDoom['gameInfo']){
-            let currentHighScore = microDoom['highScore'] || 0;
-            if (gameInfo['kills'] > currentHighScore){
-                microDoom['highScore'] = gameInfo['kills']
+        if (microDoom){
+            let currentMostKills = microDoom['mostKills'] || 0;
+            if (gameInfo['kills'] > currentMostKills){
+                microDoom['mostKills'] = gameInfo['kills']
             }
-            let currentFurthestLevel = microDoom['furthestLevel'] || 0;
-            if (gameInfo['levelArraylength'] > currentFurthestLevel){
-                microDoom['furthestLevel'] = gameInfo['levelArraylength']
+
+            let currentFurthestLevel, currentFurthestStage;
+            if (GameInfo.gameMode == gameMode.campaign){
+                currentFurthestLevel = microDoom['furthestCampaignLevel'] || 0;
+                let level = GameInfo.levelArray.length;
+                if (level > currentFurthestLevel){
+                    microDoom['furthestCampaignLevel'] = level;
+                }
+            }
+            else {
+                currentFurthestStage = microDoom['furthestContinuousStage'] || 0;
+                let stage = GameInfo.currentLevel.sceneArray.length;
+                if (stage > currentFurthestStage){
+                    microDoom['furthestContinuousStage'] = stage;
+                }
             }
         }
 

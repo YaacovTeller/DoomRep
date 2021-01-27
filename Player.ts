@@ -75,6 +75,8 @@ class Player {
     private static playerDeath() {
         if (Player.dead == true) { return; }
         Player.dead = true;
+        LevelHandler.storeEndgame();
+        
         this.deadSound();
         fadeOut();
         stopTimer();
@@ -90,7 +92,6 @@ class Player {
         elements.backImg.style.animationFillMode = "forwards";
 
         LevelHandler.deathMssg();
-        LevelHandler.storeEndgame();
 
         DOMUpdater.timedClearAllImages(); // DRY?
         setTimeout(() => {
