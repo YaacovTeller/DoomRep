@@ -123,7 +123,7 @@ class RegEnemy extends Target {
             GameInfo.deadCount++;
             LevelHandler.sceneCheck();
         }
-        DOMUpdater.updateKillCounter(GameInfo.deadCount + GameInfo.deadExtraCount);
+        DOMUpdater.updateKillCounter(GameInfo.getTotalKills());
     }
     hitRoll(damage, hitLimit) {
         if (Player.dead == false) {

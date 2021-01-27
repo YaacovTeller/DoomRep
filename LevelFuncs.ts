@@ -1,7 +1,3 @@
-/////// MAIN MENU OPEN ////////
-openMenu() // MOVE?
-preloadImage(pics.guns.reloading.shotgun);
-
 function level_1_1(){
     let scene = new Scene(pics.background.doom2,"width: 100%", ()=>drawNewEnemies_1_1(), 0, 0, 0, true)
    GameInfo.currentLevel.addScene(scene)

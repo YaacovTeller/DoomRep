@@ -5,6 +5,9 @@ class RandomNumberGen {
     }
 }
 class RandomSoundGen {
+    constructor() {
+        this.soundIndex = 0;
+    }
     static getRandomSound(sounds) {
         let length = sounds.length;
         let randNum = Math.floor(Math.random() * (length) + 1);
@@ -13,6 +16,14 @@ class RandomSoundGen {
     static playRandomSound(sounds) {
         let sound = this.getRandomSound(sounds);
         sound.play();
+    }
+    playNotSoRandomSound(sounds) {
+        if (this.soundIndex == sounds.length - 1) {
+            this.soundIndex = 0;
+        }
+        else
+            this.soundIndex++;
+        sounds[this.soundIndex].play();
     }
 }
 function preloadImage(url) {
@@ -122,12 +133,8 @@ function creditsMenu() {
     UTcredits.play();
     showElement(elements.credits);
 }
-function switchSound(value) {
-    if (value == true) {
-        toggle.play();
-    }
-    else
-        toggle2.play();
+function switchSound() {
+    toggle.playClone();
 }
 function kidMode(value) {
     if (value == true) {
@@ -176,7 +183,7 @@ function genericFinishMessage() {
     let div1 = createMessageDiv("sceneMsg", `STAGE ${GameInfo.levelArray.length}`);
     let div2 = createMessageDiv("sceneMsg", "COMPLETED");
     let div3 = createMessageDiv("speedMsg", `Time: ${getTime()}`);
-    let killsStr = `Total kills: ${GameInfo.deadCount + GameInfo.deadExtraCount}`;
+    let killsStr = `Total kills: ${GameInfo.getTotalKills()}`;
     let div4 = createMessageDiv("speedMsg", killsStr);
     slamMessage(div1, elements.finishMsg, 1000);
     slamMessage(div2, elements.finishMsg, 2000);

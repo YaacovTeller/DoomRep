@@ -187,8 +187,12 @@ abstract class regGun extends weaponry {
         let regGunSounds = new Array(Bullet1, Bullet2, Bullet3);
         super.ricochet(regGunSounds);
     }
-    protected reload(){}
-    protected setFiringImage(){}
+    protected abstract reload()
+    protected abstract setFiringImage()
+    
+    protected playFiringSound(){
+        this.firingSound.play();
+    }
 
     protected noAmmoClick(){
         click2.play();
@@ -211,13 +215,6 @@ abstract class regGun extends weaponry {
             return this.fireAndAssessTarget();
         }
     }
-    // public shot(e) {
-    //     if (this.pickupShot()) return;
-    //     if (this.noAmmoCheck()) return; 
-    //     else {
-    //         return this.fireAndAssessTarget();
-    //     }
-    // }
 
     protected fireAndAssessTarget() {
         this.shotRelease();
@@ -234,7 +231,7 @@ abstract class regGun extends weaponry {
     }
     protected shotRelease(){
         this.loseAmmo();
-        this.firingSound.play();
+        this.playFiringSound();
         this.setFiringImage();
         setTimeout(() => {
             this.reload(); // only shotgun?
@@ -244,7 +241,7 @@ abstract class regGun extends weaponry {
 
 class Pistol extends regGun {
     public firingImage = pics.guns.firing.pistol;
-    protected firingSound = Pshot;
+    protected firingSound = Pshot//pistolShots;
     protected gunImage = pics.guns.pistol;
     public damage = gunConfig.Pistol.damage;
     public ammo = gunConfig.Pistol.startingAmmo;
@@ -263,6 +260,12 @@ class Pistol extends regGun {
             return true
         }
     }
+
+    protected playFiringSound(){
+        this.firingSound.playClone();
+       // this.soundGen.playNotSoRandomSound(this.firingSound)
+    }
+
     protected reload(){
         setTimeout(() => {
             elements.weaponImg.src = pics.guns.pistol;
@@ -271,7 +274,7 @@ class Pistol extends regGun {
     }
     protected setFiringImage(){
         elements.weaponImg.src = pics.guns.firing.pistol;
-        this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot // poor practice
+    //    this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot // poor practice
     }
 
     public switchTo() {
@@ -301,6 +304,7 @@ class Shotgun extends regGun {
         }
         return true
     }
+
     protected setFiringImage(){
         elements.weaponImg.src = pics.guns.firing.shotgun;
     }
@@ -335,7 +339,7 @@ abstract class MachineGun extends weaponry {
         document.body.setAttribute("onmousemove", gunMoveEvent)
         this.addStrafeMouseLeaveEvent();
         this.firing = true;
-        this.switchSounds(true);
+        this.playFiringSound(true);
         this.spendingBullets();
         this.firstHit()
         this.hittingInterval();
@@ -395,14 +399,14 @@ abstract class MachineGun extends weaponry {
         elements.weaponImg.setAttribute("src", this.gunImage);
         document.body.setAttribute("onmousemove", gunMoveEvent)
         this.clearFiringIntervals();
-        this.switchSounds(false);
+        this.playFiringSound(false);
     }
     public switchTo(){
         super.switchTo();
         setMouseAttributes_MachineGun();
     };
 
-    protected switchSounds(on){
+    protected playFiringSound(on){
         on ? this.firingSound.play() : this.firingSound.stop();
     }
 
@@ -531,8 +535,8 @@ class Minigun extends MachineGun {
         Minigun.spinUpCheck = false;
         this.randomMinigunFrame();
     }
-    protected switchSounds(on){
-        super.switchSounds(on);
+    protected playFiringSound(on){
+        super.playFiringSound(on);
         if (on) SSamRotate.stop();
     }
 

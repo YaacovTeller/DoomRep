@@ -164,6 +164,21 @@ class LevelHandler {
         elements.finishMsg.onclick = null;
         slamMessage(div1, elements.finishMsg, 1000);
     }
+    storeEndgame() {
+        let microDoom = getFromLocal();
+        let gameInfo = {};
+        if (microDoom['gameInfo']) {
+            if (gameInfo['kills'] > gameInfo['highScore']) {
+                gameInfo['highScore'] = gameInfo['kills'];
+            }
+        }
+        gameInfo['gameMode'] = GameInfo.gameMode;
+        gameInfo['kills'] = GameInfo.getTotalKills();
+        gameInfo['stage'] = GameInfo.currentLevel;
+        gameInfo['invincible'] = GameInfo.invincible;
+        microDoom['gameInfo'] = gameInfo;
+        setInLocal(microDoom);
+    }
     static nextLevel() {
         clearScreenMessages();
         let levelFunc;

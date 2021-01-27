@@ -66,4 +66,8 @@ class GameInfo {
         this.levelArray.push(level)
         this.currentLevel = level;
     }
+
+    public static getTotalKills(){
+        return this.deadCount + this.deadExtraCount;
+    }
 }

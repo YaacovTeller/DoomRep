@@ -31,6 +31,9 @@ class GameInfo {
         this.levelArray.push(level);
         this.currentLevel = level;
     }
+    static getTotalKills() {
+        return this.deadCount + this.deadExtraCount;
+    }
 }
 GameInfo.moverollFrequency = 2000;
 GameInfo.invincible = false;

@@ -167,8 +167,9 @@ class regGun extends weaponry {
         let regGunSounds = new Array(Bullet1, Bullet2, Bullet3);
         super.ricochet(regGunSounds);
     }
-    reload() { }
-    setFiringImage() { }
+    playFiringSound() {
+        this.firingSound.play();
+    }
     noAmmoClick() {
         click2.play();
     }
@@ -187,13 +188,6 @@ class regGun extends weaponry {
             return this.fireAndAssessTarget();
         }
     }
-    // public shot(e) {
-    //     if (this.pickupShot()) return;
-    //     if (this.noAmmoCheck()) return; 
-    //     else {
-    //         return this.fireAndAssessTarget();
-    //     }
-    // }
     fireAndAssessTarget() {
         this.shotRelease();
         if (!this.targetingChecks()) {
@@ -209,7 +203,7 @@ class regGun extends weaponry {
     }
     shotRelease() {
         this.loseAmmo();
-        this.firingSound.play();
+        this.playFiringSound();
         this.setFiringImage();
         setTimeout(() => {
             this.reload(); // only shotgun?
@@ -220,7 +214,7 @@ class Pistol extends regGun {
     constructor() {
         super(...arguments);
         this.firingImage = pics.guns.firing.pistol;
-        this.firingSound = Pshot;
+        this.firingSound = Pshot; //pistolShots;
         this.gunImage = pics.guns.pistol;
         this.damage = gunConfig.Pistol.damage;
         this.ammo = gunConfig.Pistol.startingAmmo;
@@ -232,6 +226,10 @@ class Pistol extends regGun {
             return true;
         }
     }
+    playFiringSound() {
+        this.firingSound.playClone();
+        // this.soundGen.playNotSoRandomSound(this.firingSound)
+    }
     reload() {
         setTimeout(() => {
             elements.weaponImg.src = pics.guns.pistol;
@@ -240,7 +238,7 @@ class Pistol extends regGun {
     }
     setFiringImage() {
         elements.weaponImg.src = pics.guns.firing.pistol;
-        this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot; // poor practice
+        //    this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot // poor practice
     }
     switchTo() {
         super.switchTo();
@@ -287,7 +285,7 @@ class MachineGun extends weaponry {
         document.body.setAttribute("onmousemove", gunMoveEvent);
         this.addStrafeMouseLeaveEvent();
         this.firing = true;
-        this.switchSounds(true);
+        this.playFiringSound(true);
         this.spendingBullets();
         this.firstHit();
         this.hittingInterval();
@@ -340,14 +338,14 @@ class MachineGun extends weaponry {
         elements.weaponImg.setAttribute("src", this.gunImage);
         document.body.setAttribute("onmousemove", gunMoveEvent);
         this.clearFiringIntervals();
-        this.switchSounds(false);
+        this.playFiringSound(false);
     }
     switchTo() {
         super.switchTo();
         setMouseAttributes_MachineGun();
     }
     ;
-    switchSounds(on) {
+    playFiringSound(on) {
         on ? this.firingSound.play() : this.firingSound.stop();
     }
     MGunShotDisplay(e) {
@@ -464,8 +462,8 @@ class Minigun extends MachineGun {
         Minigun.spinUpCheck = false;
         this.randomMinigunFrame();
     }
-    switchSounds(on) {
-        super.switchSounds(on);
+    playFiringSound(on) {
+        super.playFiringSound(on);
         if (on)
             SSamRotate.stop();
     }
