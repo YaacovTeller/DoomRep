@@ -90,6 +90,7 @@ class Player {
         elements.backImg.style.animationFillMode = "forwards";
 
         LevelHandler.deathMssg();
+        LevelHandler.storeEndgame();
 
         DOMUpdater.timedClearAllImages(); // DRY?
         setTimeout(() => {

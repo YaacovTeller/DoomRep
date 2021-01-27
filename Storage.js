@@ -2,17 +2,17 @@
 /////// MAIN MENU OPEN ////////
 openMenu(); // MOVE?
 preloadImage(pics.guns.reloading.shotgun);
-alertStoredInfo(getFromLocal());
+//alertStoredInfo(getFromLocal());
 function getFromLocal() {
-    let microDoomInfo;
+    let microDoomInfo = {};
     let str = localStorage.getItem("micro_Doom");
     if (str) {
         microDoomInfo = JSON.parse(str);
     }
-    else {
-        microDoomInfo = dummyInfo();
-        setInLocal(microDoomInfo);
-    }
+    //    else {
+    //       microDoomInfo = dummyInfo();
+    //       setInLocal(microDoomInfo);
+    //    }
     return microDoomInfo;
 }
 function clearLocal() {

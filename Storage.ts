@@ -5,15 +5,15 @@ preloadImage(pics.guns.reloading.shotgun);
 //alertStoredInfo(getFromLocal());
 
 function getFromLocal() {
-   let microDoomInfo: Object;
+   let microDoomInfo: Object = {};
    let str = localStorage.getItem("micro_Doom");
    if (str) {
       microDoomInfo = JSON.parse(str)
    }
-   else {
-      microDoomInfo = dummyInfo();
-      setInLocal(microDoomInfo);
-   }
+//    else {
+//       microDoomInfo = dummyInfo();
+//       setInLocal(microDoomInfo);
+//    }
    return microDoomInfo;
 }
 function clearLocal() {

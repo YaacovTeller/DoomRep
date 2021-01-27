@@ -174,20 +174,21 @@ class LevelHandler {
         let div1: HTMLElement = createMessageDiv("sceneMsg", str); // ENDGAME needs a place
         elements.finishMsg.onclick = null;
         slamMessage(div1, elements.finishMsg, 1000);
+        this.storeEndgame();
     }
 
-    public storeEndgame(){
+    public static storeEndgame(){
         let microDoom = getFromLocal();
         let gameInfo = {};
-        if (microDoom['gameInfo']){
-            if (gameInfo['kills'] > gameInfo['highScore']){
-                gameInfo['highScore'] = gameInfo['kills']
-            }
-        }
         gameInfo['gameMode'] = GameInfo.gameMode
         gameInfo['kills'] = GameInfo.getTotalKills();
-        
-        gameInfo['stage'] = GameInfo.currentLevel;
+        if (microDoom['gameInfo']){
+            let currentHighScore = microDoom['highScore'] || 0;
+            if (gameInfo['kills'] > currentHighScore){
+                microDoom['highScore'] = gameInfo['kills']
+            }
+        }
+        gameInfo['levelArraylength'] = GameInfo.levelArray.length;
         gameInfo['invincible'] = GameInfo.invincible;
 
         microDoom['gameInfo'] = gameInfo;
