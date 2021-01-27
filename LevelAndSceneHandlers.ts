@@ -178,18 +178,23 @@ class LevelHandler {
     }
 
     public static storeEndgame(){
-        let microDoom = getFromLocal();
         let gameInfo = {};
         gameInfo['gameMode'] = GameInfo.gameMode
         gameInfo['kills'] = GameInfo.getTotalKills();
+        gameInfo['levelArraylength'] = GameInfo.levelArray.length;
+        gameInfo['invincible'] = GameInfo.invincible;
+        
+        let microDoom = getFromLocal();
         if (microDoom['gameInfo']){
             let currentHighScore = microDoom['highScore'] || 0;
             if (gameInfo['kills'] > currentHighScore){
                 microDoom['highScore'] = gameInfo['kills']
             }
+            let currentFurthestLevel = microDoom['furthestLevel'] || 0;
+            if (gameInfo['levelArraylength'] > currentFurthestLevel){
+                microDoom['furthestLevel'] = gameInfo['levelArraylength']
+            }
         }
-        gameInfo['levelArraylength'] = GameInfo.levelArray.length;
-        gameInfo['invincible'] = GameInfo.invincible;
 
         microDoom['gameInfo'] = gameInfo;
         setInLocal(microDoom);
