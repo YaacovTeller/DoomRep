@@ -1,12 +1,10 @@
 "use strict";
 var Pshot = new sound("sound/DSPISTOL.WAV");
-var Pshot2 = new sound("sound/DSPISTOL.WAV");
 var SGshot = new sound("sound/DSSHOTGN.WAV");
 var SawUp = new sound("sound/DSSAWUP.WAV");
 var Saw = new sound("sound/DSSAWFUL.WAV");
 var SawIdle = new sound("sound/DSSAWIDL.WAV");
 var toggle = new sound("sound/DSSWTCHN.WAV");
-var toggle2 = new sound("sound/DSSWTCHN.WAV");
 var click = new sound("sound/Turok/insct1ap.wav");
 var click2 = new sound("sound/Turok/load2p.wav");
 var ammoClick = new sound("sound/WOLF3D/Ammo.wav");

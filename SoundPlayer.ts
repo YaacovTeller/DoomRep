@@ -24,4 +24,7 @@ function sound(src: string) {
     this.stop = function () {
         this.sound.pause();
     }
+    this.playClone = function () {
+        this.sound.cloneNode(true).play();
+    }
 }
