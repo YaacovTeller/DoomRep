@@ -170,5 +170,6 @@ const elements = {
 
     finishMsg: document.getElementById("fin"),
     credits: document.getElementById("CreditScreen"),
-    invincible: document.getElementById("invincible")
+    invincible: document.getElementById("invincible"),
+    highScores: document.getElementById("highScores"),
 }

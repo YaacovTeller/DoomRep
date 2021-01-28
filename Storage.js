@@ -2,7 +2,31 @@
 /////// MAIN MENU OPEN ////////
 openMenu(); // MOVE?
 preloadImage(pics.guns.reloading.shotgun);
+//hideElement(elements.highScores)
 //alertStoredInfo(getFromLocal());
+function displayHighscore() {
+    let userInfo = getFromLocal();
+    if (!userInfo || Object.keys(userInfo).length === 0) {
+        hideElement(elements.highScores);
+    }
+    else {
+        showElement(elements.highScores);
+        let str = "";
+        if (userInfo['furthestCampaignLevel']) {
+            str += `Furthest campaign level: ${userInfo['furthestCampaignLevel']}`;
+            str += '<br>';
+        }
+        if (userInfo['furthestContinuousStage']) {
+            str += `Furthest continous stage: ${userInfo['furthestContinuousStage']}`;
+            str += '<br>';
+        }
+        if (userInfo['mostKills']) {
+            str += `Most kills: ${userInfo['mostKills']}`;
+            str += '<br>';
+        }
+        elements.highScores.innerHTML = str;
+    }
+}
 function getFromLocal() {
     let microDoomInfo = {};
     let str = localStorage.getItem("micro_Doom");

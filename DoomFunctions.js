@@ -83,6 +83,7 @@ function openMenu() {
     showElement(elements.menuImage);
     showElement(elements.menu);
     stopTimer();
+    displayHighscore();
 }
 function closeMenu() {
     hideElement(elements.menuImage);

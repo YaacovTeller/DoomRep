@@ -237,6 +237,18 @@ html, body {
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+.highScoresModal{
+    background-color: #474747;
+    float: right;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 20px;
+    color: white;
+    border: 1px solid rgb(22, 22, 22);
+    position: relative;
+    z-index: 25;
+    
+}
 
 .modal-content {
     background-color: #474747;
@@ -244,7 +256,7 @@ html, body {
     padding: 20px;
     border: 1px solid rgb(22, 22, 22);
     width: 400px;
-    height: 500px;
+ /*height: 500px;*/   
 }
 
 /* The menu close button */
@@ -270,10 +282,11 @@ html, body {
     width: 200px; 
 }
 .btn-group .button {
+    font-family: monospace;
     padding: 20px 32px;
     text-align: center;
     margin: 5px;
-    font-size: 16px;
+    font-size: 20px;
     background-color: grey;
     border: 1px solid black;
     color: white;

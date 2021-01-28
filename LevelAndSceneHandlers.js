@@ -186,6 +186,7 @@ class LevelHandler {
                 }
             }
             else {
+                // this.storeHighScore(microDoom, 'furthestContinuousStage', GameInfo.currentLevel.sceneArray.length)
                 currentFurthestStage = microDoom['furthestContinuousStage'] || 0;
                 let stage = GameInfo.currentLevel.sceneArray.length;
                 if (stage > currentFurthestStage) {
@@ -196,6 +197,12 @@ class LevelHandler {
         microDoom['gameInfo'] = gameInfo;
         setInLocal(microDoom);
     }
+    // public static storeHighScore(obj, furthestStageName, num){
+    //     let currentFurthestStage = obj[furthestStageName] || 0;
+    //     if (num > currentFurthestStage){
+    //         microDoom[furthestStageName] = num;
+    //     }
+    // }
     static nextLevel() {
         clearScreenMessages();
         let levelFunc;
