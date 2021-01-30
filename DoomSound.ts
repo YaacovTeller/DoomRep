@@ -100,7 +100,6 @@ var BloodRicochet_1 = new sound("sound/Blood/RICOCHT1.WAV")
 var BloodRicochet_2 = new sound("sound/Blood/RICOCHT2.WAV")
 
 
-
 Avpminigun.sound.setAttribute("loop", "infinite"); //CHAINGUN
 SSamMinigun.sound.setAttribute("loop", "infinite"); //DUALNEUTRON
 SSamRotate.sound.setAttribute("loop", "infinite");

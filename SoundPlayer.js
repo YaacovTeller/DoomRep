@@ -8,6 +8,7 @@ function sound(src) {
     this.sound.src = src;
     this.sound.setAttribute("preload", "auto");
     this.sound.setAttribute("controls", "none");
+    // this.sound.loop = true;
     //   this.sound.setAttribute("loop", "infinite");  For a sort of macabre doom-rap experience
     //hideElement(this.sound);
     document.body.appendChild(this.sound);

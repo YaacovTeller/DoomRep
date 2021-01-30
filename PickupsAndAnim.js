@@ -45,6 +45,16 @@ class Pickup {
     undraw() {
         $(this.DOMImage).fadeOut(500, function () { $(this).remove(); });
     }
+    // protected setFlash(){
+    //     let _this = this;
+    //     setInterval(() => { _this.flash() },4000)
+    // }
+    flash() {
+        this.DOMImage.classList.add('appliedFlash');
+        setTimeout(() => {
+            this.DOMImage.classList.remove('appliedFlash');
+        }, 2000);
+    }
     grab() {
         if (this.collected) {
             return false;

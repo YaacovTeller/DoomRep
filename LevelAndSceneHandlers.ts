@@ -302,6 +302,17 @@ class LevelHandler {
             this.setZindexes(); // FIX? oddly placed
         }, time);
     }
+    public static setPickupFlash(){
+        setInterval(()=>{
+            this.pickupFlash();
+        },5000)
+    }
+
+    private static pickupFlash(){
+        for (let item of GameInfo.pickupArray){
+            item.flash();
+        }
+    }
 
     private static setZindexes(){
         let domElems = this.getAllSprites();

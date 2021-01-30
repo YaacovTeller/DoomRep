@@ -111,6 +111,7 @@ function restart(num) {
     DOMUpdater.updateKillCounter(0);
     DOMUpdater.updateHealthCounter(Player.health);
     LevelHandler.beginGame();
+    LevelHandler.setPickupFlash(); // badly placed?
 }
 function startGameMusic(musicArray) {
     // if (!GameInfo.music){

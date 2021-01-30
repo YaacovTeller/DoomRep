@@ -41,6 +41,7 @@ class Pickup implements Iundrawable{
         this.DOMImage = img;
         img.setAttribute('src', this.image);
         img.classList.add('pickup','undraggable');
+
         let sourceWidth = this.source.DOMImage.getBoundingClientRect().width;
         let left = this.source.DOMImage.getBoundingClientRect().left + sourceWidth/2; // MID
         let top = this.source.DOMImage.getBoundingClientRect().bottom - 100;
@@ -56,6 +57,17 @@ class Pickup implements Iundrawable{
     }
     public undraw(){
         $(this.DOMImage).fadeOut(500, function() { $(this).remove(); })
+    }
+    // protected setFlash(){
+    //     let _this = this;
+    //     setInterval(() => { _this.flash() },4000)
+    // }
+
+    public flash(){
+        this.DOMImage.classList.add('appliedFlash');
+        setTimeout(() => {
+            this.DOMImage.classList.remove('appliedFlash');
+        }, 3000);
     }
 
     protected grab(){

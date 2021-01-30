@@ -6,6 +6,19 @@
 .crosshairCursor{
     cursor: url('assets/Crosshairs/crosshair.cur'), crosshair;
 }
+.appliedFlash {
+    animation-duration: 1s;
+    animation-name: appliedFlash;
+}
+/* .flash {
+    z-index: 22;
+    outline: 2px solid #fbf8b2 
+} */
+/* .flasher {
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-name: flash;
+} */
 
 html, body {
     /* animation-name: hit; */
@@ -251,6 +264,7 @@ html, body {
 }
 
 .modal-content {
+    border-radius: 5px;
     background-color: #474747;
     margin: 5% auto;
     padding: 20px;
