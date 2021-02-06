@@ -8,6 +8,7 @@ enum weaponOrder {
     DukeMgun,
     Minigun,
     DualNeutron,
+    Pipebomb
 }
 document.addEventListener("wheel", (event) => 
 {

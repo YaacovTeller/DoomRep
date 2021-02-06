@@ -41,7 +41,14 @@ const gunConfig = {
         damage: 10,
         reach: 240,
         gunHeight: 312,
-    }
+    },
+    Pipebomb: {
+        pickup_ammo_small: 1,
+        pickup_ammo_big: 1,
+        startingAmmo: 1,
+        // damage : 15,
+        gunHeight: 406,
+    },
 };
 class pickupStats {
     constructor(gunImage, bigAmmount, smallAmmount, bigImage, smallImage) {
@@ -72,6 +79,9 @@ class weaponry {
             this.weaponBob();
         }
         DOMUpdater.updateAmmoCounter(this.ammo);
+        if (Player.weapon instanceof MachineGun) {
+            Player.weapon.stopstrafe(); // Messy, attempt to prevent infinite strafing!
+        }
         Player.weapon = this;
         setTimeout(() => {
             elements.weaponImg.setAttribute("src", this.gunImage);
@@ -167,6 +177,9 @@ class regGun extends weaponry {
         let regGunSounds = new Array(Bullet1, Bullet2, Bullet3);
         super.ricochet(regGunSounds);
     }
+    setFiringImage() {
+        elements.weaponImg.src = this.firingImage;
+    }
     playFiringSound() {
         this.firingSound.play();
     }
@@ -185,20 +198,23 @@ class regGun extends weaponry {
     }
     shot(e) {
         if (this.checkForFiringShot()) {
-            return this.fireAndAssessTarget();
+            return this.fireAndAssessTarget(e);
         }
     }
-    fireAndAssessTarget() {
+    fireAndAssessTarget(e) {
         this.shotRelease();
         if (!this.targetingChecks()) {
             this.ricochet();
             return false;
         }
         else {
-            GameInfo.hitTarget.loseHealth(this.damage);
-            if (!(GameInfo.hitTarget instanceof Item)) { // for barrels, don't show blood
-                return true;
-            }
+            return this.dealDamage(e);
+        }
+    }
+    dealDamage(e) {
+        GameInfo.hitTarget.loseHealth(this.damage);
+        if (!(GameInfo.hitTarget instanceof Item)) { // for barrels, don't show blood
+            return true;
         }
     }
     shotRelease() {
@@ -236,10 +252,6 @@ class Pistol extends regGun {
             //      this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
         }, 50);
     }
-    setFiringImage() {
-        elements.weaponImg.src = pics.guns.firing.pistol;
-        //    this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot // poor practice
-    }
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
@@ -250,6 +262,7 @@ class Shotgun extends regGun {
         super(...arguments);
         this.firingSound = SGshot;
         this.gunImage = pics.guns.shotgun;
+        this.firingImage = pics.guns.firing.shotgun;
         this.damage = gunConfig.Shotgun.damage;
         this.ammo = gunConfig.Shotgun.startingAmmo;
         this.pickupStats = new pickupStats(pics.pickups.Shotgun, gunConfig.Shotgun.pickup_ammo_big, gunConfig.Shotgun.pickup_ammo_small, pics.pickups.shells.big, pics.pickups.shells.small);
@@ -261,9 +274,6 @@ class Shotgun extends regGun {
             weaponry.showShot(e);
         }
         return true;
-    }
-    setFiringImage() {
-        elements.weaponImg.src = pics.guns.firing.shotgun;
     }
     reload() {
         this.reloading = true;
@@ -278,6 +288,50 @@ class Shotgun extends regGun {
     switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
+    }
+}
+class Pipebomb extends regGun {
+    constructor() {
+        super(...arguments);
+        this.gibRadius = 300;
+        this.blastRadius = 500;
+        this.areaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
+        this.gunImage = pics.guns.pipebomb;
+        this.firingImage = pics.guns.firing.Pipebomb;
+        this.firingSound = explosion;
+        this.ammo = gunConfig.Pipebomb.startingAmmo;
+        this.pickupStats = new pickupStats(pics.pickups.Pipebomb, gunConfig.Pipebomb.pickup_ammo_big, gunConfig.Pipebomb.pickup_ammo_small, pics.pickups.Pipebomb, pics.pickups.Pipebomb // FIX? need small bullets pickup
+        );
+    }
+    shot(e) {
+        super.shot(e);
+        return true;
+    }
+    targetingChecks() {
+        return true;
+    }
+    dealDamage(e) {
+        let left = MousePosition.x;
+        setTimeout(() => {
+            this.bombExplode(left);
+            weaponry.showShot(e);
+        }, 1000);
+        return true;
+    }
+    bombExplode(left) {
+        //   let left = MousePosition.x;
+        this.areaAffect.killInBlastRadius(left);
+    }
+    switchTo() {
+        super.switchTo();
+        elements.ammoType.setAttribute("src", pics.ammoIcons.pipe);
+    }
+    reload() {
+        setTimeout(() => {
+            let img = pics.guns.pipebomb;
+            img = this.ammo > 0 ? img : pics.guns.blank;
+            elements.weaponImg.src = img;
+        }, 1000);
     }
 }
 class MachineGun extends weaponry {
@@ -513,7 +567,7 @@ class DualNeutron extends MachineGun {
         this.damage = gunConfig.DualNeutron.damage;
         this.ammo = gunConfig.DualNeutron.startingAmmo;
         this.firingSound = SSamMinigun;
-        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DualNeutron.pickup_ammo_big, gunConfig.DualNeutron.pickup_ammo_small, pics.pickups.bullets.big, pics.pickups.bullets.small);
+        this.pickupStats = new pickupStats(pics.pickups.DualNeutron, gunConfig.DualNeutron.pickup_ammo_big, gunConfig.DualNeutron.pickup_ammo_small, pics.pickups.cells, pics.pickups.cells);
     }
     strafe() {
         if (this.checkForFiringShot()) {

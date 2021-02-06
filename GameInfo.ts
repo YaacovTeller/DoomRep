@@ -14,10 +14,14 @@ class GameInfo {
     public static currentScene: Scene;
 
     public static bossTotalHealth: number;
+
     public static hitTarget: any = null;
     public static targeting: boolean = false;
+    public static headTargeting: boolean = false;
+
     public static deadCount: number;
     public static deadExtraCount: number;
+    public static headshotCount: number;
     public static enemiesCleared: boolean = false;
     public static music: any;
     public static mute: boolean = false;
@@ -30,6 +34,7 @@ class GameInfo {
         DukeMgun: null,
         Minigun: null,
         DualNeutron: null,
+        Pipebomb: null
     };
 
     public static resetAllGuns(){
@@ -40,6 +45,7 @@ class GameInfo {
             DukeMgun: new DukeMgun,
             Minigun: new Minigun,
             DualNeutron: new DualNeutron,
+            Pipebomb: new Pipebomb,
         };
     }
 
@@ -47,6 +53,7 @@ class GameInfo {
         this.resetAllGuns()
         this.deadCount = 0;
         this.deadExtraCount = 0;
+        this.headshotCount = 0;
         this.enemiesCleared = false;
         this.levelArray = [];
         this.currentLevel = null;
@@ -69,5 +76,19 @@ class GameInfo {
 
     public static getTotalKills(){
         return this.deadCount + this.deadExtraCount;
+    }
+    public static setHeadTargeting() {
+        this.headTargeting = true;
+    }
+    public static unsetHeadTargeting() {
+        this.headTargeting = false;
+    }
+    public static setAsTarget(target) {
+        this.hitTarget = target;
+        this.targeting = true;
+    }
+    public static unsetTarget() {
+        this.hitTarget = null;
+        this.targeting = false;
     }
 }

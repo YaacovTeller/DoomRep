@@ -1,10 +1,10 @@
 "use strict";
 const pics = {
     guns: {
+        blank: "assets/guns/blank.png",
         chainsaw: "assets/guns/Saw-2.gif",
         chainsaw_firing: "assets/guns/Saw-2.png",
         pistol: "assets/guns/pistol_right-3.png",
-        //     pistol: "assets/shotgunReload_big.gif",
         shotgun: "assets/guns/Shotgun.png",
         //shotgun_firing: "assets/guns/Shotgun.png",
         reloading: {
@@ -15,6 +15,7 @@ const pics = {
             shotgun: "assets/guns/shotgunShot_fast.gif",
             dukeMgun: "assets/guns/DukeMgunFire-3.gif",
             dualNeutron: "assets/guns/DualNeutronFiring.gif",
+            Pipebomb: "assets/guns/pipe.gif",
         },
         dukeMgun: "assets/guns/DukeMgun-2.png",
         minigun: "assets/guns/ChainGun.png",
@@ -22,13 +23,16 @@ const pics = {
         minigun_spinup: "assets/guns/ChainGunSpin_Up.gif",
         minigun_frame2: "assets/guns/ChainGun_Alt.png",
         dualNeutron: "assets/guns/DualNeutron.png",
+        pipebomb: "assets/guns/Pipe.png",
     },
     ammoIcons: {
         bullet: "assets/icons/Slug.png",
         bullets: "assets/icons/Bullets.png",
         shell: "assets/icons/Shell.png",
+        pipe: "assets/icons/pipe.png",
     },
     pickups: {
+        cells: "assets/pickups/cells.png",
         bullets: {
             big: "assets/pickups/bullets_box.png",
             small: "assets/pickups/bullets_clip.png"
@@ -47,6 +51,7 @@ const pics = {
         Minigun: "assets/pickups/Chaingun.png",
         ChainSaw: "assets/pickups/Chainsaw.png",
         DualNeutron: "assets/pickups/DualNeutron.png",
+        Pipebomb: "assets/pickups/pipe.png",
         misc: {
             fizzy: "assets/pickups/DeusSoda.png",
         }
@@ -67,11 +72,11 @@ const enemyPics = {
     SectorPatrol: "assets/enemies/SectorPatrol/blue_face.png",
     Troop: "assets/enemies/Troop/Troop_fwd.gif",
     ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_fwd.gif",
-    Imp: "assets/enemies/Imp/Imp_fwd.gif",
+    Imp: "assets/enemies/Imp/Imp_fwd-2.gif",
     ChainGuy: "assets/enemies/ChainGuy/ChainGuy_fwd.gif",
     TroopLeft: "assets/enemies/Troop/Troop_left_g.gif",
     TroopLeft_Tomer: "assets/enemies/Troop/TroopLeft_Tomer.gif",
-    barrel: "assets/Barrel.gif",
+    barrel: "assets/Barrel-1.gif",
     forward: {
         SectorPatrol: "assets/enemies/SectorPatrol/blue_fwd.gif",
     },
@@ -107,6 +112,9 @@ const enemyPics = {
         TroopLeft: "assets/enemies/Troop/Troop_Dead.gif",
         TroopLeft_Tomer: "assets/enemies/Troop/Troop_Dead.gif",
         barrel: "assets/Barrel_explode.gif",
+    },
+    headshot: {
+        ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_Dead_headshot.gif",
     },
     explode: {
         SectorPatrol: "assets/enemies/Troop/Troop_explode.gif",

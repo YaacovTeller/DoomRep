@@ -1,6 +1,9 @@
 "use strict";
-//TheQuickAndTheDead
-// parent class, handles drawing and damaging.
+var specialEnemy;
+(function (specialEnemy) {
+    specialEnemy[specialEnemy["Boss"] = 0] = "Boss";
+    specialEnemy[specialEnemy["Extra"] = 1] = "Extra";
+})(specialEnemy || (specialEnemy = {}));
 class Target {
     constructor(enemy, position, health, anim) {
         this.deadFlag = false;
@@ -15,16 +18,55 @@ class Target {
         this.DOMImage.src = img + "?a=" + Math.random();
     }
     draw(position, anim) {
-        var img = document.createElement("img");
-        this.DOMImage = img;
-        img.classList.add("target", "undraggable", "fillModeForwards");
-        img.onmouseover = () => this.setAsTarget();
-        img.onmouseleave = () => this.unsetTarget();
+        this.creatDOMPresenceWithImg();
         this.setImageSrc(enemyPics[this.enemy]);
-        // img.style.borderRadius = "55px" // reduce the hitbox?
-        img.style.left = position.x + "%";
-        img.style.top = position.y + "%";
-        img.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y / 50 * position.y / 50})`; // Attempt auto-size based on position
+        this.positionDiv(this.DOMdiv, position, anim);
+        this.createHitbox();
+    }
+    creatDOMPresenceWithImg() {
+        let div = document.createElement("div");
+        let img = document.createElement("img");
+        this.DOMdiv = div;
+        this.DOMImage = img;
+        this.DOMImage.classList.add("height_100", "undraggable", "noPointerEvents");
+        div.appendChild(img);
+        elements.targetBackdrop.appendChild(this.DOMdiv);
+    }
+    createHitbox() {
+        let hitbox = document.createElement("div");
+        hitbox.onmouseover = () => GameInfo.setAsTarget(this);
+        hitbox.onmouseleave = () => GameInfo.unsetTarget();
+        hitbox.classList.add('hitbox', 'autoPointerEvents');
+        this.DOMdiv.appendChild(hitbox);
+        this.applyHitboxArea(hitbox);
+        let headshotBox = document.createElement("div");
+        headshotBox.onmouseover = () => GameInfo.setHeadTargeting();
+        headshotBox.onmouseleave = () => GameInfo.unsetHeadTargeting();
+        headshotBox.classList.add("headshotBox");
+        hitbox.appendChild(headshotBox);
+        this.applyHeadshotBoxArea(headshotBox);
+    }
+    positionDiv(div, position, anim) {
+        div.classList.add('undraggable', 'absolute', 'flexJustifyCenter', 'noPointerEvents', "fillModeForwards");
+        div.style.left = position.x + "%";
+        div.style.top = position.y + "%";
+        div.style.transform = position.scale ? `scale(${position.scale})` : `scale(${position.y / 50 * position.y / 50})`; // Attempt auto-size based on position
+        this.applyAnimations(anim, div);
+    }
+    applyHitboxArea(hitbox) {
+        hitbox.style.width = '75%';
+        hitbox.style.height = '100%';
+        hitbox.style.paddingTop = '10px';
+        hitbox.style.marginTop = '5px';
+        //   hitbox.style.margin = "0px 10px 100px"
+    }
+    applyHeadshotBoxArea(headshotBox) {
+        if (headshotBox) {
+            headshotBox.style.width = '30%';
+            headshotBox.style.height = '20%';
+        }
+    }
+    applyAnimations(anim, img) {
         if (anim) {
             let arr = [];
             for (let a of anim) {
@@ -32,7 +74,6 @@ class Target {
             }
             img.style.animation = arr.join(", ");
         }
-        elements.targetBackdrop.appendChild(img);
     }
     randomiseDrop(num) {
         let roll = Math.floor(Math.random() * 100);
@@ -54,72 +95,98 @@ class Target {
         }
     }
     undraw() {
-        $(this.DOMImage).fadeOut(300, function () { $(this).remove(); });
+        $(this.DOMdiv).fadeOut(300, function () { $(this).remove(); });
     }
     loseHealth(damage) {
+        damage = GameInfo.headTargeting ? damage * 2 : damage;
         this.health -= damage;
         this.setImageSrc(enemyPics.hurt[this.enemy]);
         let _this = this;
-        if (this.isBoss) {
-            LevelHandler.reduceBar(this.health);
-        }
         if (this.health <= 0) {
-            this.die();
+            this.establishCauseOfDeath();
         }
         // Calls redraw to reset
         else {
-            setTimeout(() => _this.redraw(_this), 200);
+            setTimeout(() => _this.redraw(this), 200);
         }
     }
-    die(gib) {
+    establishCauseOfDeath() {
+        let gib, headshot;
+        if (GameInfo.headTargeting) {
+            headshot = true;
+        }
+        this.die(gib, headshot);
+    }
+    die(gib, headshot) {
+        headshot ? console.log("headshot!") : null;
         let pic;
         if (GameInfo.kidMode) {
             pic = enemyPics.dead_alt[this.enemy];
         }
-        else if (gib) {
-            pic = enemyPics.explode[this.enemy];
-        }
         else {
-            pic = enemyPics.dead[this.enemy];
-            if (this instanceof Imp && RandomNumberGen.randomNumBetween(0, 3) == 3) { // FIX, alt deaths need a proper system
-                pic = enemyPics.dead[this.enemy + '_alt'];
+            if (gib) {
+                pic = enemyPics.explode[this.enemy];
+            }
+            else {
+                if (headshot && enemyPics.headshot[this.enemy]) {
+                    pic = enemyPics.headshot[this.enemy];
+                }
+                else {
+                    pic = enemyPics.dead[this.enemy];
+                    if (this instanceof Imp && RandomNumberGen.randomNumBetween(0, 3) == 3) { // FIX, alt deaths need a proper system
+                        pic = enemyPics.dead[this.enemy + '_alt'];
+                    }
+                }
             }
         }
         this.setImageSrc(pic);
         this.deadFlag = true;
-        this.DOMImage.style.animationPlayState = "paused"; // stop css...
-        $(this.DOMImage).stop(); // ...and jquery movement
-        this.DOMImage.style.pointerEvents = "none";
-        if (this.randomiseDrop(85))
+        this.DOMdiv.style.animationPlayState = "paused"; // stop css...
+        $(this.DOMdiv).stop(); // ...and jquery movement
+        GameInfo.unsetTarget();
+        GameInfo.unsetHeadTargeting();
+        let hitbox = this.DOMdiv.getElementsByClassName('hitbox')[0];
+        this.DOMdiv.removeChild(hitbox); // messy, get back the hitbox to prevent multiple deaths...
+        if (this.randomiseDrop(85)) {
             this.drop(new healthPickup(this, 20));
+        }
         if (!GameInfo.kidMode) {
             this.deadSound();
         }
     }
-    setAsTarget() {
-        GameInfo.hitTarget = this;
-        GameInfo.targeting = true;
-    }
-    unsetTarget() {
-        GameInfo.hitTarget = null;
-        GameInfo.targeting = false;
-    }
 }
 class RegEnemy extends Target {
-    constructor(enemy, position, health, anim) {
+    constructor(enemy, position, health, anim, special) {
         super(enemy, position, health, anim);
         this.noRandomMovement = false;
         this.mover = new MovementGenerator;
+        this.specialStatus = special;
     }
-    // public draw(position, anim) {
-    //     super.draw(position, anim);
-    // }
-    die(gib) {
-        super.die(gib);
+    loseHealth(damage) {
+        super.loseHealth(damage);
+        if (this.specialStatus == specialEnemy.Boss) {
+            LevelHandler.reduceBar(this.health);
+        }
+    }
+    extraDrops() {
+        this.drop(new healthPickup(this, 50));
+        if (this.randomiseDrop(50)) {
+            this.drop(new weaponPickup(this, GameInfo.allGuns.DualNeutron));
+        }
+        else {
+            this.drop(new weaponPickup(this, GameInfo.allGuns.Pipebomb));
+        }
+    }
+    die(gib, headshot) {
+        super.die(gib, headshot);
         clearInterval(this.attackRoller);
         clearInterval(this.damaging);
         clearInterval(this.moveRoller);
-        if (!(this instanceof Extra)) {
+        if (this.specialStatus == specialEnemy.Extra) {
+            GameInfo.deadExtraCount++;
+            this.extraDrops();
+        }
+        else {
             GameInfo.deadCount++;
             LevelHandler.sceneCheck();
         }
@@ -130,7 +197,7 @@ class RegEnemy extends Target {
             var die = RandomNumberGen.randomNumBetween(1, 6);
             if (die >= hitLimit) {
                 this.firing = true;
-                $(this.DOMImage).stop();
+                $(this.DOMdiv).stop();
                 this.setImageSrc(enemyPics.firing[this.enemy]);
                 let _this = this;
                 setTimeout(() => {
@@ -152,8 +219,8 @@ class RegEnemy extends Target {
         }
     }
     moveForward() {
-        let width = this.DOMImage.getBoundingClientRect().width;
-        let height = this.DOMImage.getBoundingClientRect().height;
+        let width = this.DOMdiv.getBoundingClientRect().width;
+        let height = this.DOMdiv.getBoundingClientRect().height;
         let pic = this.DOMImage;
         let time = 2000;
         this.mover.moveForward({ width: width * 2, height: height * 2 }, time, pic);
@@ -171,14 +238,20 @@ class RegEnemy extends Target {
         }
     }
     calculateMove() {
-        let lateralDestination = this.mover.lateralDestination(this.DOMImage);
-        let distance = this.mover.distance(this.DOMImage, lateralDestination);
-        let direction = this.mover.direction(this.DOMImage, lateralDestination);
+        let lateralDestination = this.mover.lateralDestination(this.DOMdiv);
+        let distance = this.mover.distance(this.DOMdiv, lateralDestination);
+        let direction = this.mover.direction(this.DOMdiv, lateralDestination);
         let speed = this.mover.speed(distance);
         this.setImageSrc(enemyPics[direction][this.enemy]);
         let _this = this;
-        this.mover.moveLateral(lateralDestination, speed, this.DOMImage, () => _this.redraw(_this));
-        //    this.mover.moveForward(this.mover.calcDimentions(this.DOMImage), speed, this.DOMImage);
+        this.mover.moveLateral(lateralDestination, speed, this.DOMdiv, () => _this.redraw(_this));
+        //    this.mover.moveForward(this.mover.calcDimentions(this.DOMdiv), speed, this.DOMdiv);
+    }
+    test_precalculatedLateralMove(lateralDestination, speed) {
+        let direction = this.mover.direction(this.DOMdiv, lateralDestination);
+        this.setImageSrc(enemyPics[direction][this.enemy]);
+        let _this = this;
+        this.mover.moveLateral(lateralDestination, speed, this.DOMdiv, () => _this.redraw(_this));
     }
     beginInflictDamage(hitLimit) {
         var _this = this;
@@ -195,12 +268,13 @@ class RegEnemy extends Target {
     }
 }
 class Troop extends RegEnemy {
-    constructor(position, health, anim) {
-        super("Troop", position, health, anim);
-        this.baseHealth = 30;
+    constructor(position, health, anim, special) {
+        super("Troop", position, health, anim, special);
+        this.baseHealth = 40;
         this.damageNumber = 10;
         this.attackFrequency = 2000;
-        this.carriedWeapon = GameInfo.allGuns.Pistol;
+        //  public carriedWeapon = GameInfo.allGuns.Pistol;
+        this.carriedWeapon = GameInfo.allGuns.DukeMgun;
     }
     deadSound() {
         RandomSoundGen.playRandomSound(troopDeaths);
@@ -211,16 +285,23 @@ class Troop extends RegEnemy {
     activeSound() {
         RandomSoundGen.playRandomSound(troopShouts);
     }
-    die(gib) {
-        if (this.randomiseDrop(40))
-            this.drop(new weaponPickup(this, GameInfo.allGuns.DukeMgun)); //this.carriedWeapon
-        super.die(gib);
+    die(gib, headshot) {
+        if (!this.specialStatus && this.randomiseDrop(40)) {
+            this.drop(new weaponPickup(this, this.carriedWeapon));
+        }
+        super.die(gib, headshot);
+    }
+    applyHitboxArea(hitbox) {
+        hitbox.style.width = '60%';
+        hitbox.style.height = '100%';
+        hitbox.style.marginLeft = '-30px';
+        //   hitbox.style.margin = "0px 10px 100px"
     }
 }
 class ShotGun_Troop extends RegEnemy {
-    constructor(position, health, anim) {
-        super("ShotGun_Troop", position, health, anim);
-        this.baseHealth = 30;
+    constructor(position, health, anim, special) {
+        super("ShotGun_Troop", position, health, anim, special);
+        this.baseHealth = 40;
         this.damageNumber = 20;
         this.attackFrequency = 2000;
         this.carriedWeapon = GameInfo.allGuns.Shotgun;
@@ -234,21 +315,19 @@ class ShotGun_Troop extends RegEnemy {
     activeSound() {
         RandomSoundGen.playRandomSound(troopShouts);
     }
-    die(gib) {
+    die(gib, headshot) {
         if (this.randomiseDrop(40))
             this.drop(new weaponPickup(this, this.carriedWeapon));
-        super.die(gib);
+        super.die(gib, headshot);
     }
 }
 class ChainGGuy extends RegEnemy {
-    constructor(position, health, anim, isBoss) {
-        super("ChainGuy", position, health, anim);
-        this.baseHealth = 120;
+    constructor(position, health, anim, special) {
+        super("ChainGuy", position, health, anim, special);
+        this.baseHealth = 130;
         this.damageNumber = 30;
         this.attackFrequency = 2000;
         this.carriedWeapon = GameInfo.allGuns.Minigun;
-        this.isBoss = isBoss;
-        //  this.attackFrequency = this.isBoss ? this.attackFrequency / 3 : this.attackFrequency;
     }
     deadSound() {
         RandomSoundGen.playRandomSound(troopDeaths);
@@ -259,16 +338,21 @@ class ChainGGuy extends RegEnemy {
     activeSound() {
         RandomSoundGen.playRandomSound(troopShouts);
     }
-    die(gib) {
+    die(gib, headshot) {
         this.drop(new weaponPickup(this, this.carriedWeapon));
-        this.drop(new healthPickup(this, 50));
-        super.die(gib);
+        this.drop(new healthPickup(this, 30));
+        super.die(gib, headshot);
+    }
+    applyHitboxArea(hitbox) {
+        hitbox.style.width = '55%';
+        hitbox.style.height = '95%';
+        //   hitbox.style.margin = "0px 10px 100px"
     }
 }
 class Imp extends RegEnemy {
-    constructor(position, health, anim) {
-        super("Imp", position, health, anim);
-        this.baseHealth = 30;
+    constructor(position, health, anim, special) {
+        super("Imp", position, health, anim, special);
+        this.baseHealth = 40;
         this.damageNumber = 15;
         this.attackFrequency = 2000;
     }
@@ -283,13 +367,12 @@ class Imp extends RegEnemy {
     }
 }
 class SectorPatrol extends RegEnemy {
-    constructor(position, health, anim, isBoss) {
-        super("SectorPatrol", position, health, anim);
-        this.baseHealth = 20;
+    constructor(position, health, anim, special) {
+        super("SectorPatrol", position, health, anim, special);
+        this.baseHealth = 30;
         this.damageNumber = 10;
         this.attackFrequency = 2000;
         this.carriedWeapon = GameInfo.allGuns.Pistol;
-        this.isBoss = isBoss;
     }
     deadSound() {
         RandomSoundGen.playRandomSound(patrolDeaths);
@@ -300,74 +383,70 @@ class SectorPatrol extends RegEnemy {
     activeSound() {
         RandomSoundGen.playRandomSound(patrolShouts);
     }
-    die(gib) {
+    die(gib, headshot) {
         this.drop(new weaponPickup(this, this.carriedWeapon));
-        super.die(gib);
+        super.die(gib, headshot);
     }
 }
-class Extra extends RegEnemy {
-    constructor(enemy, position, health, anim) {
-        super(enemy, position, health, anim);
-        this.baseHealth = 15;
+class AreaAffect {
+    constructor(blastRadius, gibRadius) {
+        this.blastRadius = blastRadius;
+        this.gibRadius = gibRadius;
     }
-    draw(position, anim) {
-        super.draw(position, anim);
-        this.DOMImage.classList.add('fillModeForwards', 'extraTarget');
-    }
-    die(gib) {
-        this.drop(new healthPickup(this, 50));
-        GameInfo.deadExtraCount++;
-        super.die(gib);
-    }
-    deadSound() {
-        if (this.enemy.includes("Troop")) {
-            RandomSoundGen.playRandomSound(troopDeaths);
-        }
-        else if (this.enemy == "ShotGun_Troop") {
-            RandomSoundGen.playRandomSound(troopDeaths);
-        }
-        else if (this.enemy == "Imp") {
-            RandomSoundGen.playRandomSound(ImpDeaths);
-        }
-    }
-    attackSound() { }
-    ;
-    activeSound() { }
-    ;
-    beginInflictDamage() { }
-    ;
-    beginMoveLateral() { }
-    ;
-}
-class Item extends Target {
-    constructor(item, position, health, anim) {
-        super(item, position, health, anim);
-        this.gibRadius = 500;
-        this.blastRadius = 700;
-    }
-    die() {
-        // killAllEnemies(true);
-        this.killInBlastRadius(true);
-        super.die();
-    }
-    killInBlastRadius(gib) {
-        let barrelLeft = this.DOMImage.getBoundingClientRect().left;
+    killInBlastRadius(left) {
         for (let enemy of GameInfo.enemyArray) {
             if (!enemy || enemy.deadFlag == true)
                 continue;
-            let enemyLeft = enemy.DOMImage.getBoundingClientRect().left;
-            if (this.checkDistance(barrelLeft, enemyLeft) < this.blastRadius) {
-                if (this.checkDistance(barrelLeft, enemyLeft) < this.gibRadius) {
-                    enemy.die(gib);
+            let enemyLeft = enemy.DOMdiv.getBoundingClientRect().left;
+            if (this.checkDistance(left, enemyLeft) < this.blastRadius) {
+                if (this.checkDistance(left, enemyLeft) < this.gibRadius) {
+                    enemy.die(true);
                 }
                 else {
                     enemy.die();
                 }
             }
         }
+        for (let item of GameInfo.itemArray) {
+            if (!item || item.deadFlag == true)
+                continue;
+            let enemyLeft = item.DOMdiv.getBoundingClientRect().left;
+            if (this.checkDistance(left, enemyLeft) < this.blastRadius) {
+                item.die();
+            }
+        }
     }
     checkDistance(left1, left2) {
         return Math.abs(left1 - left2);
+    }
+}
+class Item extends Target {
+    constructor(item, position, health, anim) {
+        super(item, position, health, anim);
+        this.gibRadius = 500;
+        this.blastRadius = 700;
+        this.areaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
+    }
+    die() {
+        // killAllEnemies(true);
+        super.die();
+        this.barrelExplode();
+    }
+    leftPosition() {
+        return this.DOMdiv.getBoundingClientRect().left;
+    }
+    barrelExplode() {
+        let barrelLeft = this.leftPosition();
+        this.areaAffect.killInBlastRadius(barrelLeft);
+    }
+    checkDistance(left1, left2) {
+        return Math.abs(left1 - left2);
+    }
+    applyHitboxArea(hitbox) {
+        hitbox.style.width = '38%';
+        hitbox.style.height = '60%';
+        hitbox.style.margin = "47px -7px 0px";
+        hitbox.style.borderRadius = '10px';
     }
     deadSound() {
         explosion.play();

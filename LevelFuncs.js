@@ -15,6 +15,10 @@ function level_1_4() {
     let scene = new Scene(pics.background.doom2, "width: 100%", () => drawNewEnemies_1_4());
     GameInfo.currentLevel.addScene(scene);
 }
+function level_1_5() {
+    let scene = new Scene(pics.background.doom2, "width: 100%", () => drawNewEnemies_1_5());
+    GameInfo.currentLevel.addScene(scene);
+}
 ////////////////////////////////////////////////////
 function level_2_1() {
     let scene = new Scene(pics.background.wide, "width: 160%", () => drawNewEnemies_2_1(), 0, 0, 0, true);

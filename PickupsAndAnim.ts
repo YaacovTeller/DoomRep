@@ -8,6 +8,11 @@ class Position{
         this.scale = scale
     }
 }
+
+interface Iundrawable{
+    undraw() 
+}
+
 class AnimationInfo{
     animation: string;
     duration: string;
@@ -55,13 +60,10 @@ class Pickup implements Iundrawable{
         this.throw(left, top, img);
         GameInfo.pickupArray.push(this);
     }
+    
     public undraw(){
         $(this.DOMImage).fadeOut(500, function() { $(this).remove(); })
     }
-    // protected setFlash(){
-    //     let _this = this;
-    //     setInterval(() => { _this.flash() },4000)
-    // }
 
     public flash(){
         this.DOMImage.classList.add('appliedFlash');
@@ -166,8 +168,4 @@ class weaponPickup extends Pickup {
             return true
         };
     }
-}
-
-interface Iundrawable{
-    undraw() 
 }

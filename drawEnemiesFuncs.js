@@ -5,7 +5,7 @@ var hitLimit = {
     fast: 4,
     Xfast: 3,
     XXFast: 2
-}; // HITLIMIT
+};
 function drawNewEnemies_1_1() {
     GameInfo.enemyArray.push(new SectorPatrol(new Position(30, 45)), new SectorPatrol(new Position(50, 50)));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
@@ -15,18 +15,22 @@ function drawNewEnemies_1_2() {
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
 }
 function drawNewEnemies_1_3() {
-    GameInfo.enemyArray.push(new Extra("SectorPatrol", new Position(50, 25, 0.2)), new SectorPatrol(new Position(10, 65)), new SectorPatrol(new Position(50, 40)), new SectorPatrol(new Position(0, 50)), new SectorPatrol(new Position(20, 45)));
+    GameInfo.enemyArray.push(new SectorPatrol(new Position(10, 65)), new SectorPatrol(new Position(50, 40)), new SectorPatrol(new Position(0, 50)), new SectorPatrol(new Position(20, 45)));
     GameInfo.itemArray.push(new Item("barrel", new Position(52, 25), 40));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
 }
 function drawNewEnemies_1_4() {
+    let extra_1 = new SectorPatrol(new Position(50, 25, 0.2), 15, [], specialEnemy.Extra);
+    GameInfo.enemyArray.push(extra_1, new SectorPatrol(new Position(15, 65)), new SectorPatrol(new Position(60, 45)), new SectorPatrol(new Position(5, 40)), new SectorPatrol(new Position(70, 45)));
+    extra_1.test_precalculatedLateralMove(-200, 4000);
+    LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
+}
+function drawNewEnemies_1_5() {
     GameInfo.bossTotalHealth = 150;
-    let boss = new SectorPatrol(new Position(40, 35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8", '7s', 1)], true);
+    let boss = new SectorPatrol(new Position(40, 35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8", '7s', 1)], specialEnemy.Boss);
     //  let boss = new SectorPatrol(new Position(40,35, 0.8), GameInfo.bossTotalHealth, [], true)
     //  boss.moveForward();
-    GameInfo.enemyArray.push(new Extra("SectorPatrol", new Position(62, 23, 0.2)), boss
-    //    new SectorPatrol(new Position(40,35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8",'7s',1)], true)
-    );
+    GameInfo.enemyArray.push(new SectorPatrol(new Position(50, 25, 0.2), 15, [], specialEnemy.Extra), boss);
     boss.DOMImage.src = enemyPics.forward.SectorPatrol;
     //   setTimeout(() => {
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.Xfast);
@@ -35,8 +39,12 @@ function drawNewEnemies_1_4() {
 }
 ////////////////////////////////////////////////
 function drawNewEnemies_2_1() {
+    let extra_1 = new Troop(new Position(100, 30, 0.6), 10, [], specialEnemy.Extra);
     GameInfo.enemyArray.push(new Troop(new Position(0, 30, 0.6), null, [new AnimationInfo("topTo_60", '3s'), new AnimationInfo("scaleTo_1", '3s'),]), //new AnimationInfo("leftTo_10",'2s')
-    new Troop(new Position(20, 37)), new Troop(new Position(30, 60)), new ShotGun_Troop(new Position(50, 55)), new ShotGun_Troop(new Position(70, 30), null, [new AnimationInfo("scaleTo_1", '4s', '1')]), new Extra("TroopLeft", new Position(100, 30, 0.6), null, [new AnimationInfo("fleeLeft", '7s', '1')]));
+    new Troop(new Position(20, 37)), new Troop(new Position(30, 60)), new ShotGun_Troop(new Position(50, 55)), new ShotGun_Troop(new Position(70, 30), null, [new AnimationInfo("scaleTo_1", '4s', '1')]), 
+    //      new Extra("TroopLeft", new Position(100,30,0.6), null, [new AnimationInfo("fleeLeft",'7s', '1')]),// + "_Tomer"
+    extra_1);
+    extra_1.test_precalculatedLateralMove(-200, 4000);
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_2_2() {
@@ -59,17 +67,17 @@ function drawNewEnemies_2_4() {
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_2_5() {
-    GameInfo.enemyArray.push(new Troop(new Position(5, 45)), new Troop(new Position(15, 50)), new Imp(new Position(20, 60)), new ShotGun_Troop(new Position(47, 27, 0.4)), new ShotGun_Troop(new Position(80, 27, 0.4)), new ShotGun_Troop(new Position(65, 45)), new Troop(new Position(60, 50)), new Troop(new Position(70, 30, 0.5)), new Imp(new Position(70, 45)), new Troop(new Position(85, 58)), new Extra("ShotGun_Troop", new Position(15, 18, 0.1)));
+    GameInfo.enemyArray.push(new Troop(new Position(5, 45)), new Troop(new Position(15, 50)), new Imp(new Position(20, 60)), new ShotGun_Troop(new Position(47, 27, 0.4)), new ShotGun_Troop(new Position(80, 27, 0.4)), new ShotGun_Troop(new Position(65, 45)), new Troop(new Position(60, 50)), new Troop(new Position(70, 30, 0.5)), new Imp(new Position(70, 45)), new Troop(new Position(85, 58)), new ShotGun_Troop(new Position(15, 18, 0.1), 15, [], specialEnemy.Extra));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_2_6() {
     GameInfo.bossTotalHealth = 350;
-    GameInfo.enemyArray.push(new ChainGGuy(new Position(40, 35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8", '7s', 1)], true));
+    GameInfo.enemyArray.push(new ChainGGuy(new Position(40, 35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8", '7s', 1)], specialEnemy.Boss));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
     resetBossBar();
 }
 function drawNewEnemies_3_1() {
-    GameInfo.enemyArray.push(new ChainGGuy(new Position(5, 45)), new ShotGun_Troop(new Position(47, 27, 0.4)), new ShotGun_Troop(new Position(60, 50)), new ShotGun_Troop(new Position(65, 45)), new Troop(new Position(70, 30, 0.5)), new Troop(new Position(70, 45)), new Extra("ShotGun_Troop", new Position(80, 30, 0.3)));
+    GameInfo.enemyArray.push(new ChainGGuy(new Position(5, 45)), new ShotGun_Troop(new Position(47, 27, 0.4)), new ShotGun_Troop(new Position(60, 50)), new ShotGun_Troop(new Position(65, 45)), new Troop(new Position(70, 30, 0.5)), new Troop(new Position(70, 45)), new ShotGun_Troop(new Position(80, 30, 0.3), 15, [], specialEnemy.Extra));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_3_2() {
@@ -95,7 +103,7 @@ function drawNewEnemies_3_6() {
 }
 function drawNewEnemies_3_7() {
     GameInfo.bossTotalHealth = 450;
-    GameInfo.enemyArray.push(new ChainGGuy(GameInfo.bossTotalHealth, new Position(40, 35, 0.8), [new AnimationInfo("scaleTo_1p8", '7s', 1)], true));
+    GameInfo.enemyArray.push(new ChainGGuy(GameInfo.bossTotalHealth, new Position(40, 35, 0.8), [new AnimationInfo("scaleTo_1p8", '7s', 1)], specialEnemy.Boss));
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
     resetBossBar();
 }

@@ -1,8 +1,8 @@
 "use strict";
 var levelFuncArray = [
-    // [level_2_6],
-    //  [level_1_3],
-    [level_1_1, level_1_2, level_1_3, level_1_4],
+    //  [level_2_6],
+    // [level_1_4],
+    //   [level_1_1, level_1_2, level_1_3, level_1_4, level_1_5],
     [level_2_1, level_2_2, level_2_3, level_2_4, level_2_5, level_2_6],
     [level_3_1, level_3_2, level_3_3, level_3_4, level_3_5, level_3_6],
 ];
@@ -235,7 +235,8 @@ class LevelHandler {
     }
     static checkAllDead() {
         for (let enemy of GameInfo.enemyArray) {
-            if (enemy.deadFlag == false && !(enemy instanceof Extra))
+            //  if (enemy.deadFlag == false && !(enemy instanceof Extra))
+            if (enemy.deadFlag == false && !(enemy.specialStatus == specialEnemy.Extra))
                 return false;
         }
         GameInfo.enemiesCleared = true;
@@ -282,7 +283,7 @@ class LevelHandler {
     static setPickupFlash() {
         setInterval(() => {
             this.pickupFlash();
-        }, 4000);
+        }, 5000);
     }
     static pickupFlash() {
         for (let item of GameInfo.pickupArray) {
@@ -297,8 +298,8 @@ class LevelHandler {
     }
     static getAllSprites() {
         let allDomElems = [];
-        let enemyDomElems = GameInfo.enemyArray.map(x => x.DOMImage);
-        let itemDomElems = GameInfo.itemArray.map(x => x.DOMImage);
+        let enemyDomElems = GameInfo.enemyArray.map(x => x.DOMdiv);
+        let itemDomElems = GameInfo.itemArray.map(x => x.DOMdiv);
         allDomElems = allDomElems.concat(enemyDomElems, itemDomElems);
         return allDomElems;
     }
@@ -314,12 +315,17 @@ class LevelHandler {
     }
     static startAllRolls(frequency, hitLimit) {
         for (let enemy of GameInfo.enemyArray) {
-            enemy.beginInflictDamage(hitLimit);
-            enemy.beginMoveLateral(frequency);
-            if (RandomNumberGen.randomNumBetween(0, 1) == 1) {
-                enemy.activeSound();
+            if (!(enemy.specialStatus == specialEnemy.Extra)) {
+                //        enemy.beginInflictDamage(hitLimit);
+                //        enemy.beginMoveLateral(frequency);
             }
+            this.randomisedActiveSound(enemy);
             enemy.health = enemy.health ? enemy.health : enemy.baseHealth;
+        }
+    }
+    static randomisedActiveSound(enemy) {
+        if (RandomNumberGen.randomNumBetween(0, 1) == 1) {
+            enemy.activeSound();
         }
     }
 }

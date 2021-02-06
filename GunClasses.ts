@@ -41,7 +41,14 @@ const gunConfig = {
         damage : 10,
         reach: 240,
         gunHeight: 312,
-    }
+    },
+    Pipebomb: {
+        pickup_ammo_small: 1,
+        pickup_ammo_big: 1,
+        startingAmmo : 1,
+        // damage : 15,
+        gunHeight: 406,
+    },
 }
 class pickupStats {
     public gunImage: string;
@@ -74,7 +81,7 @@ abstract class weaponry {
     public ammo: number;
     public firing: boolean;
     protected gunImage: string;
-    public firingImage: string;
+    protected firingImage: string;
     public startingAmmo: number;
     public damage: number;
     public pickupStats: pickupStats;
@@ -87,6 +94,9 @@ abstract class weaponry {
             this.weaponBob();
         }
         DOMUpdater.updateAmmoCounter(this.ammo);
+        if (Player.weapon instanceof MachineGun){
+            Player.weapon.stopstrafe(); // Messy, attempt to prevent infinite strafing!
+        }
         Player.weapon = this;
         setTimeout(() => {
             elements.weaponImg.setAttribute("src", this.gunImage);
@@ -94,6 +104,7 @@ abstract class weaponry {
         if (!(this instanceof ChainSaw)){ //FIX better way to cut the chainsaw noise?
             SawIdle.stop();
         }
+
     };
 
     public weaponBob(){
@@ -188,7 +199,9 @@ abstract class regGun extends weaponry {
         super.ricochet(regGunSounds);
     }
     protected abstract reload()
-    protected abstract setFiringImage()
+    protected setFiringImage(){
+        elements.weaponImg.src = this.firingImage
+    }
     
     protected playFiringSound(){
         this.firingSound.play();
@@ -212,23 +225,27 @@ abstract class regGun extends weaponry {
 
     public shot(e) {
         if (this.checkForFiringShot()){
-            return this.fireAndAssessTarget();
+            return this.fireAndAssessTarget(e);
         }
     }
 
-    protected fireAndAssessTarget() {
+    protected fireAndAssessTarget(e) {
         this.shotRelease();
         if (!this.targetingChecks()) {
             this.ricochet();
             return false;
         }
         else {
-            GameInfo.hitTarget.loseHealth(this.damage);
-            if (!(GameInfo.hitTarget instanceof Item)) { // for barrels, don't show blood
-                return true;
-            }
+            return this.dealDamage(e);
         }
     }
+    protected dealDamage(e) {
+        GameInfo.hitTarget.loseHealth(this.damage);
+        if (!(GameInfo.hitTarget instanceof Item)) { // for barrels, don't show blood
+            return true;
+        }
+    }
+
     protected shotRelease(){
         this.loseAmmo();
         this.playFiringSound();
@@ -240,7 +257,7 @@ abstract class regGun extends weaponry {
 }
 
 class Pistol extends regGun {
-    public firingImage = pics.guns.firing.pistol;
+    protected firingImage = pics.guns.firing.pistol;
     protected firingSound = Pshot//pistolShots;
     protected gunImage = pics.guns.pistol;
     public damage = gunConfig.Pistol.damage;
@@ -272,10 +289,6 @@ class Pistol extends regGun {
       //      this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
         }, 50);
     }
-    protected setFiringImage(){
-        elements.weaponImg.src = pics.guns.firing.pistol;
-    //    this.firingSound = this.firingSound == Pshot ? Pshot2 : Pshot // poor practice
-    }
 
     public switchTo() {
         super.switchTo();
@@ -286,6 +299,7 @@ class Pistol extends regGun {
 class Shotgun extends regGun {
     protected firingSound = SGshot;
     protected gunImage = pics.guns.shotgun;
+    protected firingImage = pics.guns.firing.shotgun;
     public damage = gunConfig.Shotgun.damage;
     public ammo = gunConfig.Shotgun.startingAmmo;
     public pickupStats: pickupStats = 
@@ -305,9 +319,6 @@ class Shotgun extends regGun {
         return true
     }
 
-    protected setFiringImage(){
-        elements.weaponImg.src = pics.guns.firing.shotgun;
-    }
     protected reload(){
         this.reloading = true;
         elements.weaponImg.src = pics.guns.reloading.shotgun;
@@ -322,6 +333,59 @@ class Shotgun extends regGun {
     public switchTo() {
         super.switchTo();
         elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
+    }
+}
+
+class Pipebomb extends regGun {
+    private gibRadius:number = 300;
+    private blastRadius:number = 500;
+    private areaAffect: AreaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
+    protected gunImage = pics.guns.pipebomb;
+    protected firingImage = pics.guns.firing.Pipebomb;
+    protected firingSound = explosion;
+    public ammo = gunConfig.Pipebomb.startingAmmo;
+    public pickupStats: pickupStats = 
+    new pickupStats(
+        pics.pickups.Pipebomb, 
+        gunConfig.Pipebomb.pickup_ammo_big,
+        gunConfig.Pipebomb.pickup_ammo_small,
+        pics.pickups.Pipebomb,
+        pics.pickups.Pipebomb // FIX? need small bullets pickup
+        );
+
+    public shot(e) {
+        super.shot(e)
+
+        return true;
+    }
+    protected targetingChecks(){
+        return true;
+    }
+    protected dealDamage(e){
+        let left = MousePosition.x;
+        setTimeout(() => {
+            this.bombExplode(left);
+            weaponry.showShot(e);
+        }, 1000);
+        return true
+    }
+
+    protected bombExplode(left) {
+     //   let left = MousePosition.x;
+        this.areaAffect.killInBlastRadius(left);
+    }
+
+    public switchTo() {
+        super.switchTo();
+        elements.ammoType.setAttribute("src", pics.ammoIcons.pipe);
+    }
+
+    public reload(){
+        setTimeout(() => {
+            let img = pics.guns.pipebomb;
+            img = this.ammo > 0 ? img : pics.guns.blank;
+            elements.weaponImg.src = img;
+        }, 1000);
     }
 }
 
@@ -591,11 +655,11 @@ class DualNeutron extends MachineGun {
     protected firingSound = SSamMinigun;
     public pickupStats: pickupStats = 
     new pickupStats(
-        pics.pickups.DukeMgun, 
+        pics.pickups.DualNeutron, 
         gunConfig.DualNeutron.pickup_ammo_big,
         gunConfig.DualNeutron.pickup_ammo_small,
-        pics.pickups.bullets.big,
-        pics.pickups.bullets.small
+        pics.pickups.cells,
+        pics.pickups.cells
         );
 
     public strafe() {

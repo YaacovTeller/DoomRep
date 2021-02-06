@@ -10,6 +10,7 @@ var weaponOrder;
     weaponOrder[weaponOrder["DukeMgun"] = 4] = "DukeMgun";
     weaponOrder[weaponOrder["Minigun"] = 5] = "Minigun";
     weaponOrder[weaponOrder["DualNeutron"] = 6] = "DualNeutron";
+    weaponOrder[weaponOrder["Pipebomb"] = 7] = "Pipebomb";
 })(weaponOrder || (weaponOrder = {}));
 document.addEventListener("wheel", (event) => {
     wheelWeapons(event.deltaY);
