@@ -15,14 +15,14 @@
     position: absolute; 
     border-radius: 80px;
     
-    opacity: 0.3;
+    opacity: 0.2;
     background-color: red;
 }
 .headshotBox {
     border-radius: 30px;
     margin: auto;
 
-    opacity: 0.8;
+    opacity: 1;
     background-color: green;
 }
 
