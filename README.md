@@ -27,7 +27,7 @@ Normal mode only has THREE stages, so far.
 Enemies can move with css animation AND jquery. The latter has them turn to face the right direction, but the former does not.
 
 Note:\
-the spin-up on the chaingun, it was hard to do\
+the spin-up on the chaingun, it was hard to do.\
 the animation frames on the duke machinegun(4). It's better than the original, trust me.\
 the changing ammo icons.\
 the ricochets off raised shield.\
