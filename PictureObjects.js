@@ -37,6 +37,7 @@ const pics = {
             box: "assets/pickups/bullets_box.png",
             chain: "assets/pickups/bullets_box_chain.png",
             scattered: "assets/pickups/bullets_scattered.png",
+            scattered_b: "assets/pickups/bullets_scattered_b.png",
             clip: "assets/pickups/bullets_clip.png"
         },
         shells: {

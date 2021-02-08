@@ -568,7 +568,7 @@ class Minigun extends MachineGun {
         gunConfig.Minigun.pickup_ammo_big,
         gunConfig.Minigun.pickup_ammo_small,
         pics.pickups.bullets.box,
-        pics.pickups.bullets.chain // FIX? need small chaingun pickup
+        pics.pickups.bullets.scattered
         );
 
     public spinUp() {
@@ -631,7 +631,7 @@ class DukeMgun extends MachineGun {
         gunConfig.DukeMgun.pickup_ammo_big,
         gunConfig.DukeMgun.pickup_ammo_small,
         pics.pickups.bullets.chain,
-        pics.pickups.bullets.scattered // FIX? need small bullets pickup
+        pics.pickups.bullets.scattered_b
         );
 
     public strafe() {

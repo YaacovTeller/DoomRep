@@ -486,8 +486,7 @@ class Minigun extends MachineGun {
         this.damage = gunConfig.Minigun.damage;
         this.ammo = gunConfig.Minigun.startingAmmo;
         this.firingSound = Avpminigun;
-        this.pickupStats = new pickupStats(pics.pickups.Minigun, gunConfig.Minigun.pickup_ammo_big, gunConfig.Minigun.pickup_ammo_small, pics.pickups.bullets.box, pics.pickups.bullets.chain // FIX? need small chaingun pickup
-        );
+        this.pickupStats = new pickupStats(pics.pickups.Minigun, gunConfig.Minigun.pickup_ammo_big, gunConfig.Minigun.pickup_ammo_small, pics.pickups.bullets.box, pics.pickups.bullets.scattered);
     }
     spinUp() {
         elements.weaponImg.setAttribute("src", pics.guns.minigun_spinup);
@@ -544,8 +543,7 @@ class DukeMgun extends MachineGun {
         this.damage = gunConfig.DukeMgun.damage;
         this.ammo = gunConfig.DukeMgun.startingAmmo;
         this.firingSound = MGun;
-        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DukeMgun.pickup_ammo_big, gunConfig.DukeMgun.pickup_ammo_small, pics.pickups.bullets.chain, pics.pickups.bullets.scattered // FIX? need small bullets pickup
-        );
+        this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DukeMgun.pickup_ammo_big, gunConfig.DukeMgun.pickup_ammo_small, pics.pickups.bullets.chain, pics.pickups.bullets.scattered_b);
     }
     strafe() {
         if (this.checkForFiringShot()) {
