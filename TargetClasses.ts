@@ -125,13 +125,16 @@ abstract class Target implements Iundrawable{
         if (GameInfo.headTargeting){
             headshot = true;
         }
-        this.die(gib, headshot) 
+        this.die(gib, headshot)
+    }
+    protected freezeAllMovement(){
+        this.DOMdiv.style.animationPlayState = "paused"; // stop css...
+        $(this.DOMdiv).stop(); // ...and jquery movement
     }
 
-    protected die(gib?, headshot?){
-        headshot ? console.log("headshot!") : null;
+    protected selectDeathGif(gib?, headshot?) {
         let pic: string;
-        if(GameInfo.kidMode){
+        if (GameInfo.kidMode) {
             pic = enemyPics.dead_alt[this.enemy];
         }
         else {
@@ -139,25 +142,32 @@ abstract class Target implements Iundrawable{
                 pic = enemyPics.explode[this.enemy];
             }
             else {
-                if (headshot && enemyPics.headshot[this.enemy]){
+                if (headshot && enemyPics.headshot[this.enemy]) {
                     pic = enemyPics.headshot[this.enemy];
                 }
                 else {
                     pic = enemyPics.dead[this.enemy];
-                    if (this instanceof Imp && RandomNumberGen.randomNumBetween(0,3) == 3){ // FIX, alt deaths need a proper system
+                    if (this instanceof Imp && RandomNumberGen.randomNumBetween(0, 3) == 3) { // FIX, alt deaths need a proper system
                         pic = enemyPics.dead[this.enemy + '_alt'];
                     }
                 }
             }
         }
-        
-        this.setImageSrc(pic);
-        this.deadFlag = true;
-        this.DOMdiv.style.animationPlayState = "paused"; // stop css...
-        $(this.DOMdiv).stop(); // ...and jquery movement
+        return pic;
+    }
 
+    protected die(gib?, headshot?){
+        headshot ? console.log("headshot!") : null;
+
+        this.deadFlag = true;
+
+        let pic: string = this.selectDeathGif(gib, headshot);
+        this.setImageSrc(pic);
+
+        this.freezeAllMovement();
         GameInfo.unsetTarget();
         GameInfo.unsetHeadTargeting();
+        
         let hitbox = this.DOMdiv.getElementsByClassName('hitbox')[0] as HTMLElement;
         this.DOMdiv.removeChild(hitbox)  // messy, get back the hitbox to prevent multiple deaths...
 

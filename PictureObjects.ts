@@ -35,8 +35,10 @@ const pics = {
     pickups: {
         cells: "assets/pickups/cells.png",
         bullets:{
-            big:"assets/pickups/bullets_box.png",
-            small: "assets/pickups/bullets_clip.png"
+            box:"assets/pickups/bullets_box.png",
+            chain:"assets/pickups/bullets_box_chain.png",
+            scattered:"assets/pickups/bullets_scattered.png",
+            clip: "assets/pickups/bullets_clip.png"
         },
         shells:{
             big:"assets/pickups/Shells.png",
@@ -110,7 +112,7 @@ const enemyPics = {
         SectorPatrol: "assets/enemies/SectorPatrol/blue_die.gif",
         Troop: "assets/enemies/Troop/Troop_Dead.gif",
         ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_Dead.gif",
-        Imp: "assets/enemies/Imp/Imp_Dead.gif",
+        Imp: "assets/enemies/Imp/Imp_brutal_death_150.gif",
         Imp_alt: "assets/enemies/Imp/Imp_newCollapse.gif",
         ChainGuy: "assets/enemies/ChainGuy/ChainGuy_DeadEd.gif",
 
@@ -119,7 +121,9 @@ const enemyPics = {
         barrel: "assets/Barrel_explode.gif",
     },
     headshot: {
+        Troop: "assets/enemies/Troop/troop_brutal_death.gif",
         ShotGun_Troop: "assets/enemies/ShotGGuy/ShotGGuy_Dead_headshot.gif",
+        Imp: "assets/enemies/Imp/Imp_Dead.gif",
     },
     explode: {
         SectorPatrol: "assets/enemies/Troop/Troop_explode.gif",//"assets/enemies/SectorPatrol/blue_die.gif",

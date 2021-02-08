@@ -117,8 +117,11 @@ class Target {
         }
         this.die(gib, headshot);
     }
-    die(gib, headshot) {
-        headshot ? console.log("headshot!") : null;
+    freezeAllMovement() {
+        this.DOMdiv.style.animationPlayState = "paused"; // stop css...
+        $(this.DOMdiv).stop(); // ...and jquery movement
+    }
+    selectDeathGif(gib, headshot) {
         let pic;
         if (GameInfo.kidMode) {
             pic = enemyPics.dead_alt[this.enemy];
@@ -139,10 +142,14 @@ class Target {
                 }
             }
         }
-        this.setImageSrc(pic);
+        return pic;
+    }
+    die(gib, headshot) {
+        headshot ? console.log("headshot!") : null;
         this.deadFlag = true;
-        this.DOMdiv.style.animationPlayState = "paused"; // stop css...
-        $(this.DOMdiv).stop(); // ...and jquery movement
+        let pic = this.selectDeathGif(gib, headshot);
+        this.setImageSrc(pic);
+        this.freezeAllMovement();
         GameInfo.unsetTarget();
         GameInfo.unsetHeadTargeting();
         let hitbox = this.DOMdiv.getElementsByClassName('hitbox')[0];

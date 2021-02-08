@@ -267,8 +267,8 @@ class Pistol extends regGun {
         pics.pickups.Pistol, 
         gunConfig.Pistol.pickup_ammo_small,
         gunConfig.Pistol.pickup_ammo_small,
-        pics.pickups.bullets.small,
-        pics.pickups.bullets.small
+        pics.pickups.bullets.clip,
+        pics.pickups.bullets.clip
         );
     
     public shot(e) {
@@ -566,9 +566,9 @@ class Minigun extends MachineGun {
     new pickupStats(
         pics.pickups.Minigun, 
         gunConfig.Minigun.pickup_ammo_big,
-        gunConfig.Minigun.pickup_ammo_big,
-        pics.pickups.bullets.big,
-        pics.pickups.bullets.big // FIX? need small chaingun pickup
+        gunConfig.Minigun.pickup_ammo_small,
+        pics.pickups.bullets.box,
+        pics.pickups.bullets.chain // FIX? need small chaingun pickup
         );
 
     public spinUp() {
@@ -629,9 +629,9 @@ class DukeMgun extends MachineGun {
     new pickupStats(
         pics.pickups.DukeMgun, 
         gunConfig.DukeMgun.pickup_ammo_big,
-        gunConfig.DukeMgun.pickup_ammo_big,
-        pics.pickups.bullets.big,
-        pics.pickups.bullets.big // FIX? need small bullets pickup
+        gunConfig.DukeMgun.pickup_ammo_small,
+        pics.pickups.bullets.chain,
+        pics.pickups.bullets.scattered // FIX? need small bullets pickup
         );
 
     public strafe() {
