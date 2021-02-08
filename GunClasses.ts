@@ -82,12 +82,14 @@ abstract class weaponry {
     public firing: boolean;
     protected gunImage: string;
     protected firingImage: string;
+    protected ammoIcon: string;
     public startingAmmo: number;
     public damage: number;
     public pickupStats: pickupStats;
 
     // sliding gun switch
     public switchTo(){
+      //  if (Player.riotShieldDeployed && !(this instanceof Pistol)) return
         if (weaponry.switching == false){ //avoid bobs for multiple weapon pickup
             weaponry.switching = true;
             setTimeout(() => { weaponry.switching = false }, 150);
@@ -104,7 +106,7 @@ abstract class weaponry {
         if (!(this instanceof ChainSaw)){ //FIX better way to cut the chainsaw noise?
             SawIdle.stop();
         }
-
+        elements.ammoType.setAttribute("src", this.ammoIcon);
     };
 
     public weaponBob(){
@@ -116,11 +118,18 @@ abstract class weaponry {
     }
 
     public static showBlood(e) {
-        this.displayScreenElement(e, elements.blood, 10, 10, 100);
-        elements.blood.setAttribute("src", pics.blood + "?a=" + Math.random()); // FIX?
+        this.restartGifSrc(elements.blood);
+        this.displayScreenElement(e, elements.blood, 10, 10, 300);
     }
     public static showShot(e) {
         this.displayScreenElement(e, elements.oneshot, 50, 50, 10);
+    }
+    public static showExplosion(e) {
+        this.restartGifSrc(elements.explosion);
+        this.displayScreenElement(e, elements.explosion, 290, 250, 500);
+    }
+    private static restartGifSrc(imageElem: HTMLImageElement){
+        imageElem.src = imageElem.src + "?a=" + Math.random();
     }
     private static displayScreenElement(e, elem, xOffset, yOffset, duration) {
         var x = e.pageX;
@@ -260,6 +269,7 @@ class Pistol extends regGun {
     protected firingImage = pics.guns.firing.pistol;
     protected firingSound = Pshot//pistolShots;
     protected gunImage = pics.guns.pistol;
+    protected ammoIcon = pics.ammoIcons.bullet;
     public damage = gunConfig.Pistol.damage;
     public ammo = gunConfig.Pistol.startingAmmo;
     public pickupStats: pickupStats = 
@@ -289,17 +299,13 @@ class Pistol extends regGun {
       //      this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
         }, 50);
     }
-
-    public switchTo() {
-        super.switchTo();
-        elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
-    }
 }
 
 class Shotgun extends regGun {
     protected firingSound = SGshot;
     protected gunImage = pics.guns.shotgun;
     protected firingImage = pics.guns.firing.shotgun;
+    protected ammoIcon = pics.ammoIcons.shell;
     public damage = gunConfig.Shotgun.damage;
     public ammo = gunConfig.Shotgun.startingAmmo;
     public pickupStats: pickupStats = 
@@ -329,11 +335,6 @@ class Shotgun extends regGun {
             this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
         }, 1000);
     }
-
-    public switchTo() {
-        super.switchTo();
-        elements.ammoType.setAttribute("src", pics.ammoIcons.shell);
-    }
 }
 
 class Pipebomb extends regGun {
@@ -342,6 +343,7 @@ class Pipebomb extends regGun {
     private areaAffect: AreaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
     protected gunImage = pics.guns.pipebomb;
     protected firingImage = pics.guns.firing.Pipebomb;
+    protected ammoIcon = pics.ammoIcons.pipe;
     protected firingSound = explosion;
     public ammo = gunConfig.Pipebomb.startingAmmo;
     public pickupStats: pickupStats = 
@@ -365,7 +367,7 @@ class Pipebomb extends regGun {
         let left = MousePosition.x;
         setTimeout(() => {
             this.bombExplode(left);
-            weaponry.showShot(e);
+            weaponry.showExplosion(e);
         }, 1000);
         return true
     }
@@ -373,11 +375,6 @@ class Pipebomb extends regGun {
     protected bombExplode(left) {
      //   let left = MousePosition.x;
         this.areaAffect.killInBlastRadius(left);
-    }
-
-    public switchTo() {
-        super.switchTo();
-        elements.ammoType.setAttribute("src", pics.ammoIcons.pipe);
     }
 
     public reload(){
@@ -568,7 +565,7 @@ class Minigun extends MachineGun {
         gunConfig.Minigun.pickup_ammo_big,
         gunConfig.Minigun.pickup_ammo_small,
         pics.pickups.bullets.box,
-        pics.pickups.bullets.scattered
+        pics.pickups.bullets.chain
         );
 
     public spinUp() {
@@ -612,16 +609,12 @@ class Minigun extends MachineGun {
         }
         else elements.weaponImg.setAttribute("src", pics.guns.minigun_frame2);
     }
-
-    public switchTo() {
-        super.switchTo();
-        elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
-    }
 }
 
 class DukeMgun extends MachineGun {
     protected gunImage = pics.guns.dukeMgun;
     protected gunImage_firing = pics.guns.firing.dukeMgun;
+    protected ammoIcon = pics.ammoIcons.bullets;
     public damage = gunConfig.DukeMgun.damage;
     public ammo = gunConfig.DukeMgun.startingAmmo;
     protected firingSound = MGun;
@@ -630,7 +623,7 @@ class DukeMgun extends MachineGun {
         pics.pickups.DukeMgun, 
         gunConfig.DukeMgun.pickup_ammo_big,
         gunConfig.DukeMgun.pickup_ammo_small,
-        pics.pickups.bullets.chain,
+        pics.pickups.bullets.box_chain,
         pics.pickups.bullets.scattered_b
         );
 
@@ -640,16 +633,13 @@ class DukeMgun extends MachineGun {
             super.strafe();
         }
     }
-    public switchTo() {
-        super.switchTo();
-        elements.ammoType.setAttribute("src", pics.ammoIcons.bullets);
-    }
 }
 
 class DualNeutron extends MachineGun {
     public scrnMargin = 80;
     protected gunImage = pics.guns.dualNeutron;
     protected gunImage_firing = pics.guns.firing.dualNeutron;
+    protected ammoIcon = pics.ammoIcons.bullet;
     public damage = gunConfig.DualNeutron.damage;
     public ammo = gunConfig.DualNeutron.startingAmmo;
     protected firingSound = SSamMinigun;
@@ -667,11 +657,6 @@ class DualNeutron extends MachineGun {
             this.loseAmmo();
             super.strafe();
         }
-    }
-
-    public switchTo() {
-        super.switchTo();
-        elements.ammoType.setAttribute("src", pics.ammoIcons.bullet);
     }
 }
 

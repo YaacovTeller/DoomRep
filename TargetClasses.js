@@ -400,26 +400,25 @@ class AreaAffect {
         this.blastRadius = blastRadius;
         this.gibRadius = gibRadius;
     }
-    killInBlastRadius(left) {
-        for (let enemy of GameInfo.enemyArray) {
+    killInBlastRadius(epicenter) {
+        this.blastArray(epicenter, GameInfo.enemyArray);
+        this.blastArray(epicenter, GameInfo.itemArray);
+    }
+    blastArray(epicenter, array) {
+        for (let enemy of array) {
             if (!enemy || enemy.deadFlag == true)
                 continue;
-            let enemyLeft = enemy.DOMdiv.getBoundingClientRect().left;
-            if (this.checkDistance(left, enemyLeft) < this.blastRadius) {
-                if (this.checkDistance(left, enemyLeft) < this.gibRadius) {
+            let rect = enemy.DOMdiv.getBoundingClientRect();
+            let enemyLeft = rect.left;
+            let enemyWidth = rect.width;
+            let enemyCentre = enemyLeft + (enemyWidth / 2);
+            if (this.checkDistance(epicenter, enemyCentre) < this.blastRadius) {
+                if (this.checkDistance(epicenter, enemyCentre) < this.gibRadius) {
                     enemy.die(true);
                 }
                 else {
                     enemy.die();
                 }
-            }
-        }
-        for (let item of GameInfo.itemArray) {
-            if (!item || item.deadFlag == true)
-                continue;
-            let enemyLeft = item.DOMdiv.getBoundingClientRect().left;
-            if (this.checkDistance(left, enemyLeft) < this.blastRadius) {
-                item.die();
             }
         }
     }
@@ -439,12 +438,16 @@ class Item extends Target {
         super.die();
         this.barrelExplode();
     }
-    leftPosition() {
-        return this.DOMdiv.getBoundingClientRect().left;
+    centerPosition() {
+        let rect = this.DOMdiv.getBoundingClientRect();
+        let left = rect.left;
+        let width = rect.width;
+        let centre = left + (width / 2);
+        return centre;
     }
     barrelExplode() {
-        let barrelLeft = this.leftPosition();
-        this.areaAffect.killInBlastRadius(barrelLeft);
+        let barrelCenter = this.centerPosition();
+        this.areaAffect.killInBlastRadius(barrelCenter);
     }
     checkDistance(left1, left2) {
         return Math.abs(left1 - left2);

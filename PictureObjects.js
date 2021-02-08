@@ -35,7 +35,8 @@ const pics = {
         cells: "assets/pickups/cells.png",
         bullets: {
             box: "assets/pickups/bullets_box.png",
-            chain: "assets/pickups/bullets_box_chain.png",
+            box_chain: "assets/pickups/bullets_box_chain.png",
+            chain: "assets/pickups/bullets_chain.png",
             scattered: "assets/pickups/bullets_scattered.png",
             scattered_b: "assets/pickups/bullets_scattered_b.png",
             clip: "assets/pickups/bullets_clip.png"
@@ -155,6 +156,7 @@ const enemyPics = {
 const elements = {
     blood: document.getElementById("blood"),
     oneshot: document.getElementById("shot"),
+    explosion: document.getElementById("explosion"),
     riotShield: document.getElementById("riotShield"),
     weaponDiv: document.getElementById("weapon"),
     weaponImg: document.getElementById("weaponImg"),
