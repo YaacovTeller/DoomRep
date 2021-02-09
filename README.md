@@ -7,12 +7,19 @@ Controls:
           4 - Duke3d machineGun;
           5 - Chaingun, spin-up;
           6 - DuelNeutron from Apogee's BlakeStone;
-          7 - Duke3d pipebomb
+          7 - Duke3d pipebomb   
           SPACE - Shields from oncoming damage;
+          (You can also mouse-wheel through your collected weapons.)
+          
+          
           // CHEATS //
+          
           'a' - all weaopns, otherwise you only start with a pistol.
                 All the weapons are available in-game, though.
-          'g' - toggles god mode
+          'e' - Extra 50 rounds for current weapon.
+          'k' - clears all enemies.
+          'g' - toggles god mode.
+
 
 The main menu has a walking shai minigame - walking shais that can be clicked to a stop.
 
@@ -35,7 +42,7 @@ the credits. They play at the end, also from the main menu\
 the chainsaw now has a 'reach' checker, based on "elem.getBoundingClientRect().height", which gives the final height after css.\
 Will have to be improved for different sized enemies, but for now, it limits chainsaw use to more in-your-face distance.\
 the pipebomb and explosive barrels have a 'gib' radius, so that close enemies go to pieces, and further ones die normally.\
-the headshot system - currently headshots give double damage and have a different death animation, in most cases.\
+the headshot system - currently headshots give double damage and have a different death animation, in most cases.
 
 Current bugs:
 You can double-fire the shotgun before the reload kicks in!
