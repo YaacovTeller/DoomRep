@@ -648,8 +648,8 @@ class DualNeutron extends MachineGun {
         pics.pickups.DualNeutron, 
         gunConfig.DualNeutron.pickup_ammo_big,
         gunConfig.DualNeutron.pickup_ammo_small,
-        pics.pickups.cells,
-        pics.pickups.cells
+        pics.pickups.cells.big,
+        pics.pickups.cells.small
         );
 
     public strafe() {

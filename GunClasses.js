@@ -559,7 +559,7 @@ class DualNeutron extends MachineGun {
         this.damage = gunConfig.DualNeutron.damage;
         this.ammo = gunConfig.DualNeutron.startingAmmo;
         this.firingSound = SSamMinigun;
-        this.pickupStats = new pickupStats(pics.pickups.DualNeutron, gunConfig.DualNeutron.pickup_ammo_big, gunConfig.DualNeutron.pickup_ammo_small, pics.pickups.cells, pics.pickups.cells);
+        this.pickupStats = new pickupStats(pics.pickups.DualNeutron, gunConfig.DualNeutron.pickup_ammo_big, gunConfig.DualNeutron.pickup_ammo_small, pics.pickups.cells.big, pics.pickups.cells.small);
     }
     strafe() {
         if (this.checkForFiringShot()) {

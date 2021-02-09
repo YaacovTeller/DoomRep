@@ -33,7 +33,10 @@ const pics = {
         pipe: "assets/icons/pipe.png",
     },
     pickups: {
-        cells: "assets/pickups/cells.png",
+        cells: {
+            big: "assets/pickups/cells.png",
+            small: "assets/pickups/cells_half.png",
+        },
         bullets:{
             box:"assets/pickups/bullets_box.png",
             box_chain:"assets/pickups/bullets_box_chain.png",
