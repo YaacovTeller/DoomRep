@@ -1,5 +1,5 @@
 var levelFuncArray = [
-  //  [level_2_6],
+   // [level_2_6],
    // [level_1_4],
 
     [level_1_1, level_1_2, level_1_3, level_1_4, level_1_5],
@@ -27,6 +27,7 @@ class Level {
             Player.collectWeapon(wep);
         }
         Player.weapon.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
+        Player.weapon.switchTo();
         startGameMusic(this.musicArray);
     }
     public moreScenes(){
@@ -65,14 +66,21 @@ class SceneGenerator{
     private static drawNewEnemiesGeneric(){
         let numOfEnemies = RandomNumberGen.randomNumBetween(4, 10);
         let enemyNumber = RandomNumberGen.randomNumBetween(0, 3);
-        let mixedEnemies = RandomNumberGen.randomNumBetween(0, 1);
-        let insertBarrel = RandomNumberGen.randomNumBetween(0, 2);
+        let mixedEnemies = RandomNumberGen.randomNumBetween(0, 1) == 1 ? true: false;
+        let insertBarrel = RandomNumberGen.randomNumBetween(0, 2) == 2 ? true: false;
+        let extraEnemy = RandomNumberGen.randomNumBetween(0, 4) == 3 ? true: false;
+
+        let enemyType = enemies[enemyNumber];
         GameInfo.enemyArray = [];
         for (let i=0; i<numOfEnemies; i++){
-            this.enemySelector(enemyNumber, mixedEnemies);
+            enemyType = this.reconsiderEnemyType(enemyType, mixedEnemies)
+            this.enemySelector(enemyType);
         }
-        if (insertBarrel == 2){
+        if (insertBarrel){
             this.itemSelector("barrel");
+        }
+        if (extraEnemy){
+            this.enemySelector(enemyType, specialEnemy.Extra);
         }
         LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow); // HITLIMIT , MOVE!
     }
@@ -90,29 +98,43 @@ class SceneGenerator{
     private static isFirstSceneCheck(){
         return GameInfo.currentLevel.sceneArray.length < 1;
     }
+    private static reconsiderEnemyType(enemyType, mixedEnemies){
+        enemyType = mixedEnemies ? enemies[RandomNumberGen.randomNumBetween(0, 4)] : enemyType;
+        if (SceneGenerator.isFirstSceneCheck() && enemyType == enemies.ChaingunGuy){ // hack to prevent chainguy rush
+            enemyType == enemies.ShotgunTroop;
+        }
+        return enemyType;
+    }
 
-    private static enemySelector(enemyNumber, mixedEnemies){
-        enemyNumber = mixedEnemies ? RandomNumberGen.randomNumBetween(0, 4) : enemyNumber;
-        if (SceneGenerator.isFirstSceneCheck() && enemyNumber == 4){ // hack to prevent chainguy rush
-            enemyNumber--;
-        }
-        let ישעיה_שמחה :string;
-        let enemy;
+    private static enemySelector(enemyType, specialStatus?){
         let position = this.positionSelector();  
-        if (enemyNumber == 0){
-            enemy = new SectorPatrol(position);
+        this.enemyType(enemyType, position, specialStatus);
+    }
+
+    private static enemyType(enemyType, position: Position, specialStatus?){
+        let ישעיה_שמחה :string;
+        var שמועל: boolean = false;
+        let enemy: RegEnemy;
+        if (specialStatus == specialEnemy.Extra) {
+            position.scale = 0.8;
         }
-        if (enemyNumber == 1){
-            enemy = new Troop(position);
+        if (enemyType == enemies[0]){
+            enemy = new SectorPatrol(position, null, [], specialStatus);
         }
-        if (enemyNumber == 2){
-            enemy = new Imp(position);
+        if (enemyType == enemies[1]){
+            enemy = new Troop(position, null, [], specialStatus);
         }
-        if (enemyNumber == 3){
-            enemy = new ShotGun_Troop(position);
+        if (enemyType == enemies[2]){
+            enemy = new Imp(position, null, [], specialStatus);
         }
-        if (enemyNumber == 4){
-            enemy = new ChainGGuy(position);
+        if (enemyType == enemies[3]){
+            enemy = new ShotgunTroop(position, null, [], specialStatus);
+        }
+        if (enemyType == enemies[4]){
+            enemy = new ChaingunGuy(position, null, [], specialStatus);
+        }
+        if (specialStatus == specialEnemy.Extra) {
+            enemy.test_precalculatedLateralMove(-200, 4000);
         }
         GameInfo.enemyArray.push(enemy)
     }
@@ -271,11 +293,13 @@ class LevelHandler {
         Intermission.play();
         genericFinishMessage();
         LevelHandler.fadeOutClear(1000);
+        setMouseAttributes_NoShot();
         setTimeout(() => {
             elements.finishMsg.onclick = ()=>{
                 Intermission.stop();
                 LevelHandler.nextLevel(); // NEXT LEVEL, FIX?
-                elements.finishMsg.onclick = null;
+
+                elements.finishMsg.onclick = null; // prevents NEXT message from skipping the timeout
             } 
         }, 6000);
     }

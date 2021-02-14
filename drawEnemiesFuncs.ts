@@ -68,8 +68,8 @@ function drawNewEnemies_2_1(){
         new Troop   (new Position(0,30, 0.6), null, [new AnimationInfo("topTo_60",'3s'), new AnimationInfo("scaleTo_1",'3s'), ]), //new AnimationInfo("leftTo_10",'2s')
         new Troop   (new Position(20,37)),
         new Troop   (new Position(30,60)),
-        new ShotGun_Troop(new Position(50,55)),
-        new ShotGun_Troop(new Position(70,30), null, [new AnimationInfo("scaleTo_1",'4s','1')]),
+        new ShotgunTroop(new Position(50,55)),
+        new ShotgunTroop(new Position(70,30), null, [new AnimationInfo("scaleTo_1",'4s','1')]),
   //      new Extra("TroopLeft", new Position(100,30,0.6), null, [new AnimationInfo("fleeLeft",'7s', '1')]),// + "_Tomer"
         extra_1
     )
@@ -81,8 +81,8 @@ function drawNewEnemies_2_1(){
 function drawNewEnemies_2_2(){
     GameInfo.enemyArray.push(
         new Troop   (new Position(30,50)),
-        new ShotGun_Troop(new Position(40,45)),
-        new ShotGun_Troop(new Position(60,55)),
+        new ShotgunTroop(new Position(40,45)),
+        new ShotgunTroop(new Position(60,55)),
         new Troop   (new Position(85,65)),
         new Troop   (new Position(75,35)),
     )
@@ -108,12 +108,12 @@ function drawNewEnemies_2_4(){
         t1, t2,
        // new Troop   (new Position(10,28, 0.2)),
        // new Troop   (new Position(15,28, 0.2)),
-        new ShotGun_Troop(new Position(40,48, 0.3)),
+        new ShotgunTroop(new Position(40,48, 0.3)),
         new Troop   (new Position(46,48, 0.3)),
-        new ShotGun_Troop(new Position(7,55, 1)),
+        new ShotgunTroop(new Position(7,55, 1)),
         new Troop   (new Position(18,60, 1.2)),
         new Troop   (new Position(50,53, 0.5)),
-        new ShotGun_Troop(new Position(60,53, 0.5)),
+        new ShotgunTroop(new Position(60,53, 0.5)),
         new Troop   (new Position(68,53, 0.5)),
     )
     t1.noRandomMovement = true;
@@ -126,22 +126,22 @@ function drawNewEnemies_2_5(){
         new Troop   ( new Position(5,45)),
         new Troop   ( new Position(15,50)),
         new Imp     (new Position(20,60)),
-        new ShotGun_Troop(new Position(47,27,0.4)),
-        new ShotGun_Troop(new Position(80,27,0.4)),
-        new ShotGun_Troop(new Position(65,45)),
+        new ShotgunTroop(new Position(47,27,0.4)),
+        new ShotgunTroop(new Position(80,27,0.4)),
+        new ShotgunTroop(new Position(65,45)),
         new Troop   (new Position(60,50)),
         new Troop   (new Position(70,30,0.5)),
         new Imp     (new Position(70,45)),
         new Troop   (new Position(85,58)),
 
-        new ShotGun_Troop(new Position(15,18,0.1),15,[],specialEnemy.Extra)
+        new ShotgunTroop(new Position(15,18,0.1),15,[],specialEnemy.Extra)
     )
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
 }
 function drawNewEnemies_2_6(){
     GameInfo.bossTotalHealth = 350;
     GameInfo.enemyArray.push(
-        new ChainGGuy(new Position(40,35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8",'7s',1)], specialEnemy.Boss)
+        new ChaingunGuy(new Position(40,35, 0.8), GameInfo.bossTotalHealth, [new AnimationInfo("scaleTo_1p8",'7s',1)], specialEnemy.Boss)
     )
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
     resetBossBar();
@@ -149,30 +149,30 @@ function drawNewEnemies_2_6(){
 
 function drawNewEnemies_3_1(){
     GameInfo.enemyArray.push(
-         new ChainGGuy      (new Position(5,45)),
-         new ShotGun_Troop  (new Position(47,27,0.4)),
-         new ShotGun_Troop  (new Position(60,50)),
-         new ShotGun_Troop  (new Position(65,45)),
+         new ChaingunGuy      (new Position(5,45)),
+         new ShotgunTroop  (new Position(47,27,0.4)),
+         new ShotgunTroop  (new Position(60,50)),
+         new ShotgunTroop  (new Position(65,45)),
          new Troop          (new Position(70,30,0.5)),
          new Troop          (new Position(70,45)),
 
-         new ShotGun_Troop( new Position(80,30,0.3),15,[],specialEnemy.Extra)
+         new ShotgunTroop( new Position(80,30,0.3),15,[],specialEnemy.Extra)
      )
      LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
  }
  function drawNewEnemies_3_2(){
     GameInfo.enemyArray.push(
-         new ChainGGuy  (new Position(5,45)),
-         new ChainGGuy  (new Position(47,27,0.4)),
-         new ChainGGuy  (new Position(60,50)),
-         new ChainGGuy  (new Position(65,45)),
+         new ChaingunGuy  (new Position(5,45)),
+         new ChaingunGuy  (new Position(47,27,0.4)),
+         new ChaingunGuy  (new Position(60,50)),
+         new ChaingunGuy  (new Position(65,45)),
      )
      LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.slow);
  }
  function drawNewEnemies_3_3(){
     GameInfo.enemyArray.push(
          new Imp   (new Position(5,45)),
-         new ChainGGuy(new Position(47,27,0.4)),
+         new ChaingunGuy(new Position(47,27,0.4)),
          new Imp   (new Position(60,50)),
          new Imp    (new Position(65,45)),
          new Imp   (new Position(50,50)),
@@ -197,9 +197,9 @@ function drawNewEnemies_3_1(){
     GameInfo.enemyArray.push(
          new Troop   (new Position(5,45)),
          new Troop   (new Position(47,27,0.4)),
-         new ShotGun_Troop   (new Position(60,50)),
-         new ShotGun_Troop   (new Position(65,45)),
-         new ShotGun_Troop   (new Position(50,50)),
+         new ShotgunTroop   (new Position(60,50)),
+         new ShotgunTroop   (new Position(65,45)),
+         new ShotgunTroop   (new Position(50,50)),
          new Troop   (new Position(45,45)),
          new Troop   (new Position(50,50)),
          new Troop   (new Position(45,45)),
@@ -208,12 +208,12 @@ function drawNewEnemies_3_1(){
  }
  function drawNewEnemies_3_6(){
     GameInfo.enemyArray.push(
-         new ChainGGuy   (new Position(5,45)),
-         new ChainGGuy   (new Position(47,27)),
-         new ChainGGuy   (new Position(60,50)),
-         new ChainGGuy   (new Position(65,45)),
-         new ChainGGuy   (new Position(50,50)),
-         new ChainGGuy   (new Position(45,45)),
+         new ChaingunGuy   (new Position(5,45)),
+         new ChaingunGuy   (new Position(47,27)),
+         new ChaingunGuy   (new Position(60,50)),
+         new ChaingunGuy   (new Position(65,45)),
+         new ChaingunGuy   (new Position(50,50)),
+         new ChaingunGuy   (new Position(45,45)),
      )
      GameInfo.itemArray.push(
         new Item ("barrel", new Position(52,25), 40)
@@ -224,7 +224,7 @@ function drawNewEnemies_3_1(){
  function drawNewEnemies_3_7(){
     GameInfo.bossTotalHealth = 450;
     GameInfo.enemyArray.push(
-        new ChainGGuy(GameInfo.bossTotalHealth, new Position(40,35, 0.8), [new AnimationInfo("scaleTo_1p8",'7s',1)], specialEnemy.Boss),
+        new ChaingunGuy(GameInfo.bossTotalHealth, new Position(40,35, 0.8), [new AnimationInfo("scaleTo_1p8",'7s',1)], specialEnemy.Boss),
     )
     LevelHandler.startAllRolls(GameInfo.moverollFrequency, hitLimit.fast);
     resetBossBar();

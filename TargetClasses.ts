@@ -1,3 +1,10 @@
+enum enemies {
+    SectorPatrol,
+    Troop,
+    Imp,
+    ShotgunTroop,
+    ChaingunGuy,
+}
 enum specialEnemy {
     Boss,
     Extra
@@ -317,7 +324,7 @@ class Troop extends RegEnemy {
   public carriedWeapon = GameInfo.allGuns.DukeMgun;
 
     constructor(position, health?, anim?, special?) {
-        super("Troop", position, health, anim, special)
+        super(enemies[1], position, health, anim, special)
     }
     public deadSound() {
         RandomSoundGen.playRandomSound(troopDeaths);
@@ -343,14 +350,14 @@ class Troop extends RegEnemy {
     }
 }
 
-class ShotGun_Troop extends RegEnemy {
+class ShotgunTroop extends RegEnemy {
     public baseHealth = 40;
     public damageNumber = 20;
     public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Shotgun;
 
     constructor(position, health?, anim?, special?) {
-        super("ShotGun_Troop", position, health, anim, special)
+        super(enemies[3], position, health, anim, special)
     }
     public deadSound() {
         RandomSoundGen.playRandomSound(troopDeaths)
@@ -367,14 +374,14 @@ class ShotGun_Troop extends RegEnemy {
     }
 }
 
-class ChainGGuy extends RegEnemy {
+class ChaingunGuy extends RegEnemy {
     public baseHealth = 130;
     public damageNumber = 30;
     public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Minigun;
 
     constructor(position, health?, anim?, special?) {
-        super("ChainGuy", position, health, anim, special)
+        super(enemies[4], position, health, anim, special)
     }
     public deadSound() {
         RandomSoundGen.playRandomSound(troopDeaths)
@@ -402,7 +409,7 @@ class Imp extends RegEnemy {
     public damageNumber = 15;
     public attackFrequency = 2000;
     constructor(position, health?, anim?, special?) {
-        super("Imp", position, health, anim, special)
+        super(enemies[2], position, health, anim, special)
     }
     public deadSound() {
         RandomSoundGen.playRandomSound(ImpDeaths)
@@ -421,7 +428,7 @@ class SectorPatrol extends RegEnemy {
     public attackFrequency = 2000;
     public carriedWeapon = GameInfo.allGuns.Pistol;
     constructor(position, health?, anim?, special?) {
-        super("SectorPatrol", position, health, anim, special)
+        super(enemies[0], position, health, anim, special)
     }
     public deadSound() {
         RandomSoundGen.playRandomSound(patrolDeaths);
@@ -445,7 +452,7 @@ class AreaAffect {
         this.blastRadius = blastRadius;
         this.gibRadius = gibRadius;
     }
-    public killInBlastRadius(epicenter) {
+    public killInBlastRadius(epicenter: Position) {
         this.blastArray(epicenter, GameInfo.enemyArray);
         this.blastArray(epicenter, GameInfo.itemArray);
     }
@@ -465,10 +472,14 @@ class AreaAffect {
         }
     }
 
-    protected checkDistance(epicenter, rect, distance){
+    protected checkDistance(epicenter: Position, rect, distance){
         let left = rect.left;
-        let right = left + rect.width;
-        return epicenter >= left - distance && epicenter <= right + distance
+        let right = rect.right;
+        let top = rect.top;
+        let bottom = rect.bottom;
+        let hit = (epicenter.x >= left - distance && epicenter.x <= right + distance) &&
+                  (epicenter.y >= top - distance && epicenter.y <= bottom + distance)
+        return hit;
     }
 }
 
@@ -488,8 +499,12 @@ class Item extends Target {
         let rect = this.DOMdiv.getBoundingClientRect();
         let left = rect.left;
         let width = rect.width;
-        let centre = left + (width / 2);
-        return centre;
+        let x = left + (width / 2);
+
+        let top = rect.top;
+        let height = rect.height;
+        let y = top + (height / 2)
+        return new Position(x, y);
     }
 
     protected barrelExplode() {

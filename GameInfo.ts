@@ -34,7 +34,8 @@ class GameInfo {
         DukeMgun: null,
         Minigun: null,
         DualNeutron: null,
-        Pipebomb: null
+        Pipebomb: null,
+    //    Railgun: null
     };
 
     public static resetAllGuns(){
@@ -46,6 +47,7 @@ class GameInfo {
             Minigun: new Minigun,
             DualNeutron: new DualNeutron,
             Pipebomb: new Pipebomb,
+   //         Railgun: new Railgun
         };
     }
 

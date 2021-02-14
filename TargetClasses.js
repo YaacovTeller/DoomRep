@@ -1,4 +1,12 @@
 "use strict";
+var enemies;
+(function (enemies) {
+    enemies[enemies["SectorPatrol"] = 0] = "SectorPatrol";
+    enemies[enemies["Troop"] = 1] = "Troop";
+    enemies[enemies["Imp"] = 2] = "Imp";
+    enemies[enemies["ShotgunTroop"] = 3] = "ShotgunTroop";
+    enemies[enemies["ChaingunGuy"] = 4] = "ChaingunGuy";
+})(enemies || (enemies = {}));
 var specialEnemy;
 (function (specialEnemy) {
     specialEnemy[specialEnemy["Boss"] = 0] = "Boss";
@@ -276,7 +284,7 @@ class RegEnemy extends Target {
 }
 class Troop extends RegEnemy {
     constructor(position, health, anim, special) {
-        super("Troop", position, health, anim, special);
+        super(enemies[1], position, health, anim, special);
         this.baseHealth = 40;
         this.damageNumber = 10;
         this.attackFrequency = 2000;
@@ -305,9 +313,9 @@ class Troop extends RegEnemy {
         //   hitbox.style.margin = "0px 10px 100px"
     }
 }
-class ShotGun_Troop extends RegEnemy {
+class ShotgunTroop extends RegEnemy {
     constructor(position, health, anim, special) {
-        super("ShotGun_Troop", position, health, anim, special);
+        super(enemies[3], position, health, anim, special);
         this.baseHealth = 40;
         this.damageNumber = 20;
         this.attackFrequency = 2000;
@@ -328,9 +336,9 @@ class ShotGun_Troop extends RegEnemy {
         super.die(gib, headshot);
     }
 }
-class ChainGGuy extends RegEnemy {
+class ChaingunGuy extends RegEnemy {
     constructor(position, health, anim, special) {
-        super("ChainGuy", position, health, anim, special);
+        super(enemies[4], position, health, anim, special);
         this.baseHealth = 130;
         this.damageNumber = 30;
         this.attackFrequency = 2000;
@@ -358,7 +366,7 @@ class ChainGGuy extends RegEnemy {
 }
 class Imp extends RegEnemy {
     constructor(position, health, anim, special) {
-        super("Imp", position, health, anim, special);
+        super(enemies[2], position, health, anim, special);
         this.baseHealth = 40;
         this.damageNumber = 15;
         this.attackFrequency = 2000;
@@ -375,7 +383,7 @@ class Imp extends RegEnemy {
 }
 class SectorPatrol extends RegEnemy {
     constructor(position, health, anim, special) {
-        super("SectorPatrol", position, health, anim, special);
+        super(enemies[0], position, health, anim, special);
         this.baseHealth = 30;
         this.damageNumber = 10;
         this.attackFrequency = 2000;
@@ -421,8 +429,12 @@ class AreaAffect {
     }
     checkDistance(epicenter, rect, distance) {
         let left = rect.left;
-        let right = left + rect.width;
-        return epicenter >= left - distance && epicenter <= right + distance;
+        let right = rect.right;
+        let top = rect.top;
+        let bottom = rect.bottom;
+        let hit = (epicenter.x >= left - distance && epicenter.x <= right + distance) &&
+            (epicenter.y >= top - distance && epicenter.y <= bottom + distance);
+        return hit;
     }
 }
 class Item extends Target {
@@ -441,8 +453,11 @@ class Item extends Target {
         let rect = this.DOMdiv.getBoundingClientRect();
         let left = rect.left;
         let width = rect.width;
-        let centre = left + (width / 2);
-        return centre;
+        let x = left + (width / 2);
+        let top = rect.top;
+        let height = rect.height;
+        let y = top + (height / 2);
+        return new Position(x, y);
     }
     barrelExplode() {
         let barrelCenter = this.centerPosition();

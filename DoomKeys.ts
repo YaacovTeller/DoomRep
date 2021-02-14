@@ -8,8 +8,15 @@ enum weaponOrder {
     DukeMgun,
     Minigun,
     DualNeutron,
-    Pipebomb
+    Pipebomb,
+  //  Railgun
 }
+document.addEventListener("contextmenu", function(){
+    if(Player.weapon instanceof MachineGun){
+        debugger
+        Player.weapon.stopstrafe();
+    }
+  });
 document.addEventListener("wheel", (event) => 
 {
     wheelWeapons(event.deltaY);

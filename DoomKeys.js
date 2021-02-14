@@ -11,7 +11,14 @@ var weaponOrder;
     weaponOrder[weaponOrder["Minigun"] = 5] = "Minigun";
     weaponOrder[weaponOrder["DualNeutron"] = 6] = "DualNeutron";
     weaponOrder[weaponOrder["Pipebomb"] = 7] = "Pipebomb";
+    //  Railgun
 })(weaponOrder || (weaponOrder = {}));
+document.addEventListener("contextmenu", function () {
+    if (Player.weapon instanceof MachineGun) {
+        debugger;
+        Player.weapon.stopstrafe();
+    }
+});
 document.addEventListener("wheel", (event) => {
     wheelWeapons(event.deltaY);
 });

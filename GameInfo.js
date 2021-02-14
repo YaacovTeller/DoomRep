@@ -72,5 +72,5 @@ GameInfo.allGuns = {
     DukeMgun: null,
     Minigun: null,
     DualNeutron: null,
-    Pipebomb: null
+    Pipebomb: null,
 };

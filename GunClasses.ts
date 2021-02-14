@@ -8,6 +8,11 @@ const gunConfig = {
         damage : 20,
         gunHeight: 284,
     },
+    Railgun: {
+        pickup_ammo_small: 6,
+        startingAmmo : 18,
+        gunHeight: 284,
+    },
     Shotgun: {
         pickup_ammo_small: 4,
         pickup_ammo_big: 8,
@@ -125,8 +130,14 @@ abstract class weaponry {
         this.displayScreenElement(e, elements.oneshot, 50, 50, 10);
     }
     public static showExplosion(e) {
-        this.restartGifSrc(elements.explosion);
-        this.displayScreenElement(e, elements.explosion, 290, 250, 500);
+        let image = elements.explosion
+        this.restartGifSrc(image);
+        this.displayScreenElement(e, image, 290, 250, 500);
+    }
+    public static showSmallExplosion(e) {
+        let image = elements.explosion_small
+        this.restartGifSrc(image);
+        this.displayScreenElement(e, image, 100, 80, 500);
     }
     private static restartGifSrc(imageElem: HTMLImageElement){
         imageElem.src = imageElem.src + "?a=" + Math.random();
@@ -208,6 +219,7 @@ abstract class regGun extends weaponry {
         let regGunSounds = new Array(Bullet1, Bullet2, Bullet3);
         super.ricochet(regGunSounds);
     }
+    protected abstract showVisual(e);
     protected abstract reload()
     protected setFiringImage(){
         elements.weaponImg.src = this.firingImage
@@ -285,11 +297,13 @@ class Pistol extends regGun {
     
     public shot(e) {
         if (super.shot(e)) {
-            weaponry.showBlood(e)
+            this.showVisual(e);
             return true
         }
     }
-
+    protected showVisual(e){
+        weaponry.showBlood(e)
+    };
     protected playFiringSound(){
         this.firingSound.playClone();
        // this.soundGen.playNotSoRandomSound(this.firingSound)
@@ -322,10 +336,13 @@ class Shotgun extends regGun {
     public shot(e) {
         if (this.reloading) return;
         if (super.shot(e) === false){
-            weaponry.showShot(e);
+            this.showVisual(e);
         }
         return true
     }
+    protected showVisual(e){
+        weaponry.showShot(e)
+    };
 
     protected reload(){
         this.reloading = true;
@@ -338,11 +355,44 @@ class Shotgun extends regGun {
         }, 900);
     }
 }
+abstract class areaAffectGun extends regGun {
+    protected gibRadius:number;
+    protected blastRadius:number;
+    protected fuse:number;
+    protected areaAffect: AreaAffect;
 
-class Pipebomb extends regGun {
-    private gibRadius:number = 100;
-    private blastRadius:number = 200;
-    private areaAffect: AreaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
+    protected targetingChecks(){
+        return true;
+    }
+    protected dealDamage(e){
+        setTimeout(() => {
+            let point = new Position(e.pageX, e.pageY)
+            this.bombExplode(point);
+            this.showVisual(e);
+        }, this.fuse);
+        return true
+    }
+    protected bombExplode(left) {
+        this.areaAffect.killInBlastRadius(left);
+    }
+    public reload(){
+        setTimeout(() => {
+            let img = this.gunImage;
+            elements.weaponImg.src = img;
+        }, this.fuse);
+    }
+    protected playFiringSound(){
+        setTimeout(() => {
+            super.playFiringSound();
+        }, this.fuse);
+    }
+}
+
+class Pipebomb extends areaAffectGun {
+    protected gibRadius:number = 100;
+    protected blastRadius:number = 200;
+    protected fuse:number = 1000;
+    protected areaAffect: AreaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
     protected gunImage = pics.guns.pipebomb;
     protected firingImage = pics.guns.firing.Pipebomb;
     protected ammoIcon = pics.ammoIcons.pipe;
@@ -354,37 +404,42 @@ class Pipebomb extends regGun {
         gunConfig.Pipebomb.pickup_ammo_big,
         gunConfig.Pipebomb.pickup_ammo_small,
         pics.pickups.Pipebomb,
-        pics.pickups.Pipebomb // FIX? need small bullets pickup
-        );
+        pics.pickups.Pipebomb
+    );
 
-    public shot(e) {
-        super.shot(e)
-
-        return true;
+    public showVisual(e) {
+        weaponry.showExplosion(e);
     }
-    protected targetingChecks(){
-        return true;
-    }
-    protected dealDamage(e){
-        let left = MousePosition.x;
+    public reload() {
         setTimeout(() => {
-            this.bombExplode(left);
-            weaponry.showExplosion(e);
-        }, 1000);
-        return true
-    }
-
-    protected bombExplode(left) {
-     //   let left = MousePosition.x;
-        this.areaAffect.killInBlastRadius(left);
-    }
-
-    public reload(){
-        setTimeout(() => {
-            let img = pics.guns.pipebomb;
+            let img = this.gunImage;
             img = this.ammo > 0 ? img : pics.guns.blank;
             elements.weaponImg.src = img;
-        }, 1000);
+        }, this.fuse);
+    }
+}
+
+class Railgun extends areaAffectGun {
+    protected gibRadius:number = 0;
+    protected blastRadius:number = 0;
+    protected fuse:number = 10;
+    protected areaAffect: AreaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
+
+    protected gunImage = pics.guns.pistol;
+    protected firingImage = pics.guns.firing.pistol;
+    protected ammoIcon = pics.ammoIcons.bullet;
+    protected firingSound = explosion;
+    public ammo = gunConfig.Pistol.startingAmmo;
+    public pickupStats: pickupStats = 
+    new pickupStats(
+        pics.pickups.Pistol, 
+        gunConfig.Pistol.pickup_ammo_small,
+        gunConfig.Pistol.pickup_ammo_small,
+        pics.pickups.Pistol,
+        pics.pickups.Pistol
+        );
+    public showVisual(e) {
+        weaponry.showSmallExplosion(e);
     }
 }
 
@@ -673,4 +728,8 @@ function setMouseAttributes_MachineGun() {
     document.body.setAttribute("onmouseup", "Player.weapon.stopstrafe()");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
-
+function setMouseAttributes_NoShot() {
+    document.body.removeAttribute("onmousedown")
+    document.body.removeAttribute("onmouseup");
+    document.body.setAttribute("onmousemove", gunMoveEvent)
+}
