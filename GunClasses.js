@@ -4,7 +4,7 @@ const MgunShotEvent = "Player.weapon.MGunShotDisplay(event);";
 const gunConfig = {
     Pistol: {
         pickup_ammo_small: 6,
-        startingAmmo: 12,
+        startingAmmo: 18,
         damage: 20,
         gunHeight: 284,
     },
@@ -166,6 +166,7 @@ class weaponry {
         }
     }
     loseAmmo() {
+        console.log("AMMO: " + this.ammo);
         this.ammo--;
         DOMUpdater.updateAmmoCounter(this.ammo);
     }
@@ -206,6 +207,8 @@ class regGun extends weaponry {
         setMouseAttributes_Normal();
     }
     shot(e) {
+        if (e.button == 2)
+            return;
         if (this.checkForFiringShot()) {
             return this.fireAndAssessTarget(e);
         }
@@ -290,14 +293,14 @@ class Shotgun extends regGun {
             elements.weaponImg.src = pics.guns.shotgun;
             this.reloading = false;
             this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
-        }, 1000);
+        }, 900);
     }
 }
 class Pipebomb extends regGun {
     constructor() {
         super(...arguments);
-        this.gibRadius = 300;
-        this.blastRadius = 500;
+        this.gibRadius = 100;
+        this.blastRadius = 200;
         this.areaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
         this.gunImage = pics.guns.pipebomb;
         this.firingImage = pics.guns.firing.Pipebomb;
@@ -335,7 +338,9 @@ class Pipebomb extends regGun {
     }
 }
 class MachineGun extends weaponry {
-    strafe() {
+    strafe(e) {
+        if (e.button == 2)
+            return;
         document.body.setAttribute("onmousemove", gunMoveEvent);
         this.addStrafeMouseLeaveEvent();
         this.firing = true;
@@ -448,9 +453,9 @@ class ChainSaw extends MachineGun {
     }
     spendingBullets() { }
     ;
-    strafe() {
+    strafe(e) {
         if (this.checkForFiringShot()) {
-            super.strafe();
+            super.strafe(e);
             elements.weaponImg.setAttribute("src", this.gunImage_firing);
             this.calculateAndSetGunPosition(MousePosition.x, MousePosition.y);
         }
@@ -495,10 +500,10 @@ class Minigun extends MachineGun {
             SSamRotate.play();
         }, 700);
     }
-    strafe() {
+    strafe(e) {
         if (this.checkForFiringShot()) {
             this.spinUp();
-            let superStrafe = () => { super.strafe(); };
+            let superStrafe = () => { super.strafe(e); };
             this.mgfiring = setTimeout(function () {
                 Minigun.spinUpCheck = true;
                 superStrafe();
@@ -542,10 +547,10 @@ class DukeMgun extends MachineGun {
         this.firingSound = MGun;
         this.pickupStats = new pickupStats(pics.pickups.DukeMgun, gunConfig.DukeMgun.pickup_ammo_big, gunConfig.DukeMgun.pickup_ammo_small, pics.pickups.bullets.box_chain, pics.pickups.bullets.scattered_b);
     }
-    strafe() {
+    strafe(e) {
         if (this.checkForFiringShot()) {
             this.loseAmmo();
-            super.strafe();
+            super.strafe(e);
         }
     }
 }
@@ -561,10 +566,10 @@ class DualNeutron extends MachineGun {
         this.firingSound = SSamMinigun;
         this.pickupStats = new pickupStats(pics.pickups.DualNeutron, gunConfig.DualNeutron.pickup_ammo_big, gunConfig.DualNeutron.pickup_ammo_small, pics.pickups.cells.big, pics.pickups.cells.small);
     }
-    strafe() {
+    strafe(e) {
         if (this.checkForFiringShot()) {
             this.loseAmmo();
-            super.strafe();
+            super.strafe(e);
         }
     }
 }
@@ -574,7 +579,7 @@ function setMouseAttributes_Normal() {
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }
 function setMouseAttributes_MachineGun() {
-    document.body.setAttribute("onmousedown", "Player.weapon.strafe()");
+    document.body.setAttribute("onmousedown", "Player.weapon.strafe(event)");
     document.body.setAttribute("onmouseup", "Player.weapon.stopstrafe()");
     document.body.setAttribute("onmousemove", gunMoveEvent);
 }

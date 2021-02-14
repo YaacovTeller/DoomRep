@@ -409,11 +409,8 @@ class AreaAffect {
             if (!enemy || enemy.deadFlag == true)
                 continue;
             let rect = enemy.DOMdiv.getBoundingClientRect();
-            let enemyLeft = rect.left;
-            let enemyWidth = rect.width;
-            let enemyCentre = enemyLeft + (enemyWidth / 2);
-            if (this.checkDistance(epicenter, enemyCentre) < this.blastRadius) {
-                if (this.checkDistance(epicenter, enemyCentre) < this.gibRadius) {
+            if (this.checkDistance(epicenter, rect, this.blastRadius)) {
+                if (this.checkDistance(epicenter, rect, this.gibRadius)) {
                     enemy.die(true);
                 }
                 else {
@@ -422,15 +419,17 @@ class AreaAffect {
             }
         }
     }
-    checkDistance(left1, left2) {
-        return Math.abs(left1 - left2);
+    checkDistance(epicenter, rect, distance) {
+        let left = rect.left;
+        let right = left + rect.width;
+        return epicenter >= left - distance && epicenter <= right + distance;
     }
 }
 class Item extends Target {
     constructor(item, position, health, anim) {
         super(item, position, health, anim);
-        this.gibRadius = 500;
-        this.blastRadius = 700;
+        this.gibRadius = 250;
+        this.blastRadius = 400;
         this.areaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
     }
     die() {

@@ -445,7 +445,7 @@ class AreaAffect {
         this.blastRadius = blastRadius;
         this.gibRadius = gibRadius;
     }
-    public killInBlastRadius(epicenter) {  // FIX //////////////////////////////////////////
+    public killInBlastRadius(epicenter) {
         this.blastArray(epicenter, GameInfo.enemyArray);
         this.blastArray(epicenter, GameInfo.itemArray);
     }
@@ -453,11 +453,9 @@ class AreaAffect {
         for (let enemy of array){
             if (!enemy || enemy.deadFlag == true) continue
             let rect = enemy.DOMdiv.getBoundingClientRect();
-            let enemyLeft = rect.left;
-            let enemyWidth = rect.width;
-            let enemyCentre = enemyLeft + (enemyWidth / 2);
-            if (this.checkDistance(epicenter, enemyCentre) < this.blastRadius) {
-                if (this.checkDistance(epicenter, enemyCentre) < this.gibRadius) {
+
+            if (this.checkDistance(epicenter, rect, this.blastRadius)) {
+                if (this.checkDistance(epicenter, rect, this.gibRadius)) {
                     enemy.die(true);
                 }
                 else {
@@ -466,14 +464,17 @@ class AreaAffect {
             }
         }
     }
-    protected checkDistance(left1,left2){
-        return Math.abs(left1 - left2)
+
+    protected checkDistance(epicenter, rect, distance){
+        let left = rect.left;
+        let right = left + rect.width;
+        return epicenter >= left - distance && epicenter <= right + distance
     }
 }
 
 class Item extends Target {
-    private gibRadius:number = 500;
-    private blastRadius:number = 700;
+    private gibRadius:number = 250;
+    private blastRadius:number = 400;
     private areaAffect: AreaAffect = new AreaAffect(this.blastRadius, this.gibRadius);
     constructor(item, position: Position, health?, anim?) {
         super(item, position, health, anim)

@@ -80,7 +80,7 @@ function clearAllEnemies(){
 }
 
 function openMenu() {
-    document.body.style.cursor = "url('assets/Crosshairs/crosshair.cur')"
+    document.body.style.cursor = "url('assets/Crosshairs/crosshair.cur')" // not needed?
     DOMUpdater.stopMiscSound();
     stopGameMusic();
     showElement(elements.menuImage)
