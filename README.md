@@ -39,7 +39,7 @@ the animation frames on the duke machinegun(4). It's better than the original, t
 the changing ammo icons.\
 the ricochets off raised shield.\
 the credits. They play at the end, also from the main menu\
-the chainsaw now has a 'reach' checker, based on "elem.getBoundingClientRect().height", which gives the final height after css.\
+the chainsaw now has a 'reach' checker, based on "elem.getBoundingClientRect().height" of the target, which gives the final height after css.\
 Will have to be improved for different sized enemies, but for now, it limits chainsaw use to more in-your-face distance.\
 the pipebomb and explosive barrels have a 'gib' radius, so that close enemies go to pieces, and further ones die normally.\
 the headshot system - currently headshots give double damage and have a different death animation, in most cases.
