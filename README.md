@@ -46,7 +46,5 @@ the headshot system - currently headshots give double damage and have a differen
 
 Current bugs:
 You can double-fire the shotgun before the reload kicks in!
-Machine guns can get stuck on strafe mode - more rare now.
-Ammo sometimes reaches -1.
-Creatures can get stuck on hurt frame.
+Machine guns (and chainsaw) can get stuck on strafe mode.
 Enemy positioning and scale relative to the backgrounds is tricky, especially on generated levels.
