@@ -236,6 +236,7 @@ abstract class regGun extends weaponry {
     protected noAmmoCheck(){
         if (this.ammo <= 0) {
             this.noAmmoClick();
+            wheelWeapons(1); // auto switch UP weapons on firing with no ammo?
             return true; 
        }
     }
@@ -446,12 +447,12 @@ class Railgun extends areaAffectGun {
 abstract class MachineGun extends weaponry {
     public static hittingInterval;
     public static firingInterval;
-    protected gunImage;
+  //  protected gunImage: string;
     protected firingSound;
     protected gunImage_firing;
-    public gunHeight;
-    public scrnMargin;
-    public firing: boolean
+ //   public gunHeight;
+ //   public scrnMargin;
+//    public firing: boolean
 
     public strafe(e) {
         if (e.button == 2) return
@@ -472,6 +473,7 @@ abstract class MachineGun extends weaponry {
         if (this.ammo <= 0) {
             this.stopstrafe();
             this.noAmmoClick();
+            wheelWeapons(1); // auto switch UP weapons on firing with no ammo?
             return true; 
        }
     }

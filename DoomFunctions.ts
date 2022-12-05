@@ -24,12 +24,6 @@ class RandomSoundGen {
     }
 }
 
-function preloadImage(url)
-{
-    var img = new Image();
-    img.src = url;
-}
-
 function hitWarning() {//THIS needs work
   //  bizwarn.play()
   buzwarn.play();

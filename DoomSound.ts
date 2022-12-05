@@ -67,7 +67,7 @@ var BlakeMusic = [AliensOfGold,DarkHall,Jungle,RacShuffle];
 var Intermission = new sound("sound/Music/DOOM/113_Intermission_From_DOOM.ogg")
 var DoomsGate = new sound("sound/Music/DOOM/102_At_Doom's_Gate.ogg")
 var Secrets = new sound("sound/Music/DOOM/110_Hiding_the_Secrets.ogg")
-var Demons = new sound("sound/Music/DOOM/112_The_Demons_From_Adrian's_Pen.ogg") // slow start
+//var Demons = new sound("sound/Music/DOOM/112_The_Demons_From_Adrian's_Pen.ogg") // slow start
 var Untitled = new sound("sound/Music/DOOM/118_Untitled.ogg")
 var Donna = new sound("sound/Music/DOOM/119_Donna_to_the_Rescue.ogg")
 var Spider = new sound("sound/Music/DOOM/121_Facing_the_Spider.ogg")
@@ -98,7 +98,6 @@ var Bullet8 = new sound("sound/Bullets/bullet_by_12.mp3")
 var Turicochet = new sound("sound/Turok/riccht1p_louder.mp3")
 var BloodRicochet_1 = new sound("sound/Blood/RICOCHT1.WAV")
 var BloodRicochet_2 = new sound("sound/Blood/RICOCHT2.WAV")
-
 
 Avpminigun.sound.setAttribute("loop", "infinite"); //CHAINGUN
 SSamMinigun.sound.setAttribute("loop", "infinite"); //DUALNEUTRON

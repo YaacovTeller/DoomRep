@@ -80,9 +80,9 @@ document.addEventListener('keydown', function (ev) {
         }
         click2.play()
     }
-    else if (ev.key === "c") {
-        clearAllEnemies(); // single scene
-    }
+    // else if (ev.key === "c") {
+    //     clearAllEnemies(); // single scene
+    // }
     else if (ev.key === "g") {
         GameInfo.invincible = GameInfo.invincible == true ? false : true;
         elements.invincible.innerText = GameInfo.invincible == true ? "INVULNERABLE" : "";
