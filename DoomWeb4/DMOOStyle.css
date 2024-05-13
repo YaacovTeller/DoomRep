@@ -2,6 +2,9 @@
     font-family: Aldrich;
     src:  url('./assets/Aldrich-Regular.ttf') format('truetype'),
 }
+audio {
+    display: none;
+}
 
 .crosshairCursor{
     cursor: url('assets/Crosshairs/crosshair.cur'), crosshair;
