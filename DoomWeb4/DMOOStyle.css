@@ -42,7 +42,8 @@ html, body {
     background-color: black;
     font-family: Arial, Helvetica, sans-serif;
 }
-.menuImage{
+.menuImage {
+    top: 0;
     z-index: 23;
     opacity: 1.0;
     width: 145%;

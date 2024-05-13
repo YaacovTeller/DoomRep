@@ -45,6 +45,10 @@ function checkForWeaponSwitch(num:number) {
 }
 
 document.addEventListener('keydown', function (ev) {
+    if (ev.key === "escape") {
+        openMenu();
+        ///
+    }
     //CHEATS
     if (ev.key === "e")
     {
