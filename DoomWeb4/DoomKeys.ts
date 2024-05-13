@@ -45,12 +45,30 @@ function checkForWeaponSwitch(num:number) {
 }
 
 document.addEventListener('keydown', function (ev) {
-    if (ev.key === "escape") {
-        openMenu();
-        ///
+
+    if(weaponOrder[ev.key]){
+        weaponKey(weaponOrder[ev.key]);
     }
+
+    else if (ev.key === " ") {
+        if (!Player.riotShieldDeployed){
+            raiseShield()
+        }
+      //  shieldToggle()
+    }
+    else if (ev.key === "Escape") {
+        if (elements.menu.style.display == "none") {
+            openMenu()
+            if (elements.credits.style.display == "block") {
+                hideElement(elements.credits);
+                UTcredits.stop();
+            }
+        }
+        else closeMenu()
+    }
+
     //CHEATS
-    if (ev.key === "e")
+    else if (ev.key === "e")
     {
         Player.weapon.ammo += 50;
         DOMUpdater.updateAmmoWithClick(Player.weapon.ammo)

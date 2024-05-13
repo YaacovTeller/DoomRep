@@ -167,7 +167,6 @@ const elements = {
     progressCounter: document.getElementById("progressCounter"),
     Bar: document.getElementById("BossBar1"),
     loadingBar: document.getElementById("loadingBar"),
-    fileNames: document.getElementById("fileNames"),
     backImg: document.getElementById("BackImg1"),
     menuImage: document.getElementById("menuImage"),
     killCounter: document.getElementById("DCount"),

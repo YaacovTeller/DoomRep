@@ -176,7 +176,6 @@ const elements = {
     
     Bar: document.getElementById("BossBar1"),
     loadingBar: document.getElementById("loadingBar"),
-    fileNames: document.getElementById("fileNames"),
     backImg: document.getElementById("BackImg1"),
     menuImage: document.getElementById("menuImage"),
     

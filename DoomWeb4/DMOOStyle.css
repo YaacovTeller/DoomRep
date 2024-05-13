@@ -42,8 +42,7 @@ html, body {
     background-color: black;
     font-family: Arial, Helvetica, sans-serif;
 }
-.menuImage {
-    top: 0;
+.menuImage{
     z-index: 23;
     opacity: 1.0;
     width: 145%;
@@ -107,21 +106,9 @@ html, body {
     box-shadow: 3px 3px 10px 1px black;
     /* display: none; */
     z-index: 25;
-    height: 40px;
+    height:40px; 
     width: 0%;
     background-color: green;
-
-    text-align: center;
-    font-size: 32px;
-    font-family: impact;
-}
-.fileNames {
-/*    position: fixed;
-    bottom: 6%;*/
-    margin: auto;
-    width: 50%;
-    text-align: center;
-    font-size: 35px;
 }
 
 .absolute {

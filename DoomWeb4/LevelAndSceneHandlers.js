@@ -334,8 +334,8 @@ class LevelHandler {
         let health = (currentHealth / GameInfo.bossTotalHealth) * 100;
         this.moveBar(elements.Bar, health);
     }
-    static moveBar(bar, num, callback) {
-        $(bar).animate({ width: num + "%" }, 120, callback);
+    static moveBar(bar, num) {
+        $(bar).animate({ width: num + "%" }, 120);
     }
     static startAllRolls(frequency, hitLimit) {
         for (let enemy of GameInfo.enemyArray) {

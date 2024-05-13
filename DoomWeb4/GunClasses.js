@@ -152,7 +152,7 @@ class weaponry {
         //  let gunHeight = this.gunHeight;
         let scrnMargin = this.scrnMargin;
         let baseGunPosition = screenHeight - gunHeight;
-        if (y < baseGunPosition + scrnMargin - 5 || this.reloading) {
+        if (y < baseGunPosition + scrnMargin - 5 || this.reloading) { // 
             gunTop = baseGunPosition + "px";
         }
         else {
@@ -210,6 +210,7 @@ class regGun extends weaponry {
     noAmmoCheck() {
         if (this.ammo <= 0) {
             this.noAmmoClick();
+            wheelWeapons(1); // auto switch UP weapons on firing with no ammo?
             return true;
         }
     }
@@ -386,6 +387,9 @@ class Railgun extends areaAffectGun {
     }
 }
 class MachineGun extends weaponry {
+    //   public gunHeight;
+    //   public scrnMargin;
+    //    public firing: boolean
     strafe(e) {
         if (e.button == 2)
             return;
@@ -404,6 +408,7 @@ class MachineGun extends weaponry {
         if (this.ammo <= 0) {
             this.stopstrafe();
             this.noAmmoClick();
+            wheelWeapons(1); // auto switch UP weapons on firing with no ammo?
             return true;
         }
     }

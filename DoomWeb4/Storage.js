@@ -2,7 +2,6 @@
 /////// MAIN MENU OPEN ////////
 function menuReady() {
     $(elements.loadingBar).fadeOut(200);
-    $(elements.fileNames).fadeOut(200);
     setTimeout(() => {
         $(elements.menu).fadeIn(200);
         openMenu();
@@ -11,13 +10,10 @@ function menuReady() {
 }
 var imageArray = [];
 var imageLoadingCounter = 0;
-loadAllImages();
-function loadAllImages() {
-    iterObj(pics);
-    iterObj(enemyPics);
-    for (let image of imageArray) {
-        preloadImage(image);
-    }
+iterObj(pics);
+iterObj(enemyPics);
+for (let image of imageArray) {
+    preloadImage(image);
 }
 //preloadImage(pics.guns.reloading.shotgun);
 //hideElement(elements.highScores)
@@ -36,20 +32,20 @@ function preloadImage(url) {
     img.onload = function () {
         console.log("Image loaded");
         imageLoadingCounter++;
-        let percent = 100 / imageArray.length * imageLoadingCounter;
-        let rounded = Math.round(percent);
-        if (rounded % 5 == 0) {
-            LevelHandler.moveBar(elements.loadingBar, rounded);
+        if (imageLoadingCounter == Math.floor(imageArray.length * 0.25)) {
+            LevelHandler.moveBar(elements.loadingBar, 25);
+            ;
         }
-        //let percentLoaded: string = rounded + "% loaded"
-        //elements.loadingBar.innerText = percentLoaded
-        let numberLoaded = imageLoadingCounter + "/" + imageArray.length + " assets loaded";
-        elements.loadingBar.innerText = numberLoaded;
-        elements.fileNames.innerText = url;
-        if (imageLoadingCounter == imageArray.length) {
-            // console.log(percentLoaded)
-            $(elements.loadingBar).stop(true);
-            LevelHandler.moveBar(elements.loadingBar, 100, menuReady);
+        ;
+        if (imageLoadingCounter == Math.floor(imageArray.length * 0.5)) {
+            LevelHandler.moveBar(elements.loadingBar, 50);
+        }
+        if (imageLoadingCounter == Math.floor(imageArray.length * 0.75)) {
+            LevelHandler.moveBar(elements.loadingBar, 75);
+        }
+        if (imageLoadingCounter == Math.floor(imageArray.length)) {
+            LevelHandler.moveBar(elements.loadingBar, 100);
+            menuReady();
         }
     };
     img.src = url;

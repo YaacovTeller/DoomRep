@@ -3,7 +3,7 @@ class DOMUpdater {
         SawIdle.stop();
     }
     public static updateKillCounter(totalCount) {
-        this.updateCounter(elements.killCounter, "Kills!:" + totalCount);
+        this.updateCounter(elements.killCounter, "Kills:" + totalCount);
     }
     public static updateAmmoCounter(ammo) {
         if (ammo != null){
