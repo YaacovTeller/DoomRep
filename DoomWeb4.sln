@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DoomWeb4", "DoomWeb4\", "{0578DDEE-8633-4BBE-AC70-31BDF84D6BED}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_61173"
+		Debug.AspNetCompiler.PhysicalPath = "DoomWeb4\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61173\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_61173"
+		Release.AspNetCompiler.PhysicalPath = "DoomWeb4\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61173\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "61173"
+		SlnRelativePath = "DoomWeb4\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0578DDEE-8633-4BBE-AC70-31BDF84D6BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0578DDEE-8633-4BBE-AC70-31BDF84D6BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {38F04CE0-535E-44F4-8126-D3AE6702FADE}
+	EndGlobalSection
+EndGlobal
